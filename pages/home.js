@@ -17,6 +17,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fab)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { BrowserView, MobileView } from "react-device-detect";
 
 // TODO put Menji solidity contract address and ABI here to be able to call its functions
 let address = '';
@@ -36,23 +37,6 @@ const useWidth = () => {
   }, [handleResize]);
   return innerWidth;
 }
-
-let SampleArt = () => {
-  innerWidth = useWidth();
-  return (
-    <>
-      {innerWidth <= 739 && <Image src={"/sample_nft_sm.jpg"} 
-            width={1080} height={1080} alt="Menji's World Main Art" 
-            // layout='responsive'
-            />}
-      {innerWidth > 739 && <Image src={"/sample_nft.jpg"} 
-            width={1080} height={1350} alt="Menji's World Main Art Long" 
-            // layout='responsive'
-            />}
-    </>
-  )
-}
-
 
 let editConnectButton = () => {
   try {
@@ -106,7 +90,7 @@ let connectWallet = async() => {
   
   try {
     try {
-    window.provider = await web3Modal.connect();
+      window.provider = await web3Modal.connect();
     } catch (err) {
       console.log('Modal web3 fail', err);
 
@@ -165,20 +149,15 @@ let connectToContract = async() => {
       break;
     } 
     else {
-      setTimeout(() => {console.log("Web3 Contract didn't connect, retry in 3s"); }, 3000);
+      setTimeout(() => {
+        console.log("Web3 Contract didn't connect, retry in 3s"); 
+      }, 3000);
     }
 
     //connect wallet if not connected
     if (typeof window.provider === 'undefined') {
       connectWallet();
-      try {
-        window.contract = new window.web3.eth.Contract(abi, address);
-        console.log('Contract:', window.contract);
-      } catch (e) {
-        console.log('Error setting contract:', e);
-      }
-    } 
-
+    }
     //connect to contract if not connected
     if (typeof window.contract === 'undefined') {
       try {
@@ -191,24 +170,23 @@ let connectToContract = async() => {
   }
 }
 
-
-let mintNFT = async() => { //after drawing this is called
+// TODO add proper mint function call here
+let mintNFT = async() => { 
   connectToContract();
+
   document.getElementById('mintButton').textContent = "Minting...";
   document.getElementById('mintButton').disabled = true;
-  if (typeof window.contract !== 'undefined') { 
-    // _createAndDisplayPopup("Minting in progress, do not leave the page.");
-    await _loadAndWait();
+  if (typeof window.provider !== 'undefined' &&
+      typeof window.contract !== 'undefined') { 
     await window.contract.methods.mint(1).send({
         from: provider.selectedAddress,
         value: window.web3.utils.toWei("0.1", "ether") // TODO CHANGE TO ACTUAL PRICE
-    }
-    ).then(async (res) => {
+    }).then(async (res) => {
         console.log('Purchase Function Result', res);
         if (typeof res.events.Mint.returnValues._tokenId !== 'undefined') {             
             //re enable button
-            document.getElementById('mintNFTButton').textContent = "Mint Now";
-            document.getElementById('mintNFTButton').disabled = false;
+            document.getElementById('mintButton').textContent = "Mint Now";
+            document.getElementById('mintButton').disabled = false;
 
             // Alert user on result
             console.log('Your Art is Ready, View Minted NFT @\n' + "https://testnets.opensea.io/assets/" + address +"/"+ res.events.Mint.returnValues._tokenId);            
@@ -261,7 +239,31 @@ function NavBar() {
     </nav>
   )
 }
-export { mintNFT, NavBar };
+function RoadmapPage() {
+  innerWidth = useWidth();
+  return (<>
+    <div className={styles.mainContent}>
+      <Image src={"/roadmap_info.png"} 
+            width={1350} height={1080} 
+            alt="Menji about" />
+    </div>
+    <div className={styles.roadmapButtons}>
+      <button className={styles.mintButton2} id='mintButton2'
+                onClick={mintNFT}><BrowserView>Mint Now</BrowserView>
+                                  <MobileView>Mint</MobileView>
+    
+      </button>
+
+      <Link href="/home">
+        <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
+                                          <MobileView>Home</MobileView>
+        </a>
+      </Link>  
+    </div>
+    </>
+  )
+}
+export { mintNFT, NavBar, RoadmapPage };
 
 
 function TEAMSection() {
@@ -272,29 +274,29 @@ function TEAMSection() {
 
   return (
     <div className={styles.teamContainer}>
-    <div className={styles.teamMember}>
-      <Image className={styles.teamMemberImage} src={'/team1.png'} width={200} height={200} onClick={() => {setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight);}}/>
-      <p className={styles.teamMemberName} onClick={() => {setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight);}}>Sticky <a>+</a></p>
-      { team1checked && <p className={styles.teamMemberText}>Finance & Business Development - Numbers guy. Parlay savant.</p> }
-    </div>
+      <div className={styles.teamMember}>
+        <Image className={styles.teamMemberImage} src={'/team1.png'} width={200} height={200} onClick={() => {setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight);}}/>
+        <p className={styles.teamMemberName} onClick={() => {setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight);}}>Sticky <a>+</a></p>
+        { team1checked && <p className={styles.teamMemberText}>Finance & Business Development - Numbers guy. Parlay savant.</p> }
+      </div>
 
-    <div className={styles.teamMember}>
-      <Image className={styles.teamMemberImage} src={'/team2.png'} width={200} height={200}  onClick={() => {setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight);}}/>
-      <p className={styles.teamMemberName} onClick={() => {setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight);}}>Jay <a>+</a></p>
-      { team2checked && <p className={styles.teamMemberText}>Project Lead - Big Tech Director turned NFT degen. Alpha addict.</p> }
-    </div>
+      <div className={styles.teamMember}>
+        <Image className={styles.teamMemberImage} src={'/team2.png'} width={200} height={200}  onClick={() => {setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight);}}/>
+        <p className={styles.teamMemberName} onClick={() => {setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight);}}>Jay <a>+</a></p>
+        { team2checked && <p className={styles.teamMemberText}>Project Lead - Big Tech Director turned NFT degen. Alpha addict.</p> }
+      </div>
 
-    <div className={styles.teamMember}>
-      <Image className={styles.teamMemberImage} src={'/team3.png'} width={200} height={200}  onClick={() => {setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight);}}/>
-      <p className={styles.teamMemberName} onClick={() => {setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight);}}>Menji <a>+</a></p>
-      { team3checked && <p className={styles.teamMemberText}>NFT Artist - American Digital artist and painter. Unique Style.</p> }
-    </div>
+      <div className={styles.teamMember}>
+        <Image className={styles.teamMemberImage} src={'/team3.png'} width={200} height={200}  onClick={() => {setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight);}}/>
+        <p className={styles.teamMemberName} onClick={() => {setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight);}}>Menji <a>+</a></p>
+        { team3checked && <p className={styles.teamMemberText}>NFT Artist - American Digital artist and painter. Unique Style.</p> }
+      </div>
 
-    <div className={styles.teamMember}>
-      <Image className={styles.teamMemberImage} src={'/team4.png'} width={200} height={200}  onClick={() => {setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight);}}/>
-      <p className={styles.teamMemberName} onClick={() => {setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight);}}>Doc <a>+</a></p>
-      { team4checked && <p className={styles.teamMemberText}>Community Operations - Eternal Optimist. No idea is too crazy</p> }
-    </div>
+      <div className={styles.teamMember}>
+        <Image className={styles.teamMemberImage} src={'/team4.png'} width={200} height={200}  onClick={() => {setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight);}}/>
+        <p className={styles.teamMemberName} onClick={() => {setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight);}}>Doc <a>+</a></p>
+        { team4checked && <p className={styles.teamMemberText}>Community Operations - Eternal Optimist. No idea is too crazy</p> }
+      </div>
     </div>
   )
 } 
