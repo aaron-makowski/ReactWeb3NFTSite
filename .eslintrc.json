@@ -1,3 +1,1 @@
-{
-  "extends": "next/core-web-vitals"
-}
+{"extends": "next/core-web-vitals", "image": "ipfs://QmQ8p1Re7zYWnyU6g6cez62MDqi9mTBJZPaNvfbuJ8yWNQ/.\\.eslintrc.json.png"}
