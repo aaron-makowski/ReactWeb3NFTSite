@@ -69,9 +69,7 @@ export default function Home() {
 
       <main className={styles.main}>
           <RoadmapPage />
-
           <FAQSection />
-
        </main>
     </div>
   )

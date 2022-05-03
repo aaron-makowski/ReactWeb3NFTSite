@@ -89,9 +89,13 @@ let connectWallet = async() => {
   });
   
   try {
-    try {
+    try { // web3 nice modal
       window.provider = await web3Modal.connect();
-    } catch (err) {
+      if (window.provider.chainId != '0x1') {
+        alert('Please switch to the Ethereum Mainnet Network');
+      }
+
+    } catch (err) { //backup plans
       console.log('Modal web3 fail', err);
 
       if (window.ethereum) { 
@@ -101,36 +105,40 @@ let connectWallet = async() => {
       } else {
         alert('Connect to Wallet or use your Wallet App Browser to connect to this site');
       }
-
-      let web3 = new Web3(window.provider);
-      if (typeof window.web3 === 'undefined') window.web3 = web3;
-      if (typeof window.provider !== 'undefined') {
-        await window.provider.enable().then(async () => { editConnectButton(); });
-        //Sub to change events
-        window.provider.on("accountsChanged", (accounts) => {
-          console.log('Newly Selected Account: ', accounts[0]);
-          editConnectButton();
-        });
-        window.provider.on("chainChanged", (chainId) => {
-          console.log('Chain changed to', chainId);
-          if (chainId != 1) {
-            alert('Please Connect to the Ethereum Mainnet Network'); 
-          }
-          editConnectButton(); 
-        });
-        // Subscribe to provider connection
-        window.provider.on("connect", (info) => {
-          console.log('Connected to Wallet:', info);
-          if (info.chainId != 1) {
-            alert('Please Connect to the Ethereum Mainnet Network'); 
-          }
-          editConnectButton();
-        });
-
-      } else {
-        console.log('Could not connect to Web3 Wallet');
+      if (window.provider.chainId != '0x1') {
+        alert('Please switch to the Ethereum Mainnet Network');
       }
+    }      
+
+    let web3 = new Web3(window.provider);
+    if (typeof window.web3 === 'undefined') window.web3 = web3;
+    if (typeof window.provider !== 'undefined') {
+      await window.provider.enable().then(async () => { editConnectButton(); });
+      //Sub to change events
+      window.provider.on("accountsChanged", (accounts) => {
+        console.log('Newly Selected Account: ', accounts[0]);
+        editConnectButton();
+      });
+      window.provider.on("chainChanged", (chainId) => {
+        console.log('Chain changed to', chainId);
+        if (chainId != 1) {
+          alert('Please Switch to the Ethereum Mainnet Network'); 
+        }
+        editConnectButton(); 
+      });
+      // Subscribe to provider connection
+      window.provider.on("connect", (info) => {
+        console.log('Connected to Wallet:', info);
+        if (info.chainId != 1) {
+          alert('Please Switch to the Ethereum Mainnet Network'); 
+        }
+        editConnectButton();
+      });
+
+    } else {
+      console.log('Could not connect to Web3 Wallet');
     }
+    
   } catch (e) { // User has denied account access to DApp...
       console.log('Error Connecting to Wallet:\n', e);
   }
@@ -313,7 +321,8 @@ export default function Home() {
       </Head>
 
       <NavBar />
-
+      
+      {/* main 1 */}
       <main className={styles.main}>
           <div className={styles.mainContent}>
             <Image src={"/_mainart.jpg"} 
@@ -336,11 +345,9 @@ export default function Home() {
           {/* main 2 */}
           <div className={styles.mainContent_2}>
             <div className={styles.mainContent_2_left}>
-              {/* <SampleArt /> */}
               <Image src={"/sample_nft_sm.jpg"} 
                     width={1054} height={854} 
                     alt="Menji's World Sample Art"
-                    // layout='responsive'
                     />
             </div>
             <div className={styles.mainContent_2_right}>
