@@ -41,7 +41,6 @@
   padding: 1.75rem 1.75rem;
   text-align: center;
 }
-
 .mainContent_2 {
   padding: 0.5rem 0.5rem;
   flex: 1; 
@@ -85,7 +84,6 @@
 .sampleNFT {
   border-radius: 0.5rem;
 }
-
 @media (max-width: 860px) {
   .navBarItem_ConnectButton {
     padding: 0em 35px;
@@ -117,6 +115,7 @@
   }
 }
 
+/* /roadmap */
 .FAQContainer {
   padding-top: 0.1rem;
   padding-bottom: 1.5rem;
@@ -146,13 +145,13 @@
   padding-right: 20px;
   padding-bottom: 17px;
   background-color: rgb(255, 209, 117);
-  color : rgb(0, 0, 0);
-  font-size : 1.2em;
+  color: rgb(0, 0, 0);
+  font-size: 1.2em;
   padding-right: 1.5rem;
   font-weight: 100;
   font-family: 'Fredoka One', cursive;
   font-variant : small-caps;
-  cursor : pointer;
+  cursor: pointer;
   display: block;
 }
 .FAQItem span::after {
@@ -161,6 +160,8 @@
   content: "▽"; 
   font-weight: 500;
 }
+
+
 .slide {
   clear: both;
   width: 100%;
@@ -181,6 +182,7 @@
   border-bottom: 2px solid #000000;
   border-top: 1px solid #000000;
 }
+
 
 .teamContainer {
   flex: 1;
@@ -227,6 +229,7 @@
   font-family: 'Fredoka One', cursive;
 }
 
+
 .navBarContainer {
   width: 100%;
   flex: 1;
@@ -243,15 +246,6 @@
     flex-direction: column;
   }
 }
-.navBarRight {
-  display: flex;
-  flex: 1;
-  justify-content: right;
-  flex-direction: row;
-  align-items: right;
-  flex-grow: 1;
-  flex-wrap: wrap;
-}
 .navBarLeft {
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -265,7 +259,15 @@
   flex-grow: 1;
   flex-wrap: wrap;
 }
-
+.navBarRight {
+  display: flex;
+  flex: 1;
+  justify-content: right;
+  flex-direction: row;
+  align-items: right;
+  flex-grow: 1;
+  flex-wrap: wrap;
+}
 @media (max-width: 815px) {
   .navBarLeft {
     margin-top: 1.5rem;
@@ -308,7 +310,7 @@
   appearance: button;
   backface-visibility: hidden;
   background-color: #ffc636;
-  border-width: 1px;
+  border-width: 0px;
   border-radius: 10px;
   box-sizing: border-box;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
@@ -335,7 +337,7 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  color: #242627;
+  color: #2e2e2e;
   
 }
 .navBarItem_ConnectButton:disabled {
@@ -344,12 +346,8 @@
 .navBarItem_ConnectButton:focus {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
 }
-.mintButton:disabled {
-  cursor: default;
-}
-.mintButton:focus {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
+
+
 .mintButton {
   appearance: button;
   backface-visibility: hidden;
@@ -358,7 +356,7 @@
   border-width: 1px;
   box-shadow: 0 0.2rem 0.74rem rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
-  color: #242627;
+  color: #2e2e2e;
   cursor: pointer;
   font-family: 'Fredoka One', cursive;
   font-size: 1.7rem;
@@ -384,10 +382,10 @@
   backface-visibility: hidden;
   background-color: #ffc636;
   border-radius: 10px;
-  border-width: 1px;
+  border-width: 0px;
   box-shadow: 0 0.2rem 0.74rem rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
-  color: #242627;
+  color: #2e2e2e;
   cursor: pointer;
   font-family: 'Fredoka One', cursive;
   font-size: 1.7rem;
@@ -409,4 +407,575 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+}
+.mintButton:disabled {
+  cursor: default;
+}
+.mintButton:focus {
+  box-shadow: 0 0.5rem 0.74rem rgba(0, 0, 0, 0.9);
+}
+.mintButton2:focus {
+  box-shadow: 0 0.5rem 0.74rem rgba(0, 0, 0, 0.9);
+}
+
+
+.inputNumber {
+  /* border-radius: 10px; */
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  box-sizing: border-box;
+  color: #2e2e2e;
+  font-family: 'Fredoka One', cursive;
+  font-weight: 100;
+  height: 54px;
+  outline: none;
+  overflow: hidden;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 80%;
+  font-size: 1.7rem;
+  font-family: 'Fredoka One', cursive;
+  background-color: rgb(255, 227, 102);
+}
+.inputNumber2 {
+  border-radius: 10px;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  box-sizing: border-box;
+  color: #2e2e2e;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.7rem;
+  font-weight: 100;
+  height: 54px;
+  outline: none;
+  overflow: hidden;
+  /* padding: 0.7rem 35px; */
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 80%;
+  font-size: 1.7rem;
+  font-family: 'Fredoka One', cursive;
+  background-color: rgb(255, 227, 102);
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.mintModal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 242, 194, 0.5);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+}
+
+.mintModalLoading {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 242, 194, 0.5);
+  z-index: 99999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+}
+.mintModalHeader {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  text-align: center;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+  justify-content: center;
+  transform: translateZ(0);
+  background-color: rgb(255, 212, 55);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+.mintModalHeader2 {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  text-align: center;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+  justify-content: center;
+  transform: translateZ(0);
+  background-color: rgb(255, 212, 55);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+.mintModalBody {
+  background-color: rgb(255, 212, 55);
+  border-radius: 20px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+
+.mintModalHeader h2 { 
+  background-color: rgb(255, 212, 55);
+  color: rgb(0, 0, 0);
+  font-size: 2.5em;
+  font-weight: 100;
+  font-family: 'Fredoka One', cursive;
+  display: block;
+  border: #000000;
+  margin-bottom: 1.25rem;
+}
+.mintModalHeader h3 { 
+  background-color: rgb(255, 212, 55);
+  color: rgb(0, 0, 0);
+  font-size: 1.25em;
+  font-weight: 100;
+  font-family: 'Fredoka One', cursive;
+  display: block;
+  border: #000000;
+  margin-bottom: 0rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+}
+.mintModalHeader h3 h3{ 
+  background-color: rgb(255, 227, 102);
+  color: rgb(0, 0, 0);
+  font-size: 1.25em;
+  font-weight: 100;
+  font-family: 'Fredoka One', cursive;
+  display: block;
+  border: #000000;
+  margin-bottom: 0rem;
+  margin-top: 0.75rem;
+  border-radius: 10px;
+  font-size: 1.75rem;
+  height: 50px;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  width: 100%;
+}
+.mintModalHeader button::after {
+  float: right;
+  right: 10%;
+  content: "X"; 
+  font-weight: 500;
+  cursor: pointer;
+  font-size: larger;
+  position: absolute;
+  right: 1.2rem;
+  top: 1rem;
+}
+.mintModalCloseButton {
+  background-color: transparent;
+  border: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.mintModalInputContainer {
+  background-color: rgb(255, 212, 55);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  width: 80%;
+  margin-bottom: 1rem;
+}
+.mintModalInputContainer2 {
+  margin-top: 0.75rem;
+  background-color: rgb(255, 212, 55);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  width: 100%;
+  padding-bottom: 1rem;
+}
+.mintModalSection_left {
+  padding-left: 1.1rem;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+.mintModalSection_right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+
+.mintModalInputContainer p {
+  background-color: rgb(255, 212, 55);
+  color: rgb(0, 0, 0);
+  font-size: 1.5em;
+  font-weight: 100;
+  font-family: 'Fredoka One', cursive;
+  display: block;
+  border: #000000;
+  margin-bottom: 1.25rem;
+  margin-top: 2.75rem;
+}
+.mintModalInputContainer2 p {
+  background-color: rgb(255, 212, 55);
+  color: rgb(0, 0, 0);
+  font-size: 1.5em;
+  font-weight: 100;
+  font-family: 'Fredoka One', cursive;
+  display: block;
+  border: #000000;
+}
+
+.mintModalButton {
+  background-color: rgb(255, 214, 29);
+  border-radius: 10px;
+  border-width: 0px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.7rem;
+  font-weight: 100;
+  height: 60px;
+  line-height: 1.15;
+  width: 100%;
+  outline: none;
+  overflow: hidden;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+}
+.mintModalButton:focus {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.9);
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+.mintModalButtonDisabled {
+  background-color: rgb(221, 221, 221);
+  border-radius: 10px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.7rem;
+  font-weight: 100;
+  height: 54px;
+  line-height: 1.15;
+  margin: 0.3rem;
+  width: 60%;
+  outline: none;
+  overflow: hidden;
+  padding: 0.7rem 35px;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.mintModalButtonDisabled:hover {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalButtonDisabled:active {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalButtonDisabled:focus {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.9);
+}
+
+.mintNumberBoxWithButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.plusSign {
+  background-color: rgb(255, 227, 102);
+  border-radius: 0px 10px 10px 0px;
+  /* box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9); */
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.25rem;
+  height: 54px;
+  width: 10%;
+  outline: none;
+  overflow: hidden;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  padding-top: 0.1rem;
+  padding-right: 1.5rem;
+}
+.minusSign {
+  background-color: rgb(255, 227, 102);
+  border-radius: 10px 0px 0px 10px;
+  /* box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9); */
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.25rem;
+  height: 54px;
+  width: 10%;
+  outline: none;
+  overflow: hidden;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  padding-left: 1.5rem;
+}
+
+.mintPopup_ConnectButton {
+  appearance: button;
+  backface-visibility: hidden;
+  background-color: #ffc636;
+  border-width: 0px;
+  border-radius: 10px;
+  background-color: rgb(255, 214, 29);
+  border-radius: 10px;
+  box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.5rem;
+  font-weight: 100;
+  height: 44px;
+  line-height: 1.15;
+  width: 100%;
+  outline: none;
+  overflow: hidden;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+}
+.mintPopup_ConnectButton:disabled {
+  cursor: default;
+}
+.mintPopup_ConnectButton:focus {
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.9);
+}
+
+
+.mintModalError {
+  background-color: rgb(255, 214, 29);
+  border-radius: 10px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 0.7rem;
+  font-weight: 100;
+  height: 54px;
+  line-height: 1.15;
+  margin: 0.3rem;
+  /* margin-left: 2rem;
+  margin-right: 2rem; */
+  width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 1rem 35px;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.mintModalError:hover {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalError:active {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalError:focus {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalErrorText {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.7rem;
+  font-weight: 100;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+
+.mintModalSuccess {
+  background-color: rgb(255, 214, 29);
+  border-radius: 10px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  font-weight: 100;
+  height: 54px;
+  line-height: 1.15;
+  margin: 0.3rem;
+  /* margin-left: 2rem;
+  margin-right: 2rem; */
+  width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 0.7rem 35px;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.mintModalSuccess:hover {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalSuccess:active {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalSuccess:focus {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+
+.mintModalLoading {
+  background-color: rgb(255, 214, 29);
+  border-radius: 10px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.7rem;
+  font-weight: 100;
+  height: 54px;
+  line-height: 1.15;
+  margin: 0.3rem;
+  /* margin-left: 2rem;
+  margin-right: 2rem; */
+  width: 80%;
+  outline: none;
+  overflow: hidden;
+  padding: 0.7rem 35px;
+  position: center;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.mintModalLoading:hover {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalLoading:active {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
+}
+.mintModalLoading:focus {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
 }

@@ -1,61 +1,43 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-import { mintNFT, NavBar, RoadmapPage } from './home.js'
-
-
-function FAQSection() {
-  const [faq1checked, setFaq1Checked] = useState(false);
-  const [faq2checked, setFaq2Checked] = useState(false);
-  const [faq3checked, setFaq3Checked] = useState(false);
-  const [faq4checked, setFaq4Checked] = useState(false);
-
-  return (
-    <div className={styles.FAQContainer}>
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq1Checked(!faq1checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>What is the Mint Date and Price?</span>
-          { faq1checked && <ul className={styles.slide}>
-          <li><a>Being a mochi means that you are part of an ever-growing community of loving, helpful mochis that all want to see this project expand. Being community-led means we put our community first and allow them to give us the leg up in project direction.</a></li> 
-          </ul> }
-        </div>
-      </nav>
-
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq2Checked(!faq2checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>What is the roadmap?</span>               
-          { faq2checked && <ul className={styles.slide}>
-            <li><a>Liquidity protocol for NFTs that allows sellers to gain access to instant ETH. Aside from selling, you are able to buy, swap and stake.</a></li> 
-          </ul> }
-        </div>
-      </nav>
-
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq3Checked(!faq3checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>What is the collection size?</span>              
-          { faq3checked && <ul className={styles.slide}>
-            <li><a>You may find us available on any secondary markets such as Opensea or looksrare.</a></li> 
-          </ul> }
-        </div>
-      </nav>
-
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>Who is Painted Labs?</span>
-          { faq4checked && <ul className={styles.slide}>
-            <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
-          </ul> }
-        </div>
-      </nav>
-    </div>
-  )
-} 
+import { NavBar, RoadmapPage, FAQSection, editConnectButton, connectWallet, MintModal } from './home.js'
 
 export default function Home() {
+  const [mintModalOpen, setMintModalOpen] = useState(false);
+
+  const closeAndConnect = () => {
+    closeMintModal();
+    connectWallet();
+  }
+  const closeMintModal = () => {
+    window.document.onclick = null;
+    window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
+    window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
+    setMintModalOpen(false);
+  }
+  const openMintModal = () => {
+    setMintModalOpen(true);
+  }
+  useEffect(() => {
+    if (mintModalOpen) {
+      window.document.onclick = function(event) {
+        if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
+      window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
+      window.document.getElementById('mintConnectButton').addEventListener('click', closeAndConnect);
+    }
+  }, [mintModalOpen]);
+
+  //on page load
+  useEffect(() => {
+    editConnectButton();
+    window.document.getElementById('mintButton2').addEventListener('click', openMintModal);
+    // return () => {
+    //   window.document.getElementById('mintButton2').removeEventListener('click', openMintModal);
+    // }
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -64,13 +46,14 @@ export default function Home() {
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
+      { mintModalOpen && <MintModal /> } {/* Takes over page when Mint Button clicked */}
 
       <NavBar />
-
-      <main className={styles.main}>
-          <RoadmapPage />
-          <FAQSection />
-       </main>
+      <main>{/* Theoretically useful for SEO */}
+        <RoadmapPage />{/*  Roadmap Image + Mint Button + Home Button */}
+        <FAQSection />
+      </main>
     </div>
   )
 }

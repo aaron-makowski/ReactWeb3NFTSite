@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  // serverRuntimeConfig: {
+  //   cors: true,
+  // }
   // react: {
   //   useSuspense: false,
   //   // wait: true

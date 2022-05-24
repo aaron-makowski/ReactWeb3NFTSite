@@ -16,11 +16,13 @@
     "@react-three/drei": "^8.18.1",
     "@react-three/fiber": "^7.0.26",
     "@walletconnect/web3-provider": "^1.7.8",
+    "axios": "^0.27.2",
     "fortmatic": "^2.2.1",
     "next": "12.1.0",
     "react": "^17.0.2",
     "react-device-detect": "^2.2.2",
     "react-dom": "^17.0.2",
+    "react-loader-spinner": "*",
     "three": "^0.138.3",
     "web3": "^1.7.1",
     "web3modal": "^1.9.7"
