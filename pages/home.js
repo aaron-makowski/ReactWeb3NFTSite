@@ -1129,11 +1129,6 @@ async function fetchWhitelistData() {
 function NavBar() {
   innerWidth = useWidth();
 
-  useEffect(() => {
-    window.document.getElementById('connectButton').addEventListener('click', connectWallet);
-    // return () => window.document.getElementById('connectButton').removeEventListener('click', connectWallet);
-  }, []);
-
   return (
     <nav className={styles.navBarContainer}>
       <nav className={styles.navBarLeft}>
@@ -1148,7 +1143,8 @@ function NavBar() {
           <a className={styles.socialButton_discord} href="discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
           </a>
-          <button className={styles.navBarItem_ConnectButton} id='connectButton'>Connect</button>
+          <button className={styles.navBarItem_ConnectButton} id='connectButton'
+                  onClick={connectWallet}>Connect</button>
           <a className={styles.socialButton_twitter} href="twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
           </a>
