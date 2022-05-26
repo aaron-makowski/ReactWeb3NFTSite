@@ -15,6 +15,10 @@
   align-items: left;
   border-bottom: 1px solid #000000;
 }
+.mainContentRoadmap {
+  align-items: left;
+  border-bottom: 1px solid #000000;
+}
 .aboutContentBG {
   flex: 1; 
   display: flex; 
@@ -24,6 +28,7 @@
   background-color: rgb(255, 171, 0);
   border-top: 1px solid #000000;
 }
+
 .aboutContent {
   background: rgba(255, 208, 108, 0.95);
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
@@ -131,6 +136,7 @@
   background-color: rgb(255, 232, 185);
   margin-top: 22px;
   margin-bottom: 0px;
+  border-radius: 10px;
   /* margin-left: 1.5rem; */
 }
 .FAQItem li a {
@@ -138,6 +144,7 @@
   color : #2d2f31;
   font-family: 'Fredoka One', cursive;
   font-weight: 100;
+  
 }
 .FAQItem span {
   padding-top: 14px;
@@ -153,6 +160,7 @@
   font-variant : small-caps;
   cursor: pointer;
   display: block;
+  border-radius: 10px;
 }
 .FAQItem span::after {
   float: right;
@@ -174,7 +182,10 @@
   transition: height .4s ease;
 }
 .roadmapButtons {
-  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1.15rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -183,6 +194,70 @@
   border-top: 1px solid #000000;
 }
 
+.roadmapTextBG {
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  background-color: rgb(255, 171, 0);
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 0.5rem;
+}
+.roadmapTitle1 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #202020;
+  margin-top: 2rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+.roadmapTitle {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #202020;
+  width: 30%;
+  word-wrap: break-word; 
+}
+.roadmapText {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  color: #202020;
+  text-align: center;
+  width: 70%;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid #000000;
+}
+.roadmapTextBox {
+  background: rgba(255, 208, 108, 0.95);
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
+  border-radius: 10px;
+  font-family: 'Fredoka One', cursive;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  color: #202020;
+  margin: 1.25rem 2.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.75rem 1.75rem;
+  text-align: center;
+  width: 60%;
+}
+@media (max-width: 1300px) {
+  .roadmapTextBox {
+    width: 80%;
+  }
+}
+@media (max-width: 860px) {
+  .roadmapTextBox {
+    width: 90%;
+  }
+}
 
 .teamContainer {
   flex: 1;
@@ -544,7 +619,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 1rem;
+  height: 90%;
+  width: 90%;
+  max-width: 550px;
+  padding-bottom: 2rem;
 }
 
 .mintModalHeader h2 { 
@@ -579,7 +657,6 @@
   border: #000000;
   margin-bottom: 0rem;
   margin-top: 0.75rem;
-  border-radius: 10px;
   font-size: 1.75rem;
   height: 50px;
   padding-right: 2rem;
@@ -710,8 +787,6 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  margin-top: 1rem;
-  margin-bottom: 2.5rem;
 }
 .mintModalButton:focus {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.9);
