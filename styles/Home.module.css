@@ -137,7 +137,18 @@
   margin-top: 22px;
   margin-bottom: 0px;
   border-radius: 10px;
-  /* margin-left: 1.5rem; */
+  width: 60%;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
+}
+@media (max-width: 1300px) {
+  .roadmapTextBox {
+    width: 80%;
+  }
+}
+@media (max-width: 860px) {
+  .roadmapTextBox {
+    width: 90%;
+  }
 }
 .FAQItem li a {
   text-decoration : none; 
@@ -207,10 +218,11 @@
 }
 .roadmapTitle1 {
   font-family: 'Fredoka One', cursive;
-  font-size: 2rem;
+  font-size: 3.5rem;
   font-weight: 300;
   color: #202020;
   margin-top: 2rem;
+  margin-bottom: 1rem;
   margin-left: 1.5rem;
   margin-right: 1.5rem;
 }
@@ -259,6 +271,9 @@
   }
 }
 
+
+
+
 .teamContainer {
   flex: 1;
   display: flex;
@@ -303,6 +318,8 @@
   color: #151515;
   font-family: 'Fredoka One', cursive;
 }
+
+
 
 
 .navBarContainer {
@@ -423,6 +440,8 @@
 }
 
 
+
+
 .mintButton {
   appearance: button;
   backface-visibility: hidden;
@@ -468,9 +487,8 @@
   height: 54px;
   line-height: 1.15;
   margin: 0.3rem;
-  /* margin-left: 2rem;
-  margin-right: 2rem; */
-  width: 50%;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
   outline: none;
   overflow: hidden;
   padding: 0.7rem 35px;
@@ -482,6 +500,17 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  width: 30%;
+}
+@media (max-width: 1300px) {
+  .mintButton2 {
+    width: 40%;
+  }
+}
+@media (max-width: 860px) {
+  .mintButton2 {
+    width: 45%;
+  }
 }
 .mintButton:disabled {
   cursor: default;
@@ -492,6 +521,9 @@
 .mintButton2:focus {
   box-shadow: 0 0.5rem 0.74rem rgba(0, 0, 0, 0.9);
 }
+
+
+
 
 
 .inputNumber {
@@ -622,6 +654,7 @@
   height: 90%;
   width: 90%;
   max-width: 550px;
+  min-height: 750px;
   padding-bottom: 2rem;
 }
 

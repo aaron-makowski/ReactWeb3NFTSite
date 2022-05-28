@@ -15,6 +15,40 @@ import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
 import axios from 'axios'; //for whitelist API call
 
+import Web3 from 'web3' //Classic web3 lib
+import Web3Modal from "web3modal"; //Nice Web3 Popup with multiple connections
+
+//Web3Modal Multiple Providers
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Fortmatic from "fortmatic";
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+
+//Web3Modal Options
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider,
+    display: { name: 'Trust Wallet/MetaMask/Mobile' }, //Visible Label, changeable
+    options: {
+        infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
+    }
+  },
+  fortmatic: {
+      package: Fortmatic,
+      options: {
+          key: "pk_live_8DFF4684EB75C648" //formatic api key
+   }
+  },
+  coinbasewallet: {
+    package: CoinbaseWalletSDK, // Required
+    options: {
+      appName: "Menji's World NFT Mint", // Required
+      infuraId: "d31a6fe248ed4db3abac78f5b72ace93", // Required
+      rpc: "", // Optional if `infuraId` is provided; otherwise it's required
+      chainId: 1, // Optional. It defaults to 1 if not provided
+      darkMode: false // Optional. Use dark theme, defaults to false
+    }
+  }
+};
 
 // TODO put Menji solidity contract address and ABI here
 // Contract Details
@@ -854,45 +888,6 @@ let abi = [
 	}
 ];
 
-
-import Web3 from 'web3' //Classic web3 lib
-import Web3Modal from "web3modal"; //Nice Web3 Popup with multiple connections
-
-//Web3Modal Multiple Providers
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Fortmatic from "fortmatic";
-import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-
-//Web3Modal Options
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    display: { name: 'Trust Wallet/MetaMask/Mobile' }, //Visible Label, changeable
-    options: {
-        infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
-    }
-  },
-  fortmatic: {
-      package: Fortmatic,
-      options: {
-          key: "pk_live_8DFF4684EB75C648" //formatic api key
-   }
-  },
-  coinbasewallet: {
-    package: CoinbaseWalletSDK, // Required
-    options: {
-      appName: "Menji's World NFT Mint", // Required
-      infuraId: "d31a6fe248ed4db3abac78f5b72ace93", // Required
-      rpc: "", // Optional if `infuraId` is provided; otherwise it's required
-      chainId: 1, // Optional. It defaults to 1 if not provided
-      darkMode: false // Optional. Use dark theme, defaults to false
-    }
-  }
-};
-
-
-
-
 let innerWidth = 700;
 //get window width
 const useWidth = () => {
@@ -939,9 +934,9 @@ const setDefaultProvider = () => {
   try {
     window.provider = new Web3.providers.HttpProvider(
       'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
-      //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
+      //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
   } catch (err) {
-    console.log('Failed to set Infura as default walletless provider', err);
+    alert('Failed to set Infura as default walletless provider', err);
   } try {
     if (window.provider) {
       window.web3 = new Web3(window.provider);
@@ -952,18 +947,18 @@ const setDefaultProvider = () => {
       // });
     }
   } catch (err) {
-    console.log('Error setting provider and web3', err);
+    alert('Error setting provider and web3', err);
   }
 }
-//Try Fancy Web3Modal then use backup providers
 const connectWallet = () => {
+  //Try Fancy Web3Modal then use backup providers
   if (typeof window === 'undefined') return;
 
   const web3Modal = new Web3Modal({
     network: "testnet", // optional //TODO change to mainnet
     cacheProvider: false, // optional
     providerOptions, // required
-    disableInjectedProvider: false,
+    disableInjectedProvider: true,//trying for mobile TODO put back
   });
 
   web3Modal.connect().then(provider => {
@@ -971,75 +966,77 @@ const connectWallet = () => {
     //   alert('Please switch to the Ethereum Mainnet Network');
     //   return;
     // } //TODO reenable after testnet
-    if (provider) {
+    if (typeof provider !== 'undefined') {
       window.provider = provider;
     } else {
-      if (window.ethereum) { 
-        window.provider = window.ethereum;
-      } else if (window.web3) {
-        window.provider = window.web3.currentProvider;
-      } else {
-        alert('Failed to connect to wallet');
-        return;
-      }
+      alert('Could not connect to Web3 Wallet');
     }
-    window.web3 = new Web3(window.provider);
-
-    if (typeof window.provider !== 'undefined' && 
-        typeof window.provider.selectedAddress !== 'undefined') {
-      window.provider.enable().then(() => { 
-        try {
-          editConnectButton();
-          console.log('Selected Address:', window.provider.selectedAddress)
-
-          window.provider.on("accountsChanged", (accounts) => {
-            editConnectButton();
-            console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
-          });
-          window.provider.on("chainChanged", (chainId) => {
-            console.log('Chain changed to', chainId);
-            if (chainId != 1) {
-              alert('Please Switch to the Ethereum Mainnet Network'); 
-            }
-          });
-          window.provider.on("connect", (info) => {
-            console.log('Connected to Wallet:', info);
-            if (info.chainId != 1) {
-              alert('Please Switch to the Ethereum Mainnet Network'); 
-            }
-          });
-
-          connectToContract();
-
-        } catch (err) {
-          console.log('Error subscribing to provider events', err);
-        }
-      });
-    } else {
-      console.log('Could not connect to Web3 Wallet');
-    }  
   }).catch(err => {
-    console.log('Error connecting to wallet', err);
+    alert('Error connecting to wallet', err);
   });
 
-  editConnectButton();
-
-  if (typeof window.provider === 'udnefined') {
-    if (typeof window.provider.selectedAddress === 'undefined') {
+  try {
+    if (typeof window.provider ==='undefined' &&
+        typeof window.provider.selectedAddress === 'undefined') {
       if (window.ethereum) { 
         window.provider = window.ethereum;
       } else if (window.web3) {
         window.provider = window.web3.currentProvider;
       } else {
         alert('Failed to connect to wallet');
+        editConnectButton();
         return;
       }
     }
+  } catch (err) {
+    alert('Failed to connect to wallet:', err);
+    editConnectButton();
+    return;
   }
+  try {
+    window.web3 = new Web3(window.provider);
+  } catch (err) {
+    alert('Failed create web3 instance:', err);
+    return;
+  }
+
+  if (typeof window.provider !== 'undefined' && 
+      typeof window.provider.selectedAddress !== 'undefined') {
+    window.provider.enable().then(() => { 
+      try {
+        console.log('Selected Address:', window.provider.selectedAddress)
+
+        window.provider.on("accountsChanged", (accounts) => {
+          editConnectButton();
+          console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
+        });
+        window.provider.on("chainChanged", (chainId) => {
+          console.log('Chain changed to', chainId);
+          if (chainId != 1) {
+            alert('Please Switch to the Ethereum Mainnet Network'); 
+          }
+        });
+        window.provider.on("connect", (info) => {
+          console.log('Connected to Wallet:', info);
+          if (info.chainId != 1) {
+            alert('Please Switch to the Ethereum Mainnet Network'); 
+          }
+        });
+      } catch(err) {
+        alert('Error subscribing to provider events', err);
+      }
+    }).catch(err => {
+      alert('Error enabling provider', err);
+    });
+  }
+
+  connectToContract();
+  editConnectButton();
 }
 const connectToContract = () => {
 
-  if (typeof window.provider === 'undefined') {
+  if (typeof window.provider === 'undefined' || 
+      typeof window.provider.selectedAddress === 'undefined') {
     setDefaultProvider(); //use Infura to get contract info w.o connected wallet
   }
 
@@ -1047,29 +1044,13 @@ const connectToContract = () => {
     try {
       window.contract = new window.web3.eth.Contract(abi, address);
     } catch (e) {
-      console.log('Error setting contract:', e);
+      alert('Error setting contract:', e);
     }
   } else {
-    console.log('Error setting contract');
+    alert('Error setting contract');
   }
 }
 
-//Unused Contract data getter functions
-async function PUBLIC_SUPPLY() {
-  let data = await window.contract.methods.PUBLIC_SUPPLY().call()
-  return data;
-}
-async function PROVENANCE_HASH() {
-  let data = await window.contract.methods.PROVENANCE_HASH().call()
-  return data;
-}
-async function fetchIsRevealed() {
-  let data = await window.contract.methods.isRevealed().call()
-  console.log(typeof data)
-  return data;
-}
-
-//TODO update contract methods to proper names
 // Fetch ETH contract data
 // Static data
 async function fetchTotalSupply() {
@@ -1088,32 +1069,52 @@ async function fetchPublicWalletMax() {
   let data = await window.contract.methods.PUBLIC_MINT_LIMIT().call()
   return data;
 }
+
 //Dynamnc data
 async function fetchIsPresale() {
   let data = await window.contract.methods.isPresale().call()
   return data;
 }
-
 async function fetchTotalMinted() {
   let data = await window.contract.methods.nextTokenId().call()
   return data;
 }
 async function fetchPublicWalletLimit() {
   let data = await window.contract.methods.publicWalletLimit().call()
+  return data; //BOOL TRUE IF LIMITED
+}
+
+// Unused Contract data getter functions
+async function PUBLIC_SUPPLY() {
+  let data = await window.contract.methods.PUBLIC_SUPPLY().call()
   return data;
 }
+async function PROVENANCE_HASH() {
+  let data = await window.contract.methods.PROVENANCE_HASH().call()
+  return data;
+}
+async function fetchIsRevealed() {
+  let data = await window.contract.methods.isRevealed().call()
+  return data;
+}
+
 //call and aggregate the data from the above funcs
 async function fetchStaticData() {
   const totalSupply = await fetchTotalSupply();
   const publicPrice = await fetchPublicPrice();
   const presalePrice = await fetchPresalePrice();
   const publicWalletMax = await fetchPublicWalletMax();
+  //unused data currently:
+  const publicSupply = await PUBLIC_SUPPLY();
+  const provenanceHash = await PROVENANCE_HASH();
 
   const staticData = {
     'totalSupply': totalSupply,
     'publicPrice': publicPrice,
     'presalePrice': presalePrice,
-    'publicWalletMax': publicWalletMax
+    'publicWalletMax': publicWalletMax,
+    'publicSupply': publicSupply,
+    'provenanceHash': provenanceHash,
   }
   return staticData;
 }
@@ -1121,11 +1122,14 @@ async function fetchDynamicData() {
   const isPresale = await fetchIsPresale();
   const totalMinted = await fetchTotalMinted();
   const publicWalletLimit = await fetchPublicWalletLimit();
+  //unused data currently
+  const isRevealed = await fetchIsRevealed();
 
   const dynamicData = {
     'isPresale': isPresale,
     'totalMinted': totalMinted,
-    'publicWalletLimit': publicWalletLimit
+    'publicWalletLimit': publicWalletLimit,
+    'isRevealed': isRevealed
   }
   return dynamicData;
 }
@@ -1205,6 +1209,69 @@ function AboutMenjiSection() {
     </div>
   )
 }
+function TEAMSection() {
+  const [team1checked, setTeam1Checked] = useState(false);
+  const [team2checked, setTeam2Checked] = useState(false);
+  const [team3checked, setTeam3Checked] = useState(false);
+  const [team4checked, setTeam4Checked] = useState(false);
+
+  useEffect(() => {
+    const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
+    const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
+    const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
+    const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
+
+    window.document.getElementById('i1').addEventListener('click', check1);
+    window.document.getElementById('p1').addEventListener('click', check1);
+
+    window.document.getElementById('i2').addEventListener('click', check2);
+    window.document.getElementById('p2').addEventListener('click', check2);
+
+    window.document.getElementById('i3').addEventListener('click', check3);
+    window.document.getElementById('p3').addEventListener('click', check3);
+
+    window.document.getElementById('i4').addEventListener('click', check4);
+    window.document.getElementById('p4').addEventListener('click', check4);
+    // return () => {
+    //   window.document.getElementById('i1').removeEventListener('click', check1);
+    //   window.document.getElementById('p1').removeEventListener('click', check1);
+
+    //   window.document.getElementById('i2').removeEventListener('click', check2);
+    //   window.document.getElementById('p2').removeEventListener('click', check2);
+
+    //   window.document.getElementById('i3').removeEventListener('click', check3);
+    //   window.document.getElementById('p3').removeEventListener('click', check3);
+
+    //   window.document.getElementById('i4').removeEventListener('click', check4);
+    //   window.document.getElementById('p4').removeEventListener('click', check4);
+    // }
+  }, [team1checked, team2checked, team3checked, team4checked]);
+
+  return (
+    <div className={styles.teamContainer}>
+      <div className={styles.teamMember}>
+        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} />
+        <p id='p3' className={styles.teamMemberName}>Menji <a>+</a></p>
+        { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
+      </div>
+      <div className={styles.teamMember}>
+        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} />
+        <p id='p2' className={styles.teamMemberName}>Jay <a>+</a></p>
+        { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
+      </div>   
+      <div className={styles.teamMember}>
+        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} />
+        <p id='p4' className={styles.teamMemberName}>Doc <a>+</a></p>
+        { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
+      </div>         
+      <div className={styles.teamMember}>
+        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} />
+        <p id='p1' className={styles.teamMemberName}>Sticky <a>+</a></p>
+        { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
+      </div>
+    </div>
+  )
+} 
 
 function MintModal() {
   const [mintLoading, setMintLoading] = useState(false);
@@ -1545,71 +1612,6 @@ function MintModalLoading() {
   )
 }
 
-function TEAMSection() {
-  const [team1checked, setTeam1Checked] = useState(false);
-  const [team2checked, setTeam2Checked] = useState(false);
-  const [team3checked, setTeam3Checked] = useState(false);
-  const [team4checked, setTeam4Checked] = useState(false);
-
-  useEffect(() => {
-    const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
-    const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
-    const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
-    const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
-
-    window.document.getElementById('i1').addEventListener('click', check1);
-    window.document.getElementById('p1').addEventListener('click', check1);
-
-    window.document.getElementById('i2').addEventListener('click', check2);
-    window.document.getElementById('p2').addEventListener('click', check2);
-
-    window.document.getElementById('i3').addEventListener('click', check3);
-    window.document.getElementById('p3').addEventListener('click', check3);
-
-    window.document.getElementById('i4').addEventListener('click', check4);
-    window.document.getElementById('p4').addEventListener('click', check4);
-    // return () => {
-    //   window.document.getElementById('i1').removeEventListener('click', check1);
-    //   window.document.getElementById('p1').removeEventListener('click', check1);
-
-    //   window.document.getElementById('i2').removeEventListener('click', check2);
-    //   window.document.getElementById('p2').removeEventListener('click', check2);
-
-    //   window.document.getElementById('i3').removeEventListener('click', check3);
-    //   window.document.getElementById('p3').removeEventListener('click', check3);
-
-    //   window.document.getElementById('i4').removeEventListener('click', check4);
-    //   window.document.getElementById('p4').removeEventListener('click', check4);
-    // }
-  }, [team1checked, team2checked, team3checked, team4checked]);
-
-  return (
-    <div className={styles.teamContainer}>
-      <div className={styles.teamMember}>
-        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} />
-        <p id='p3' className={styles.teamMemberName}>Menji <a>+</a></p>
-        { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
-      </div>
-      <div className={styles.teamMember}>
-        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} />
-        <p id='p2' className={styles.teamMemberName}>Jay <a>+</a></p>
-        { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
-      </div>   
-      <div className={styles.teamMember}>
-        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} />
-        <p id='p4' className={styles.teamMemberName}>Doc <a>+</a></p>
-        { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
-      </div>         
-      <div className={styles.teamMember}>
-        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} />
-        <p id='p1' className={styles.teamMemberName}>Sticky <a>+</a></p>
-        { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
-      </div>
-    </div>
-  )
-} 
-
-
 //Roadmap Page Sections/HTML
 function FAQSection() {
   const [faq1checked, setFaq1Checked] = useState(false);
@@ -1663,13 +1665,13 @@ function RoadmapPage() {
   return (<>
 
     <div className={styles.mainContentRoadmap}>
-      <Image src={"/roadmap.png"} 
-            width={520} height={650} 
+      <Image src={"/roadmap.jpg"} 
+            width={1080} height={1350} 
             alt="Menji about" 
             layout='responsive'/>
     </div>
     <div className={styles.roadmapTextBG}>
-      <h1 className={styles.roadmapTitle1}>Utility Roadmap</h1>
+      <div className={styles.roadmapTitle1}>Utility Roadmap</div>
 
       <div className={styles.roadmapTextBox}>
         <div className={styles.roadmapTitle}>Free T-Shirt</div>
@@ -1720,7 +1722,7 @@ function RoadmapPage() {
     </>)
 }
 //roadmap.js needs these functions exported to be able to render
-export { NavBar, RoadmapPage, FAQSection, editConnectButton, connectWallet, MintModal };
+export { NavBar, MintModal, FAQSection, RoadmapPage, editConnectButton, connectWallet };
 
 
 export default function Home() {
