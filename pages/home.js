@@ -937,12 +937,12 @@ const setDefaultProvider = () => {
       //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
   } catch (err) {
     alert('Failed to set Infura as default walletless provider', err);
-  } try {
-    if (window.provider) {
+  } 
+  
+  try {
+    if (typeof window.provider !== 'undefined') {
       window.web3 = new Web3(window.provider);
-      // window.provider.enable().then(function() {
-      //   console.log('Enabled');
-      // }).catch(function(err) {
+      // window.provider.enable().catch(function(err) {
       //   console.log('Error enabling', err);
       // });
     }
@@ -957,13 +957,17 @@ const connectWallet = () => {
   let web3Modal;
   try {
     web3Modal = new Web3Modal({
-      network: "testnet", // optional //TODO change to mainnet
+      network: "testnet", //TODO change to mainnet
       cacheProvider: false, // optional
       providerOptions, // required
-      disableInjectedProvider: true,//trying for mobile TODO put back
+      disableInjectedProvider: false,
     });
     web3Modal.connect().then(provider => {
+      if (typeof provider !== 'undefined') {
         window.provider = provider;
+      } else {
+        alert('Error connecting to wallet'); 
+      }
     }).catch(err => {
       alert('Error connecting to wallet', err);
     });    
@@ -972,11 +976,12 @@ const connectWallet = () => {
   }
 
   //try backup providers (injected, already connected)
-  if (typeof window.provider ==='undefined' ||
-      typeof window.provider.selectedAddress === 'undefined') {
-    if (window.ethereum) { 
+  if (typeof window.provider === 'undefined' ||
+             (typeof window.provider !== 'undefined' && 
+              typeof window.provider.selectedAddress === 'undefined')) {
+    if (typeof window.ethereum !== 'undefined') {
       window.provider = window.ethereum;
-    } else if (window.web3) {
+    } else if (typeof window.web3 !== 'undefined') {
       window.provider = window.web3.currentProvider;
     } else {
       alert('Failed to connect to wallet');
@@ -985,38 +990,36 @@ const connectWallet = () => {
     }
   }
 
-  //if we are connected, switch to ROPSTEN 
-  //TODO change to 0x1 for launch
+  //switch network, if needed + set window.web3 var
   if (typeof window.provider !== 'undefined') {
+    //if we are connected, switch to ROPSTEN 
+    //TODO change to 0x1 for launch
+    if (window.provider.chainId !== '0x3') {
+      window.provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: "0x3" }],
+      }).catch(err => {
+        alert('Please switch to the ETH Mainnet', err)
+      });
+    }
 
-    window.provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: "0x3" }],
-    }).then(() => {
-      alert("You have switched to the right network")
-    }).catch(err => {
-      alert('Please switch to the ETH Mainnet', err)
-    });
-
-    try { //set web3 var
+    //set web3 var
+    try { 
       window.web3 = new Web3(window.provider);
     } catch (err) {
       alert('Failed create web3 instance:', err);
       return;
     }
-
   } else {
     alert('Failed to connect to wallet');
     editConnectButton();
     return;
   }
 
-  
-
-
   //enable provider and subscribe rto aprovider events
-  if (typeof window.provider !== 'undefined' && 
-      typeof window.provider.selectedAddress !== 'undefined') {
+  if (typeof window.provider === 'undefined' ||
+             (typeof window.provider !== 'undefined' && 
+              typeof window.provider.selectedAddress === 'undefined')) {
     window.provider.enable().then(() => { 
       try {
         console.log('Selected Address:', window.provider.selectedAddress)
@@ -1049,13 +1052,9 @@ const connectWallet = () => {
   editConnectButton();
 }
 const connectToContract = () => {
+  setDefaultProvider(); //use Infura to get contract info w.o connected wallet
 
-  if (typeof window.provider === 'undefined' || 
-      typeof window.provider.selectedAddress === 'undefined') {
-    setDefaultProvider(); //use Infura to get contract info w.o connected wallet
-  }
-
-  if (window.web3) {
+  if (typeof window.web3 !== 'undefined') {
     try {
       window.contract = new window.web3.eth.Contract(abi, address);
     } catch (e) {
@@ -1191,7 +1190,8 @@ function NavBar() {
           <a className={styles.socialButton_twitter} href="twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
           </a>
-          <button className={styles.navBarItem_ConnectButton} id='connectButton'>Connect</button>
+          <button className={styles.navBarItem_ConnectButton} id='connectButton'
+                  onClick={connectWallet}>Connect</button>
         </nav>
       }
     </nav>
@@ -1230,23 +1230,23 @@ function TEAMSection() {
   const [team3checked, setTeam3Checked] = useState(false);
   const [team4checked, setTeam4Checked] = useState(false);
 
-  useEffect(() => {
-    const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
-    const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
-    const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
-    const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
+  // useEffect(() => {
+  const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
+  const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
+  const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
+  const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
 
-    window.document.getElementById('i1').addEventListener('click', check1);
-    window.document.getElementById('p1').addEventListener('click', check1);
+    // window.document.getElementById('i1').addEventListener('click', check1);
+    // window.document.getElementById('p1').addEventListener('click', check1);
 
-    window.document.getElementById('i2').addEventListener('click', check2);
-    window.document.getElementById('p2').addEventListener('click', check2);
+    // window.document.getElementById('i2').addEventListener('click', check2);
+    // window.document.getElementById('p2').addEventListener('click', check2);
 
-    window.document.getElementById('i3').addEventListener('click', check3);
-    window.document.getElementById('p3').addEventListener('click', check3);
+    // window.document.getElementById('i3').addEventListener('click', check3);
+    // window.document.getElementById('p3').addEventListener('click', check3);
 
-    window.document.getElementById('i4').addEventListener('click', check4);
-    window.document.getElementById('p4').addEventListener('click', check4);
+    // window.document.getElementById('i4').addEventListener('click', check4);
+    // window.document.getElementById('p4').addEventListener('click', check4);
     // return () => {
     //   window.document.getElementById('i1').removeEventListener('click', check1);
     //   window.document.getElementById('p1').removeEventListener('click', check1);
@@ -1260,28 +1260,28 @@ function TEAMSection() {
     //   window.document.getElementById('i4').removeEventListener('click', check4);
     //   window.document.getElementById('p4').removeEventListener('click', check4);
     // }
-  }, [team1checked, team2checked, team3checked, team4checked]);
+  // }, [team1checked, team2checked, team3checked, team4checked]);
 
   return (
     <div className={styles.teamContainer}>
       <div className={styles.teamMember}>
-        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} />
-        <p id='p3' className={styles.teamMemberName}>Menji <a>+</a></p>
+        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} onClick={check3}/>
+        <p id='p3' className={styles.teamMemberName} onClick={check3}>Menji <a>+</a></p>
         { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
       </div>
       <div className={styles.teamMember}>
-        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} />
-        <p id='p2' className={styles.teamMemberName}>Jay <a>+</a></p>
+        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} onClick={check2} />
+        <p id='p2' className={styles.teamMemberName} onClick={check2}>Jay <a>+</a></p>
         { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
       </div>   
       <div className={styles.teamMember}>
-        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} />
-        <p id='p4' className={styles.teamMemberName}>Doc <a>+</a></p>
+        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} onClick={check4} />
+        <p id='p4' className={styles.teamMemberName} onClick={check4}>Doc <a>+</a></p>
         { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
       </div>         
       <div className={styles.teamMember}>
-        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} />
-        <p id='p1' className={styles.teamMemberName}>Sticky <a>+</a></p>
+        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} onClick={check1} />
+        <p id='p1' className={styles.teamMemberName} onClick={check1}>Sticky <a>+</a></p>
         { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
       </div>
     </div>
@@ -1784,6 +1784,7 @@ export default function Home() {
       <main> {/* Theoretically useful for SEO */}
         <AboutMenjiSection />
 
+        {/* Section with Mint button, roadmap page button, about project */}
         <div className={styles.mainContent_2}>
           {/* NFT Breakdown Image */}
           <div className={styles.mainContent_2_left}>

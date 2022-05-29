@@ -21,6 +21,7 @@ export default function Home() {
   const openMintModal = () => {
     setMintModalOpen(true);
   }
+  //close events for the mint popup
   useEffect(() => {
     if (mintModalOpen) {
       window.document.onclick = function(event) {
