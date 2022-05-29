@@ -25,9 +25,13 @@ import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 //Web3Modal Options
 const providerOptions = {
+  // injected: {
+  //   package: null,
+  //   display: { name: "Default", description: "Default Wallet Provider" }
+  // },
   walletconnect: {
     package: WalletConnectProvider,
-    display: { name: 'Trust Wallet/MetaMask/Mobile' }, //Visible Label, changeable
+    display: { name: 'Mobile', description: 'Trust Wallet/MetaMask/Mobile' }, //Visible Label, changeable
     options: {
         infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
     }
@@ -952,7 +956,7 @@ const setDefaultProvider = () => {
 }
 const connectWallet = () => {
   if (typeof window === 'undefined') return;
-
+  
   //Try Fancy Web3Modal connect
   let web3Modal;
   try {
@@ -965,12 +969,14 @@ const connectWallet = () => {
     web3Modal.connect().then(provider => {
       if (typeof provider !== 'undefined') {
         window.provider = provider;
+        alert(window.provider.toString());
       } else {
         alert('Error connecting to wallet'); 
-      }
+      }      
     }).catch(err => {
       alert('Error connecting to wallet', err);
-    });    
+    });
+    // web3Modal.toggleModal();
   } catch (err) {
     alert('Failed to load Web3Modal Object', err)
   }
@@ -1172,22 +1178,22 @@ function NavBar() {
       {/* unsure why i had to double the code in each conditional render just to changethe order of the buttons*/}
       {innerWidth <= 815 && 
         <nav className={styles.navBarRight}>
-          <a className={styles.socialButton_discord} href="discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_discord} href="https://discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
           </a>
           <button className={styles.navBarItem_ConnectButton} id='connectButton'
                   onClick={connectWallet}>Connect</button>
-          <a className={styles.socialButton_twitter} href="twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_twitter} href="https://twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
           </a>
         </nav>
       }
       {innerWidth > 815 && 
         <nav className={styles.navBarRight}>
-          <a className={styles.socialButton_discord} href="discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_discord} href="https://discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
           </a>
-          <a className={styles.socialButton_twitter} href="twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_twitter} href="https://twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
           </a>
           <button className={styles.navBarItem_ConnectButton} id='connectButton'
@@ -1634,45 +1640,88 @@ function FAQSection() {
   const [faq3checked, setFaq3Checked] = useState(false);
   const [faq4checked, setFaq4Checked] = useState(false);
 
-  return (
-    <div className={styles.FAQContainer}>
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq1Checked(!faq1checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>What is the mint date?</span>
-          { faq1checked && <ul className={styles.slide}>
-          <li><a>Menji’s World mint date is still to be determined based on current market conditions. We want our holders to be rewarded from the start so waiting for the most optimal time to drop our collection is imperative to long-term success.</a></li> 
-          </ul> }
-        </div>
-      </nav>
+  return (<>
+    <BrowserView>
+      <div className={styles.FAQContainer}>
+        <nav className={styles.FAQItem}>
+          <div className={styles.touch} onClick={() => {setFaq1Checked(!faq1checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>What is the mint date?</span>
+            { faq1checked && <ul className={styles.slide}>
+            <li><a>Menji’s World mint date is still to be determined based on current market conditions. We want our holders to be rewarded from the start so waiting for the most optimal time to drop our collection is imperative to long-term success.</a></li> 
+            </ul> }
+          </div>
+        </nav>
 
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq2Checked(!faq2checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>How many NFTs will be available?</span>               
-          { faq2checked && <ul className={styles.slide}>
-            <li><a> Total NFTs available will be finalized as we get closer to mint date!</a></li> 
-          </ul> }
-        </div>
-      </nav>
+        <nav className={styles.FAQItem}>
+          <div className={styles.touch} onClick={() => {setFaq2Checked(!faq2checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>How many NFTs will be available?</span>               
+            { faq2checked && <ul className={styles.slide}>
+              <li><a> Total NFTs available will be finalized as we get closer to mint date!</a></li> 
+            </ul> }
+          </div>
+        </nav>
 
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq3Checked(!faq3checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>How much will each NFT cost?</span>              
-          { faq3checked && <ul className={styles.slide}>
-            <li><a>Likewise, mint cost will be made available as we get closer to mint date.</a></li> 
-          </ul> }
-        </div>
-      </nav>
+        <nav className={styles.FAQItem}>
+          <div className={styles.touch} onClick={() => {setFaq3Checked(!faq3checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>How much will each NFT cost?</span>              
+            { faq3checked && <ul className={styles.slide}>
+              <li><a>Likewise, mint cost will be made available as we get closer to mint date.</a></li> 
+            </ul> }
+          </div>
+        </nav>
 
-      <nav className={styles.FAQItem}>
-        <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
-          <span>Who is Painted Labs?</span>
-          { faq4checked && <ul className={styles.slide}>
-            <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
-          </ul> }
-        </div>
-      </nav>
-    </div>
-  )
+        <nav className={styles.FAQItem}>
+          <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>Who is Painted Labs?</span>
+            { faq4checked && <ul className={styles.slide}>
+              <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
+            </ul> }
+          </div>
+        </nav>
+      </div>
+    </BrowserView>
+
+    <MobileView>
+      <div className={styles.FAQContainer}>
+        <nav className={styles.FAQItemMobile}>
+          <div className={styles.touch} onClick={() => {setFaq1Checked(!faq1checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>What is the mint date?</span>
+            { faq1checked && <ul className={styles.slide}>
+            <li><a>Menji’s World mint date is still to be determined based on current market conditions. We want our holders to be rewarded from the start so waiting for the most optimal time to drop our collection is imperative to long-term success.</a></li> 
+            </ul> }
+          </div>
+        </nav>
+
+        <nav className={styles.FAQItemMobile}>
+          <div className={styles.touch} onClick={() => {setFaq2Checked(!faq2checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>How many NFTs will be available?</span>               
+            { faq2checked && <ul className={styles.slide}>
+              <li><a> Total NFTs available will be finalized as we get closer to mint date!</a></li> 
+            </ul> }
+          </div>
+        </nav>
+
+        <nav className={styles.FAQItemMobile}>
+          <div className={styles.touch} onClick={() => {setFaq3Checked(!faq3checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>How much will each NFT cost?</span>              
+            { faq3checked && <ul className={styles.slide}>
+              <li><a>Likewise, mint cost will be made available as we get closer to mint date.</a></li> 
+            </ul> }
+          </div>
+        </nav>
+
+        <nav className={styles.FAQItemMobile}>
+          <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
+            <span>Who is Painted Labs?</span>
+            { faq4checked && <ul className={styles.slide}>
+              <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
+            </ul> }
+          </div>
+        </nav>
+      </div>
+    </MobileView>
+
+    </>)
 } 
 function RoadmapPage() {
   innerWidth = useWidth();
@@ -1685,6 +1734,7 @@ function RoadmapPage() {
             alt="Menji about" 
             layout='responsive'/>
     </div>
+    <BrowserView>
     <div className={styles.roadmapTextBG}>
       <div className={styles.roadmapTitle1}>Utility Roadmap</div>
 
@@ -1721,6 +1771,45 @@ function RoadmapPage() {
         <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
       </div>
     </div>
+    </BrowserView>
+    <MobileView>
+    <div className={styles.roadmapTextBG}>
+      <div className={styles.roadmapTitle1}>Utility Roadmap</div>
+
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Free T-Shirt</div>
+        <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Physical Prints</div>
+        <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Menji's World Trailer</div>
+        <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Menji's World X Team Trees</div>
+        <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>High Quality Merch</div>
+        <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Collectibles</div>
+        <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Farmers Market Event</div>
+        <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
+      </div>
+      <div className={styles.roadmapTextBox}>
+        <div className={styles.roadmapTitleMobile}>Meditation App</div>
+        <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
+      </div>
+    </div>
+    </MobileView>
     <div className={styles.roadmapButtons}>
       <button className={styles.mintButton2} id='mintButton2'>
                                   <BrowserView>Mint Now</BrowserView>
@@ -1728,9 +1817,10 @@ function RoadmapPage() {
       </button>
 
       <Link href="/home">
-        <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
-                                          <MobileView>Home</MobileView>
-        </a>
+        { innerWidth >= 515 && 
+          <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
+                                            <MobileView>Home</MobileView> </a> }
+        { innerWidth < 515 && <a className={styles.mintButton2}>Home</a> }
       </Link>  
     </div>
     
@@ -1751,7 +1841,7 @@ export default function Home() {
     window.document.onclick = null;
     window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
     window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
-    setMintModalOpen(!mintModalOpen);
+    setMintModalOpen(false);
   }
 
   useEffect(() => {
