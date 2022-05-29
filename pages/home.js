@@ -1816,12 +1816,17 @@ function RoadmapPage() {
                                   <MobileView>Mint</MobileView>    
       </button>
 
+      { innerWidth >= 515 && 
       <Link href="/home">
-        { innerWidth >= 515 && 
-          <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
-                                            <MobileView>Home</MobileView> </a> }
-        { innerWidth < 515 && <a className={styles.mintButton2}>Home</a> }
-      </Link>  
+        <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
+                                          <MobileView>Home</MobileView> </a> 
+      </Link> }
+
+      { innerWidth < 515 && 
+      <Link href="/home">
+        <a className={styles.mintButton2}>Home</a> 
+      </Link> }
+      
     </div>
     
     </>)
