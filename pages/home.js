@@ -951,21 +951,19 @@ const setDefaultProvider = () => {
   }
 }
 const connectWallet = () => {
-  //Try Fancy Web3Modal then use backup providers
   if (typeof window === 'undefined') return;
 
+  //Try Fancy Web3Modal connect
   const web3Modal = new Web3Modal({
     network: "testnet", // optional //TODO change to mainnet
     cacheProvider: false, // optional
     providerOptions, // required
     disableInjectedProvider: true,//trying for mobile TODO put back
+  }).catch(err => {
+    console.log('Error connecting to wallet', err);
   });
 
   web3Modal.connect().then(provider => {
-    // if (provider.chainId != '0x1') {
-    //   alert('Please switch to the Ethereum Mainnet Network');
-    //   return;
-    // } //TODO reenable after testnet
     if (typeof provider !== 'undefined') {
       window.provider = provider;
     } else {
@@ -975,6 +973,7 @@ const connectWallet = () => {
     alert('Error connecting to wallet', err);
   });
 
+  //try backup providers (injected, already connected)
   try {
     if (typeof window.provider ==='undefined' &&
         typeof window.provider.selectedAddress === 'undefined') {
@@ -993,6 +992,25 @@ const connectWallet = () => {
     editConnectButton();
     return;
   }
+
+  //switch to ROPSTEN 
+  //TODO change to 0x1 for launch
+  if (typeof window.provider !== 'undefined') {
+    window.provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: "0x3" }],
+    }).then(() => {
+      alert("You have switched to the right network")
+    }).catch(err => {
+      alert('Please switch to the ETH Mainnet', err)
+    });
+  } else {
+    alert('Failed to connect to wallet');
+    editConnectButton();
+    return;
+  }
+
+  //set web3 var
   try {
     window.web3 = new Web3(window.provider);
   } catch (err) {
@@ -1000,6 +1018,7 @@ const connectWallet = () => {
     return;
   }
 
+  //enable provider and subscribe rto aprovider events
   if (typeof window.provider !== 'undefined' && 
       typeof window.provider.selectedAddress !== 'undefined') {
     window.provider.enable().then(() => { 
