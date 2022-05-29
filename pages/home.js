@@ -31,7 +31,7 @@ const providerOptions = {
   // },
   walletconnect: {
     package: WalletConnectProvider,
-    display: { name: 'Mobile', description: 'Trust Wallet/MetaMask/Mobile' }, //Visible Label, changeable
+    display: { name: 'Mobile', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
     options: {
         infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
     }
@@ -958,104 +958,225 @@ const connectWallet = () => {
   if (typeof window === 'undefined') return;
   
   //Try Fancy Web3Modal connect
-  let web3Modal;
   try {
-    web3Modal = new Web3Modal({
-      network: "testnet", //TODO change to mainnet
+    const web3Modal = new Web3Modal({
+      network: "ropsten", //TODO change to mainnet
       cacheProvider: false, // optional
       providerOptions, // required
       disableInjectedProvider: false,
     });
+    
     web3Modal.connect().then(provider => {
-      if (typeof provider !== 'undefined') {
-        window.provider = provider;
-        alert(window.provider.toString());
-      } else {
-        alert('Error connecting to wallet'); 
-      }      
+      window.provider = provider;
+      // if we are connected, switch to ROPSTEN 
+      // TODO change to 0x1 for launch
+      if (provider.chainId !== '0x3') {
+        provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: "0x3" }],
+        }).catch(err => {
+          alert('Please switch to the ETH Mainnet', err)
+        });
+      }
+
+      //enable provider and subscribe rto aprovider events
+      if (typeof provider === 'undefined' ||
+                (typeof provider !== 'undefined' && 
+                  typeof provider.selectedAddress === 'undefined')) {
+        provider.enable().then(() => { 
+          try {
+            console.log('Selected Address:', provider.selectedAddress)
+
+            provider.on("accountsChanged", (accounts) => {
+              editConnectButton();
+              console.log('Selected Address:', provider.selectedAddress, accounts[0])
+            });
+            provider.on("chainChanged", (chainId) => {
+              console.log('Chain changed to', chainId);
+              if (chainId != 1) {
+                alert('Please Switch to the Ethereum Mainnet Network'); 
+              }
+            });
+            provider.on("connect", (info) => {
+              console.log('Connected to Wallet:', info);
+              if (info.chainId != 1) {
+                alert('Please Switch to the Ethereum Mainnet Network'); 
+              }
+            });
+          } catch(err) {
+            alert('Error subscribing to provider events', err);
+          }
+        }).catch(err => {
+          alert('Error enabling provider', err);
+        });
+      }
+      try { 
+        window.web3 = new Web3(provider);
+      } catch (err) {
+        alert('Failed create web3 instance:', err);
+        return;
+      }
+
+      window.provider = provider;
+
+      connectToContract();
+      editConnectButton();
     }).catch(err => {
       alert('Error connecting to wallet', err);
-    });
-    // web3Modal.toggleModal();
-  } catch (err) {
-    alert('Failed to load Web3Modal Object', err)
-  }
+      if (typeof window.provider === 'undefined' ||
+              (typeof window.provider !== 'undefined' && 
+                typeof window.provider.selectedAddress === 'undefined')) {
+      if (typeof window.ethereum !== 'undefined') {
+        window.provider = window.ethereum;
+      } else if (typeof window.web3 !== 'undefined') {
+        window.provider = window.web3.currentProvider;
+      } else {
+        alert('Failed to connect to wallet');
+        editConnectButton();
+        return;
+      }
+    }
 
-  //try backup providers (injected, already connected)
-  if (typeof window.provider === 'undefined' ||
-             (typeof window.provider !== 'undefined' && 
-              typeof window.provider.selectedAddress === 'undefined')) {
-    if (typeof window.ethereum !== 'undefined') {
-      window.provider = window.ethereum;
-    } else if (typeof window.web3 !== 'undefined') {
-      window.provider = window.web3.currentProvider;
+    //enable provider and subscribe rto aprovider events
+    if (typeof window.provider === 'undefined' ||
+              (typeof window.provider !== 'undefined' && 
+                typeof window.provider.selectedAddress === 'undefined')) {
+      window.provider.enable().then(() => { 
+        try {
+          console.log('Selected Address:', window.provider.selectedAddress)
+
+          window.provider.on("accountsChanged", (accounts) => {
+            editConnectButton();
+            console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
+          });
+          window.provider.on("chainChanged", (chainId) => {
+            console.log('Chain changed to', chainId);
+            if (chainId != 1) {
+              alert('Please Switch to the Ethereum Mainnet Network'); 
+            }
+          });
+          window.provider.on("connect", (info) => {
+            console.log('Connected to Wallet:', info);
+            if (info.chainId != 1) {
+              alert('Please Switch to the Ethereum Mainnet Network'); 
+            }
+          });
+        } catch(err) {
+          alert('Error subscribing to provider events', err);
+        }
+      }).catch(err => {
+        alert('Error enabling provider', err);
+      });
+    }
+
+    //switch network, if needed + set window.web3 var
+    if (typeof window.provider !== 'undefined') {
+      // if we are connected, switch to ROPSTEN 
+      // TODO change to 0x1 for launch
+      if (window.provider.chainId !== '0x3') {
+        window.provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: "0x3" }],
+        }).catch(err => {
+          alert('Please switch to the ETH Mainnet', err)
+        });
+      }
+
+      //set web3 var
+      try { 
+        window.web3 = new Web3(window.provider);
+      } catch (err) {
+        alert('Failed create web3 instance:', err);
+        return;
+      }
     } else {
       alert('Failed to connect to wallet');
       editConnectButton();
       return;
     }
-  }
 
-  //switch network, if needed + set window.web3 var
-  if (typeof window.provider !== 'undefined') {
-    //if we are connected, switch to ROPSTEN 
-    //TODO change to 0x1 for launch
-    if (window.provider.chainId !== '0x3') {
-      window.provider.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: "0x3" }],
+    connectToContract();
+    editConnectButton();
+    });
+    // web3Modal.toggleModal();
+  } catch (err) {
+    alert('Failed to load Web3Modal Object', err)
+    //try backup providers (injected, already connected)
+    if (typeof window.provider === 'undefined' ||
+              (typeof window.provider !== 'undefined' && 
+                typeof window.provider.selectedAddress === 'undefined')) {
+      if (typeof window.ethereum !== 'undefined') {
+        window.provider = window.ethereum;
+      } else if (typeof window.web3 !== 'undefined') {
+        window.provider = window.web3.currentProvider;
+      } else {
+        alert('Failed to connect to wallet');
+        editConnectButton();
+        return;
+      }
+    }
+
+    //enable provider and subscribe rto aprovider events
+    if (typeof window.provider === 'undefined' ||
+              (typeof window.provider !== 'undefined' && 
+                typeof window.provider.selectedAddress === 'undefined')) {
+      window.provider.enable().then(() => { 
+        try {
+          console.log('Selected Address:', window.provider.selectedAddress)
+
+          window.provider.on("accountsChanged", (accounts) => {
+            editConnectButton();
+            console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
+          });
+          window.provider.on("chainChanged", (chainId) => {
+            console.log('Chain changed to', chainId);
+            if (chainId != 1) {
+              alert('Please Switch to the Ethereum Mainnet Network'); 
+            }
+          });
+          window.provider.on("connect", (info) => {
+            console.log('Connected to Wallet:', info);
+            if (info.chainId != 1) {
+              alert('Please Switch to the Ethereum Mainnet Network'); 
+            }
+          });
+        } catch(err) {
+          alert('Error subscribing to provider events', err);
+        }
       }).catch(err => {
-        alert('Please switch to the ETH Mainnet', err)
+        alert('Error enabling provider', err);
       });
     }
 
-    //set web3 var
-    try { 
-      window.web3 = new Web3(window.provider);
-    } catch (err) {
-      alert('Failed create web3 instance:', err);
+    //switch network, if needed + set window.web3 var
+    if (typeof window.provider !== 'undefined') {
+      // if we are connected, switch to ROPSTEN 
+      // TODO change to 0x1 for launch
+      if (window.provider.chainId !== '0x3') {
+        window.provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: "0x3" }],
+        }).catch(err => {
+          alert('Please switch to the ETH Mainnet', err)
+        });
+      }
+
+      //set web3 var
+      try { 
+        window.web3 = new Web3(window.provider);
+      } catch (err) {
+        alert('Failed create web3 instance:', err);
+        return;
+      }
+    } else {
+      alert('Failed to connect to wallet');
+      editConnectButton();
       return;
     }
-  } else {
-    alert('Failed to connect to wallet');
+
+    connectToContract();
     editConnectButton();
-    return;
   }
-
-  //enable provider and subscribe rto aprovider events
-  if (typeof window.provider === 'undefined' ||
-             (typeof window.provider !== 'undefined' && 
-              typeof window.provider.selectedAddress === 'undefined')) {
-    window.provider.enable().then(() => { 
-      try {
-        console.log('Selected Address:', window.provider.selectedAddress)
-
-        window.provider.on("accountsChanged", (accounts) => {
-          editConnectButton();
-          console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
-        });
-        window.provider.on("chainChanged", (chainId) => {
-          console.log('Chain changed to', chainId);
-          if (chainId != 1) {
-            alert('Please Switch to the Ethereum Mainnet Network'); 
-          }
-        });
-        window.provider.on("connect", (info) => {
-          console.log('Connected to Wallet:', info);
-          if (info.chainId != 1) {
-            alert('Please Switch to the Ethereum Mainnet Network'); 
-          }
-        });
-      } catch(err) {
-        alert('Error subscribing to provider events', err);
-      }
-    }).catch(err => {
-      alert('Error enabling provider', err);
-    });
-  }
-
-  connectToContract();
-  editConnectButton();
 }
 const connectToContract = () => {
   setDefaultProvider(); //use Infura to get contract info w.o connected wallet
