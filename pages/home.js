@@ -954,48 +954,41 @@ const connectWallet = () => {
   if (typeof window === 'undefined') return;
 
   //Try Fancy Web3Modal connect
-  const web3Modal = new Web3Modal({
-    network: "testnet", // optional //TODO change to mainnet
-    cacheProvider: false, // optional
-    providerOptions, // required
-    disableInjectedProvider: true,//trying for mobile TODO put back
-  }).catch(err => {
-    console.log('Error connecting to wallet', err);
-  });
-
-  web3Modal.connect().then(provider => {
-    if (typeof provider !== 'undefined') {
-      window.provider = provider;
-    } else {
-      alert('Could not connect to Web3 Wallet');
-    }
-  }).catch(err => {
-    alert('Error connecting to wallet', err);
-  });
-
-  //try backup providers (injected, already connected)
+  let web3Modal;
   try {
-    if (typeof window.provider ==='undefined' &&
-        typeof window.provider.selectedAddress === 'undefined') {
-      if (window.ethereum) { 
-        window.provider = window.ethereum;
-      } else if (window.web3) {
-        window.provider = window.web3.currentProvider;
-      } else {
-        alert('Failed to connect to wallet');
-        editConnectButton();
-        return;
-      }
-    }
+    web3Modal = new Web3Modal({
+      network: "testnet", // optional //TODO change to mainnet
+      cacheProvider: false, // optional
+      providerOptions, // required
+      disableInjectedProvider: true,//trying for mobile TODO put back
+    });
+    web3Modal.connect().then(provider => {
+        window.provider = provider;
+    }).catch(err => {
+      alert('Error connecting to wallet', err);
+    });    
   } catch (err) {
-    alert('Failed to connect to wallet:', err);
-    editConnectButton();
-    return;
+    alert('Failed to load Web3Modal Object', err)
   }
 
-  //switch to ROPSTEN 
+  //try backup providers (injected, already connected)
+  if (typeof window.provider ==='undefined' &&
+      typeof window.provider.selectedAddress === 'undefined') {
+    if (window.ethereum) { 
+      window.provider = window.ethereum;
+    } else if (window.web3) {
+      window.provider = window.web3.currentProvider;
+    } else {
+      alert('Failed to connect to wallet');
+      editConnectButton();
+      return;
+    }
+  }
+
+  //if we are connected, switch to ROPSTEN 
   //TODO change to 0x1 for launch
   if (typeof window.provider !== 'undefined') {
+
     window.provider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: "0x3" }],
@@ -1004,19 +997,22 @@ const connectWallet = () => {
     }).catch(err => {
       alert('Please switch to the ETH Mainnet', err)
     });
+
+    try { //set web3 var
+      window.web3 = new Web3(window.provider);
+    } catch (err) {
+      alert('Failed create web3 instance:', err);
+      return;
+    }
+
   } else {
     alert('Failed to connect to wallet');
     editConnectButton();
     return;
   }
 
-  //set web3 var
-  try {
-    window.web3 = new Web3(window.provider);
-  } catch (err) {
-    alert('Failed create web3 instance:', err);
-    return;
-  }
+  
+
 
   //enable provider and subscribe rto aprovider events
   if (typeof window.provider !== 'undefined' && 
