@@ -972,7 +972,7 @@ const connectWallet = () => {
   }
 
   //try backup providers (injected, already connected)
-  if (typeof window.provider ==='undefined' &&
+  if (typeof window.provider ==='undefined' ||
       typeof window.provider.selectedAddress === 'undefined') {
     if (window.ethereum) { 
       window.provider = window.ethereum;
