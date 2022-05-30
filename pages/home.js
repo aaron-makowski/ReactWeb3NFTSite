@@ -1454,20 +1454,13 @@ function MintModal() {
   //TODO IF NOT WORK Split the public and pre and then just cal them with usestate vars presale from main function component
   const makePurchase = () => { //response is the presale allocation api response data
     function publicPurchase() { 
-      window.contract.methods.purchase().estimateGas().then(function(gas) {
-        console.log(gas);
-        window.contract.methods.purchase(mintAmount).send({
-          from: window.provider.selectedAddress, 
-          gas: gas, 
-          value: window.web3.utils.toWei(totalMintPrice, 'ether')
-        }).then(function(receipt) {
-            console.log(receipt);
-            setMintSuccess(true);
-            setMintSuccessMessage('Minted ' + receipt.events.Purchase.returnValues.length + ' tokens!');
-        }).catch(err => {
-          setMintError(true);
-          setMintErrorMessage('Error minting tokens: ' + err.message);
-        });
+      window.contract.methods.purchase(mintAmount).send({
+        from: window.provider.selectedAddress, 
+        value: window.web3.utils.toWei(totalMintPrice, 'ether')
+      }).then(function(receipt) {
+          console.log(receipt);
+          setMintSuccess(true);
+          setMintSuccessMessage('Minted ' + receipt.events.Purchase.returnValues.length + ' tokens!');
       }).catch(err => {
         setMintError(true);
         setMintErrorMessage('Error minting tokens: ' + err.message);
@@ -1483,34 +1476,22 @@ function MintModal() {
         setMaxMintForCurrentWallet(_data.allocation);
       });
 
-      window.contract.methods.presalePurchase(
+      window.contract.presalePurchase(
         mintAmount, 
-        presaleData.data.tier, 
+        presaleData.data.teir, 
         presaleData.data.hash, 
         presaleData.data.signature
-      ).estimateGas({from: window.provider.selectedAddress
-      }).then(function(gas) {
-        console.log(gas);
-        window.contract.presalePurchase(
-          mintAmount, 
-          presaleData.data.teir, 
-          presaleData.data.hash, 
-          presaleData.data.signature
-        ).send({from: window.provider.selectedAddress, 
-                gas: gas, 
-                value: window.web3.utils.toWei(totalMintPrice, 'ether')
-        }).then(function(receipt) {
-            console.log(receipt);
-            setMintSuccess(true);
-            setMintSuccessMessage('Minted ' + receipt.events.PresalePurchase.returnValues.length + ' tokens!');
-        }).catch(err => {
-          setMintError(true);
-          setMintErrorMessage('Error minting tokens: ' + err.message);
-        });
+      ).send({from: window.provider.selectedAddress, 
+              value: window.web3.utils.toWei(totalMintPrice, 'ether')
+      }).then(function(receipt) {
+          console.log(receipt);
+          setMintSuccess(true);
+          setMintSuccessMessage('Minted ' + receipt.events.PresalePurchase.returnValues.length + ' tokens!');
       }).catch(err => {
         setMintError(true);
         setMintErrorMessage('Error minting tokens: ' + err.message);
       });
+
     }
 
     function testMint() {
@@ -1631,13 +1612,10 @@ function MintModal() {
             setTitleText('Presale Mint');
             setPricePerNFT(data.presalePrice);
             
-            try {
+            if (window.document.getElementById('mintAmountBox') !== null) {
               const num = parseInt(window.document.getElementById('mintAmountBox').value);
               setTotalMintPrice(Math.round(num * data.presalePrice * 100) / 100);
-            } catch (e) {
-              console.log(e);
-            }
-
+            } 
             //fetch presale allocation API data for wallet
             if (typeof window.provider.selectedAddress !== 'undefined') {
               fetchWhitelistData().then(__data => {
@@ -1655,11 +1633,9 @@ function MintModal() {
             setPricePerNFT(data.publicPrice); 
             setPresaleData({}); 
             setMaxMintForCurrentWallet(data.publicWalletMax);
-            try {
+            if (window.document.getElementById('mintAmountBox') !== null) {
               const num = parseInt(window.document.getElementById('mintAmountBox').value);
               setTotalMintPrice(Math.round(num * data.publicPrice * 100) / 100);
-            } catch (e) {
-              console.log(e);
             }
           }
         });
@@ -1690,8 +1666,6 @@ function MintModal() {
     fetchAndSetRemoteData();
   }, []);
 
-
-
   useEffect(() => {
     function closeAlertPopup() {
       setMintError(false);
@@ -1712,6 +1686,7 @@ function MintModal() {
     }
   }, [mintError, mintSuccess]);
 
+  
   return (
     <div>
       { mintLoading && <MintModalLoading /> }
