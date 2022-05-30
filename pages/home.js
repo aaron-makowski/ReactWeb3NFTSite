@@ -2012,9 +2012,9 @@ export default function Home() {
     connectWallet();
   }
   const closeMintModal = () => {
-    // window.document.onclick = null;
-    // window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-    // window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
+    window.document.onclick = null;
+    window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
+    window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
     setMintModalOpen(false);
   }
   useEffect(() => {

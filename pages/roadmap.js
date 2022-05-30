@@ -19,6 +19,9 @@ export default function Home() {
     window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
     setMintModalOpen(false);
   }
+  const openMintModal = () => {
+    setMintModalOpen(true);
+  }
   useEffect(() => {
     if (mintModalOpen) {
       window.document.onclick = function(event) {
@@ -62,6 +65,11 @@ export default function Home() {
         <RoadmapPage />{/*  Roadmap Image + Mint Button + Home Button */}
         <FAQSection />
       </main>
+      <div className={styles.copyright}>
+        <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+        <a className={styles.pdfPopupLink} 
+            onClick={() => {setCollectorsAgreementOpen(true);}}>Collectors Agreement</a>
+      </div>
     </div>
   )
 }
