@@ -5,6 +5,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { Document, Page, pdfjs, View } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
 //Import Social Icons & Icon Component
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -17,7 +20,6 @@ import axios from 'axios'; //for whitelist API call
 
 import Web3 from 'web3' //Classic web3 lib
 import Web3Modal from "web3modal"; //Nice Web3 Popup with multiple connections
-
 //Web3Modal Multiple Providers
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Fortmatic from "fortmatic";
@@ -925,7 +927,7 @@ const editConnectButton = () => {
       } 
     }
   } catch (err) {
-    console.log('Error getting Provider + Account + setting connect button text', err);
+    console.log('Error getting Provider + Account + setting connect button text', err.message);
   }
 }
 //Use Infura as default
@@ -940,18 +942,18 @@ const setDefaultProvider = () => {
       'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
       //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
   } catch (err) {
-    alert('Failed to set Infura as default walletless provider', err);
+    alert('Failed to set Infura as default walletless provider', err.message);
   } 
   
   try {
     if (typeof window.provider !== 'undefined') {
       window.web3 = new Web3(window.provider);
       // window.provider.enable().catch(function(err) {
-      //   console.log('Error enabling', err);
+      //   console.log('Error enabling', err.message);
       // });
     }
   } catch (err) {
-    alert('Error setting provider and web3', err);
+    alert('Error setting provider and web3', err.message);
   }
 }
 const connectWallet = () => {
@@ -1004,16 +1006,16 @@ const connectWallet = () => {
               }
             });
           } catch(err) {
-            alert('Error subscribing to provider events', err);
+            alert('Error subscribing to provider events', err.message);
           }
         }).catch(err => {
-          alert('Error enabling provider', err);
+          alert('Error enabling provider', err.message);
         });
       }
       try { 
         window.web3 = new Web3(provider);
       } catch (err) {
-        alert('Failed create web3 instance:', err);
+        alert('Failed create web3 instance:', err.message);
         return;
       }
 
@@ -1022,7 +1024,7 @@ const connectWallet = () => {
       connectToContract();
       editConnectButton();
     }).catch(err => {
-      alert('Error connecting to wallet', err);
+      alert('Error connecting to wallet', err.message);
       if (typeof window.provider === 'undefined' ||
               (typeof window.provider !== 'undefined' && 
                 typeof window.provider.selectedAddress === 'undefined')) {
@@ -1062,10 +1064,10 @@ const connectWallet = () => {
             }
           });
         } catch(err) {
-          alert('Error subscribing to provider events', err);
+          alert('Error subscribing to provider events', err.message);
         }
       }).catch(err => {
-        alert('Error enabling provider', err);
+        alert('Error enabling provider', err.message);
       });
     }
 
@@ -1078,7 +1080,7 @@ const connectWallet = () => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: "0x3" }],
         }).catch(err => {
-          alert('Please switch to the ETH Mainnet', err)
+          alert('Please switch to the ETH Mainnet', err.message)
         });
       }
 
@@ -1086,7 +1088,7 @@ const connectWallet = () => {
       try { 
         window.web3 = new Web3(window.provider);
       } catch (err) {
-        alert('Failed create web3 instance:', err);
+        alert('Failed create web3 instance:', err.message);
         return;
       }
     } else {
@@ -1100,7 +1102,7 @@ const connectWallet = () => {
     });
     // web3Modal.toggleModal();
   } catch (err) {
-    alert('Failed to load Web3Modal Object', err)
+    alert('Failed to load Web3Modal Object', err.message)
     //try backup providers (injected, already connected)
     if (typeof window.provider === 'undefined' ||
               (typeof window.provider !== 'undefined' && 
@@ -1141,10 +1143,10 @@ const connectWallet = () => {
             }
           });
         } catch(err) {
-          alert('Error subscribing to provider events', err);
+          alert('Error subscribing to provider events', err.message);
         }
       }).catch(err => {
-        alert('Error enabling provider', err);
+        alert('Error enabling provider', err.message);
       });
     }
 
@@ -1157,7 +1159,7 @@ const connectWallet = () => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: "0x3" }],
         }).catch(err => {
-          alert('Please switch to the ETH Mainnet', err)
+          alert('Please switch to the ETH Mainnet', err.message)
         });
       }
 
@@ -1165,7 +1167,7 @@ const connectWallet = () => {
       try { 
         window.web3 = new Web3(window.provider);
       } catch (err) {
-        alert('Failed create web3 instance:', err);
+        alert('Failed create web3 instance:', err.message);
         return;
       }
     } else {
@@ -1414,7 +1416,19 @@ function TEAMSection() {
     </div>
   )
 } 
-
+function MintModalLoading() {
+  return (
+    <div className={styles.mintModalLoading} id='mintModalLoading' >
+        <Oval
+          height="90%"
+          width="90%"
+          color='green'
+          secondaryColor='orange'
+          ariaLabel='loading'
+        />
+    </div>
+  )
+}
 function MintModal() {
   const [mintLoading, setMintLoading] = useState(false);
   const [mintError, setMintError] = useState(false);
@@ -1452,11 +1466,11 @@ function MintModal() {
             setMintSuccessMessage('Minted ' + receipt.events.Purchase.returnValues.length + ' tokens!');
         }).catch(err => {
           setMintError(true);
-          setMintErrorMessage('Error minting tokens: ' + err);
+          setMintErrorMessage('Error minting tokens: ' + err.message);
         });
       }).catch(err => {
         setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err);
+        setMintErrorMessage('Error minting tokens: ' + err.message);
       });
     }
 
@@ -1491,40 +1505,39 @@ function MintModal() {
             setMintSuccessMessage('Minted ' + receipt.events.PresalePurchase.returnValues.length + ' tokens!');
         }).catch(err => {
           setMintError(true);
-          setMintErrorMessage('Error minting tokens: ' + err);
+          setMintErrorMessage('Error minting tokens: ' + err.message);
         });
       }).catch(err => {
         setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err);
+        setMintErrorMessage('Error minting tokens: ' + err.message);
       });
     }
 
     function testMint() {
-      console.log(window.provider)
       window.contract.methods.mint(1).send({from: window.provider.selectedAddress
                     // , value: window.web3.utils.toWei(totalMintPrice.toString(), 'ether')
       }).then(function(receipt) {
           console.log(receipt);
           setMintSuccess(true);
           setMintSuccessMessage('Mint Success: https://ropsten.etherscan.io/tx/' + receipt.transactionHash);
+          
+          setMintButtonDisabled(false);
+          setMintButtonText("Mint");
+          setMintLoading(false);
       }).catch(err => {
-        console.log(err)
+        console.log(err.message)
         setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err);
+        setMintErrorMessage('Error minting tokens: ' + err.message);
+
+        setMintButtonDisabled(false);
+        setMintButtonText("Mint");
+        setMintLoading(false);
       });
     }
 
     if (mintAmount > 0 && totalMintPrice > 0) {
-      try {
-        fetchAndSetRemoteData();
-        testMint();
-      } catch (err) {
-        console.log(err)
-        setMintError(true);
-        setMintErrorMessage(err);
-      }
+      testMint();
     } else {
-      console.log(err)
       setMintError(true);
       setMintErrorMessage('Must mint more than 0 NFTs');
     }
@@ -1573,28 +1586,27 @@ function MintModal() {
     } else if (typeof window.contract === 'undefined') {
       connectToContract();
     }
-
+    // print total mint price, mintamount
+    console.log(totalMintPrice, mintAmount);
+    //Try to mint
     if (window.contract) {
-      //Try to mint
+      //TODO make sure we have contract data variables like public price
       setPresaleData({});
       setMintButtonDisabled(true);
-      setMintButtonText("Minting"); 
-      // setMintLoading(true); 
+      setMintButtonText("Minting");
+      setMintError(false); 
+      setMintErrorMessage("");
+      setMintSuccess(false); 
+      setMintSuccessMessage("");
+      setMintLoading(true);
 
-      setMintError(false); setMintErrorMessage("");
-      setMintSuccess(false); setMintSuccessMessage("");
-
+      fetchAndSetRemoteData();
       makePurchase();
-
-      //reset mint popup
-      // setMintLoading(false); 
-      setMintButtonDisabled(false);
-      setMintButtonText("Mint");
     } else {
       setMintError(true);
       setMintErrorMessage('Error connecting to ETH Contract');
     }
-}
+  }
 
   //Fetch Contract Data & Call Whitelist API
   const fetchAndSetRemoteData = () => {
@@ -1632,7 +1644,7 @@ function MintModal() {
                 setPresaleData(__data);
                 setMaxMintForCurrentWallet(__data.data.allocation);
               }).catch(err => {
-                console.log('Error fetching whitelist data, setting max for wallet as public max', err);
+                console.log('Error fetching whitelist data, setting max for wallet as public max', err.message);
                   setMaxMintForCurrentWallet(data.publicWalletMax);
               });
             } else {
@@ -1678,8 +1690,35 @@ function MintModal() {
     fetchAndSetRemoteData();
   }, []);
 
+
+
+  useEffect(() => {
+    function closeAlertPopup() {
+      setMintError(false);
+      setMintErrorMessage("");
+      setMintSuccess(false);
+      setMintSuccessMessage("");
+    }
+
+    if (mintError) {
+      window.document.onclick = function(event) {
+        if (event.target === window.document.getElementById('alertBG')) {closeAlertPopup();}}
+      window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
+    }
+    if (mintSuccess) {
+      window.document.onclick = function(event) {
+        if (event.target === window.document.getElementById('alertBG')) {closeAlertPopup();}}
+      window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
+    }
+  }, [mintError, mintSuccess]);
+
   return (
-    <div>{ mintLoading && <MintModalLoading /> }
+    <div>
+      { mintLoading && <MintModalLoading /> }
+      { mintError   && <div className={styles.alertPopup} id='alertBG'>
+                         <a>{mintErrorMessage}<div id='closeAlertButton'></div></a></div> }
+      { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
+                         <a>{mintSuccessMessage}<div id='closeAlertButton'></div></a></div> }
       <div id='mintModal' className={styles.mintModal}>
         <div className={styles.mintModalBody}>
           <div className={styles.mintModalHeader}>
@@ -1731,29 +1770,35 @@ function MintModal() {
           </div>
           <div className={styles.mintModalInputContainer}>
             <button id='mintButtonOnPopup' className={styles.mintModalButton} 
-                    onClick={() => {mint();}}
-                    disabled={mintButtonDisabled}>{mintButtonText}</button>
-            { mintError   && <div className={styles.mintModalError}>{mintErrorMessage}</div> }
-            { mintSuccess && <div className={styles.mintModalSuccess}>{mintSuccessMessage}</div> }
+                    onClick={mint} disabled={mintButtonDisabled}>{mintButtonText}</button>
           </div>
         </div>
       </div> 
     </div> 
   )
 }
-function MintModalLoading() {
-  return (
-    <div className={styles.mintModalLoading} id='mintModalLoading' >
-      <Oval
-        height="20%"
-        width="20%"
-        color='orange'
-        ariaLabel='loading'
-      />
-    </div> 
-  )
-}
 
+function PDFViewer() {
+  function onDocumentLoadSuccess({ numPages: nextNumPages }) {
+    console.log('PDF Loaded')
+  }
+
+  return (
+    <div className={styles.pdfBG} id='pdfBG'>
+      <span id='closePDFButton'>X</span>
+      <Document className={styles.pdfViewBox}
+                file="/Menjis_World_Collector_Agreement.pdf"
+                onLoadSuccess={onDocumentLoadSuccess}>
+        <Page
+          key={`page_1`}
+          pageNumber={1}
+          renderAnnotationLayer={false}
+          renderTextLayer={false}
+        />
+      </Document>
+      </div>
+  );
+}
 //Roadmap Page Sections/HTML
 function FAQSection() {
   const [faq1checked, setFaq1Checked] = useState(false);
@@ -1953,36 +1998,47 @@ function RoadmapPage() {
     </>)
 }
 //roadmap.js needs these functions exported to be able to render
-export { NavBar, MintModal, FAQSection, RoadmapPage, editConnectButton, connectWallet };
+export { NavBar, PDFViewer, MintModal, FAQSection, RoadmapPage, editConnectButton, connectWallet };
+
 
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
+  const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
 
+  //Mint Modal Popup
   const closeAndConnect = () => {
     closeMintModal();
     connectWallet();
   }
   const closeMintModal = () => {
-    window.document.onclick = null;
-    window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-    window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
+    // window.document.onclick = null;
+    // window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
+    // window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
     setMintModalOpen(false);
   }
-
   useEffect(() => {
     if (mintModalOpen) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
       window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
       window.document.getElementById('mintConnectButton').addEventListener('click', closeAndConnect);
-      // return () => {
-      //   window.document.onclick = null;
-      //   window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-      //   window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
-      // }
     }
   }, [mintModalOpen]);
+
+  //PDF Popup
+  const closePDFModal = () => {
+    window.document.onclick = null;
+    window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
+    setCollectorsAgreementOpen(false);
+  }
+  useEffect(() => {
+    if (collectorsAgreementOpen) {
+      window.document.onclick = function(event) {
+        if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}
+      window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);
+    }
+  }, [collectorsAgreementOpen]);
 
   return (
     <div className={styles.container}>
@@ -1991,7 +2047,9 @@ export default function Home() {
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-    
+      
+      { collectorsAgreementOpen && <PDFViewer /> }
+
       {/* Takes over page when Mint Button clicked */}
       { mintModalOpen && <MintModal /> }
 
@@ -2009,6 +2067,7 @@ export default function Home() {
                   alt="Menji's World Sample Art"
                   />
           </div>
+
           {/* Mint Button + Page 2 Button + About Menji's World Text */}
           <div className={styles.mainContent_2_right}>
             <a className={styles.mintButton} id='mintButton'
@@ -2031,6 +2090,14 @@ export default function Home() {
       </main>
 
       <TEAMSection />  {/* 4 circular images with expandable member descriptions */}
+      <div>
+        {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
+        <div className={styles.copyright}>
+          <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+          <a className={styles.pdfPopupLink} 
+             onClick={() => {setCollectorsAgreementOpen(true);}}>Collectors Agreement</a>
+        </div>
+      </div>
     </div>
   )
 }

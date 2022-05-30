@@ -3,10 +3,11 @@ import styles from '../styles/Home.module.css'
 
 import { useState, useEffect } from 'react'
 
-import { NavBar, RoadmapPage, FAQSection, editConnectButton, connectWallet, MintModal } from './home.js'
+import { NavBar, PDFViewer, RoadmapPage, FAQSection, editConnectButton, connectWallet, MintModal } from './home.js'
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
+  const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
 
   const closeAndConnect = () => {
     closeMintModal();
@@ -18,10 +19,6 @@ export default function Home() {
     window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
     setMintModalOpen(false);
   }
-  const openMintModal = () => {
-    setMintModalOpen(true);
-  }
-  //close events for the mint popup
   useEffect(() => {
     if (mintModalOpen) {
       window.document.onclick = function(event) {
@@ -31,13 +28,23 @@ export default function Home() {
     }
   }, [mintModalOpen]);
 
+  const closePDFModal = () => {
+    window.document.onclick = null;
+    window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
+    setCollectorsAgreementOpen(false);
+  }
+  useEffect(() => {
+    if (collectorsAgreementOpen) {
+      window.document.onclick = function(event) {
+        if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}
+      window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);
+    }
+  }, [collectorsAgreementOpen]);
+
   //on page load
   useEffect(() => {
     editConnectButton();
     window.document.getElementById('mintButton2').addEventListener('click', openMintModal);
-    // return () => {
-    //   window.document.getElementById('mintButton2').removeEventListener('click', openMintModal);
-    // }
   }, []);
 
   return (
@@ -47,7 +54,7 @@ export default function Home() {
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+      { collectorsAgreementOpen && <PDFViewer /> }
       { mintModalOpen && <MintModal /> } {/* Takes over page when Mint Button clicked */}
 
       <NavBar />

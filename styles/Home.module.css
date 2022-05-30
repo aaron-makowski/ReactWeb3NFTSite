@@ -186,7 +186,97 @@
   content: "▽"; 
   font-weight: 500;
 }
+.pdfBG {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 242, 194, 0.5);
+  z-index: 99998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+}
+.pdfHeader {
+  padding-top: 14px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 17px;
+  background-color: rgb(255, 209, 117);
+  color: rgb(0, 0, 0);
+  font-size: 1.2em;
+  padding-right: 1.5rem;
+  font-weight: 100;
+  font-family: 'Fredoka One', cursive;
+  font-variant : small-caps;
+  cursor: pointer;
+  display: block;
+  border-radius: 10px;
+}
 
+.pdfViewBox {
+  background-color: rgb(255, 212, 55);
+  border-radius: 20px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90% !important;
+  height: 90% !important;
+  max-width: 550px;
+  min-height: 750px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+@media (max-width: 1300px) {
+  .pdfViewBox {
+    width: 90%;
+  }
+}
+@media (max-width: 860px) {
+  .pdfViewBox {
+    width: 90%;
+  }
+}
+.pdfBG span {
+  float: right;
+  right: 10%;
+  cursor: pointer;
+}
+.copyright {
+  background-color: rgb(255, 171, 0);
+  font-size: 1em;
+  font-family: 'Fredoka One', cursive;
+  font-variant : small-caps;
+  color: #202020;
+  text-align: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pdfPopupLink{
+  background-color: rgb(255, 171, 0);
+  font-size: 1em;
+  font-family: 'Fredoka One', cursive;
+  font-variant : small-caps;
+  color: #202020;
+  text-align: center;
+  text-decoration: underline;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  cursor: pointer;
+}
 
 .slide {
   clear: both;
@@ -232,6 +322,7 @@
   margin-bottom: 1rem;
   margin-left: 1.5rem;
   margin-right: 1.5rem;
+  font-variant : small-caps;
 }
 .roadmapTitle {
   font-family: 'Fredoka One', cursive;
@@ -240,6 +331,7 @@
   color: #202020;
   width: 30%;
   word-wrap: break-word; 
+  font-variant: small-caps;
 }
 .roadmapTitleMobile {
   font-family: 'Fredoka One', cursive;
@@ -248,6 +340,7 @@
   color: #202020;
   width: 30%;
   word-wrap: break-word; 
+  font-variant: small-caps;
 }
 .roadmapText {
   font-family: 'Fredoka One', cursive;
@@ -424,7 +517,6 @@
   border-radius: 10px;
   box-sizing: border-box;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
-
   cursor: pointer;
   /* font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif; */
   font-family: 'Fredoka One', cursive;
@@ -543,6 +635,50 @@
 
 
 
+.alertPopup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 242, 194, 0.5);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+}
+.alertPopup a {
+  background-color: rgb(255, 212, 55);
+  border-radius: 20px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 70%;
+  padding: 2.5rem;
+}
+.alertPopup div::after {
+  float: right;
+  right: 10%;
+  content: "X"; 
+  font-weight: 500;
+  cursor: pointer;
+  font-size: larger;
+  position: absolute;
+  right: 1.2rem;
+  top: 1rem;
+}
+
+
+
 
 .inputNumber {
   /* border-radius: 10px; */
@@ -600,28 +736,14 @@
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
+
 .mintModal {
   position: fixed;
   width: 100%;
   height: 100%;
   background-color: rgba(255, 242, 194, 0.5);
-  z-index: 99999;
+  z-index: 99997;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  font-family: 'Fredoka One', cursive;
-}
-
-.mintModalLoading {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 242, 194, 0.5);
-  z-index: 99999;
-  display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -769,6 +891,7 @@
   width: 100%;
   padding-bottom: 1rem;
 }
+
 .mintModalSection_left {
   padding-left: 1.1rem;
   width: 50%;
@@ -832,6 +955,10 @@
   overflow: hidden;
   position: center;
   text-align: center;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
   text-transform: none;
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
@@ -978,35 +1105,65 @@
 .mintPopup_ConnectButton:focus {
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.9);
 }
+.mintModalLoading {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 242, 194, 0.5);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+}
+.mintModalLoadingBody {
+  background-color: rgba(255, 212, 55, 0.444);
+  border-radius: 20px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+  width: 90%;
+  max-width: 550px;
+  min-height: 750px;
+  padding-bottom: 2rem;
+}
+
+
+
+
+
+
+
 
 
 .mintModalError {
-  background-color: rgb(255, 214, 29);
-  border-radius: 10px;
+  background-color: rgba(255, 212, 55, 0.444);
+  border-radius: 20px;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
-  color: #2e2e2e;
-  cursor: pointer;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.2rem;
-  font-weight: 100;
-  line-height: 1.15;
-  margin: 0.3rem;
-  /* margin-left: 2rem;
-  margin-right: 2rem; */
-  width: 100%;
-  height: 100%;
-  outline: none;
-  overflow: scroll;
-  padding: 1rem 35px;
-  position: center;
-  text-align: center;
-  text-transform: none;
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+  font-family: 'Fredoka One', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+  width: 90%;
+  max-width: 550px;
+  min-height: 750px;
+  padding-bottom: 2rem;
+
 }
 .mintModalError:hover {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
@@ -1057,6 +1214,7 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  z-index: 99999;
 }
 .mintModalSuccess:hover {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
@@ -1065,43 +1223,5 @@
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
 }
 .mintModalSuccess:focus {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-
-.mintModalLoading {
-  background-color: rgb(255, 214, 29);
-  border-radius: 10px;
-  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
-  box-sizing: border-box;
-  color: #2e2e2e;
-  cursor: pointer;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.7rem;
-  font-weight: 100;
-  height: 54px;
-  line-height: 1.15;
-  margin: 0.3rem;
-  /* margin-left: 2rem;
-  margin-right: 2rem; */
-  width: 80%;
-  outline: none;
-  overflow: hidden;
-  padding: 0.7rem 35px;
-  position: center;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-.mintModalLoading:hover {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalLoading:active {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalLoading:focus {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
 }
