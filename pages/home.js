@@ -1299,22 +1299,22 @@ function NavBar() {
       {/* unsure why i had to double the code in each conditional render just to changethe order of the buttons*/}
       {innerWidth <= 815 && 
         <nav className={styles.navBarRight}>
-          <a className={styles.socialButton_discord} href="https://discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
           </a>
           <button className={styles.navBarItem_ConnectButton} id='connectButton'
                   onClick={connectWallet}>Connect</button>
-          <a className={styles.socialButton_twitter} href="https://twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
           </a>
         </nav>
       }
       {innerWidth > 815 && 
         <nav className={styles.navBarRight}>
-          <a className={styles.socialButton_discord} href="https://discord.gg/7QYXxXq" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
           </a>
-          <a className={styles.socialButton_twitter} href="https://twitter.com/menji_nft" target="_blank" rel="noopener noreferrer">
+          <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
           </a>
           <button className={styles.navBarItem_ConnectButton} id='connectButton'
@@ -1431,7 +1431,7 @@ function MintModalLoading() {
 }
 function MintModal() {
   const [mintLoading, setMintLoading] = useState(false);
-  const [mintButtonDisabled, setMintButtonDisabled] = useState(true);
+  const [mintButtonDisabled, setMintButtonDisabled] = useState (false);
 
   const [mintError, setMintError] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
@@ -1799,7 +1799,7 @@ function FAQSection() {
   const [faq1checked, setFaq1Checked] = useState(false);
   const [faq2checked, setFaq2Checked] = useState(false);
   const [faq3checked, setFaq3Checked] = useState(false);
-  const [faq4checked, setFaq4Checked] = useState(false);
+  // const [faq4checked, setFaq4Checked] = useState(false);
 
   return (<>
     <BrowserView>
@@ -1831,14 +1831,14 @@ function FAQSection() {
           </div>
         </nav>
 
-        <nav className={styles.FAQItem}>
+        {/* <nav className={styles.FAQItem}>
           <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
             <span>Who is Painted Labs?</span>
             { faq4checked && <ul className={styles.slide}>
               <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
             </ul> }
           </div>
-        </nav>
+        </nav> */}
       </div>
     </BrowserView>
 
@@ -1871,14 +1871,14 @@ function FAQSection() {
           </div>
         </nav>
 
-        <nav className={styles.FAQItemMobile}>
+        {/* <nav className={styles.FAQItemMobile}>
           <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
             <span>Who is Painted Labs?</span>
             { faq4checked && <ul className={styles.slide}>
               <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
             </ul> }
           </div>
-        </nav>
+        </nav> */}
       </div>
     </MobileView>
 
