@@ -1890,10 +1890,16 @@ function RoadmapPage() {
   return (<>
 
     <div className={styles.mainContentRoadmap}>
-      <Image src={"/roadmap.jpg"} 
-            width={1080} height={1350} 
-            alt="Menji about" 
-            layout='responsive'/>
+      {/* link to view roadmap.jpg in a new tab */}
+      <a href='/roadmap.jpg' target="_blank">
+        <Image className={styles.roadmapImage} 
+              src={"/roadmap.jpg"} 
+              width={1080} height='500vh'
+              alt="Menji about" 
+              layout='responsive'
+              objectFit="cover"/>
+      </a>
+
     </div>
     <BrowserView>
     <div className={styles.roadmapTextBG}>
