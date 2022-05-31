@@ -897,7 +897,7 @@ let abi = [
 let innerWidth = 700;
 //get window width
 const useWidth = () => {
-  const [innerWidth, setWidth] = useState(0); // default width, detect on server.
+  const [innerWidth, setWidth] = useState(700); // default width, detect on server.
   const handleResize = () => setWidth(window.innerWidth);
   useEffect(() => {
     window.addEventListener('resize', handleResize);
@@ -920,14 +920,13 @@ const editConnectButton = () => {
         }
       } else { 
         document.getElementById('connectButton').innerText = "Connect"; 
-        // if document.getElementById('mintConnectButton') exists
         if (document.getElementById('mintConnectButton')) {
           document.getElementById('mintConnectButton').innerText = "Connect"; 
         }
       } 
     }
-  } catch (err) {
-    console.log('Error getting Provider + Account + setting connect button text', err.message);
+  } catch (error) {
+    console.log('Error setting connect button text', error.message);
   }
 }
 //Use Infura as default
@@ -942,7 +941,7 @@ const setDefaultProvider = () => {
       'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
       //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
   } catch (err) {
-    alert('Failed to set Infura as default walletless provider', err.message);
+    console.log('Failed to set Infura as default walletless provider', err.message);
   } 
   
   try {
@@ -953,10 +952,24 @@ const setDefaultProvider = () => {
       // });
     }
   } catch (err) {
-    alert('Error setting provider and web3', err.message);
+    console.log('Error setting provider and web3', err.message);
+  }
+}
+const connectToContract = () => {
+  setDefaultProvider(); //use Infura to get contract info w.o connected wallet
+
+  if (typeof window.web3 !== 'undefined') {
+    try {
+      window.contract = new window.web3.eth.Contract(abi, address);
+    } catch (err) {
+      console.log('Error setting contract:', err.message);
+    }
+  } else {
+    console.log('Web3 is undefined.');
   }
 }
 const connectWallet = () => {
+  //ridiculously redundant code because it solved the errors
   if (typeof window === 'undefined') return;
   
   //Try Fancy Web3Modal connect
@@ -977,7 +990,7 @@ const connectWallet = () => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: "0x3" }],
         }).catch(err => {
-          alert('Please switch to the ETH Mainnet', err)
+          alert('Please switch to the ETH Mainnet', err.message)
         });
       }
 
@@ -1024,83 +1037,82 @@ const connectWallet = () => {
       connectToContract();
       editConnectButton();
     }).catch(err => {
-      alert('Error connecting to wallet', err.message);
+        alert('Error connecting to wallet', err.message);
+        if (typeof window.provider === 'undefined' ||
+                (typeof window.provider !== 'undefined' && 
+                  typeof window.provider.selectedAddress === 'undefined')) {
+        if (typeof window.ethereum !== 'undefined') {
+          window.provider = window.ethereum;
+        } else if (typeof window.web3 !== 'undefined') {
+          window.provider = window.web3.currentProvider;
+        } else {
+          alert('Failed to connect to wallet');
+          editConnectButton();
+          return;
+        }
+      }
+
+      //enable provider and subscribe rto aprovider events
       if (typeof window.provider === 'undefined' ||
-              (typeof window.provider !== 'undefined' && 
-                typeof window.provider.selectedAddress === 'undefined')) {
-      if (typeof window.ethereum !== 'undefined') {
-        window.provider = window.ethereum;
-      } else if (typeof window.web3 !== 'undefined') {
-        window.provider = window.web3.currentProvider;
+                (typeof window.provider !== 'undefined' && 
+                  typeof window.provider.selectedAddress === 'undefined')) {
+        window.provider.enable().then(() => { 
+          try {
+            console.log('Selected Address:', window.provider.selectedAddress)
+
+            window.provider.on("accountsChanged", (accounts) => {
+              editConnectButton();
+              console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
+            });
+            window.provider.on("chainChanged", (chainId) => {
+              console.log('Chain changed to', chainId);
+              if (chainId != 1) {
+                alert('Please Switch to the Ethereum Mainnet Network'); 
+              }
+            });
+            window.provider.on("connect", (info) => {
+              console.log('Connected to Wallet:', info);
+              if (info.chainId != 1) {
+                alert('Please Switch to the Ethereum Mainnet Network'); 
+              }
+            });
+          } catch(err) {
+            alert('Error subscribing to provider events', err.message);
+          }
+        }).catch(err => {
+          alert('Error enabling provider', err.message);
+        });
+      }
+
+      //switch network, if needed + set window.web3 var
+      if (typeof window.provider !== 'undefined') {
+        // if we are connected, switch to ROPSTEN 
+        // TODO change to 0x1 for launch
+        if (window.provider.chainId !== '0x3') {
+          window.provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: "0x3" }],
+          }).catch(err => {
+            alert('Please switch to the ETH Mainnet', err.message)
+          });
+        }
+
+        //set web3 var
+        try { 
+          window.web3 = new Web3(window.provider);
+        } catch (err) {
+          alert('Failed create web3 instance:', err.message);
+          return;
+        }
       } else {
         alert('Failed to connect to wallet');
         editConnectButton();
         return;
       }
-    }
 
-    //enable provider and subscribe rto aprovider events
-    if (typeof window.provider === 'undefined' ||
-              (typeof window.provider !== 'undefined' && 
-                typeof window.provider.selectedAddress === 'undefined')) {
-      window.provider.enable().then(() => { 
-        try {
-          console.log('Selected Address:', window.provider.selectedAddress)
-
-          window.provider.on("accountsChanged", (accounts) => {
-            editConnectButton();
-            console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
-          });
-          window.provider.on("chainChanged", (chainId) => {
-            console.log('Chain changed to', chainId);
-            if (chainId != 1) {
-              alert('Please Switch to the Ethereum Mainnet Network'); 
-            }
-          });
-          window.provider.on("connect", (info) => {
-            console.log('Connected to Wallet:', info);
-            if (info.chainId != 1) {
-              alert('Please Switch to the Ethereum Mainnet Network'); 
-            }
-          });
-        } catch(err) {
-          alert('Error subscribing to provider events', err.message);
-        }
-      }).catch(err => {
-        alert('Error enabling provider', err.message);
-      });
-    }
-
-    //switch network, if needed + set window.web3 var
-    if (typeof window.provider !== 'undefined') {
-      // if we are connected, switch to ROPSTEN 
-      // TODO change to 0x1 for launch
-      if (window.provider.chainId !== '0x3') {
-        window.provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: "0x3" }],
-        }).catch(err => {
-          alert('Please switch to the ETH Mainnet', err.message)
-        });
-      }
-
-      //set web3 var
-      try { 
-        window.web3 = new Web3(window.provider);
-      } catch (err) {
-        alert('Failed create web3 instance:', err.message);
-        return;
-      }
-    } else {
-      alert('Failed to connect to wallet');
+      connectToContract();
       editConnectButton();
-      return;
-    }
-
-    connectToContract();
-    editConnectButton();
     });
-    // web3Modal.toggleModal();
   } catch (err) {
     alert('Failed to load Web3Modal Object', err.message)
     //try backup providers (injected, already connected)
@@ -1152,7 +1164,6 @@ const connectWallet = () => {
 
     //switch network, if needed + set window.web3 var
     if (typeof window.provider !== 'undefined') {
-      // if we are connected, switch to ROPSTEN 
       // TODO change to 0x1 for launch
       if (window.provider.chainId !== '0x3') {
         window.provider.request({
@@ -1180,19 +1191,7 @@ const connectWallet = () => {
     editConnectButton();
   }
 }
-const connectToContract = () => {
-  setDefaultProvider(); //use Infura to get contract info w.o connected wallet
 
-  if (typeof window.web3 !== 'undefined') {
-    try {
-      window.contract = new window.web3.eth.Contract(abi, address);
-    } catch (e) {
-      alert('Error setting contract:', e);
-    }
-  } else {
-    alert('Error setting contract');
-  }
-}
 
 // Fetch ETH contract data
 // Static data
@@ -1354,42 +1353,44 @@ function AboutMenjiSection() {
   )
 }
 function TEAMSection() {
+  //might have to use useEffect to add and remove efvent listeners from commented code below
   const [team1checked, setTeam1Checked] = useState(false);
   const [team2checked, setTeam2Checked] = useState(false);
   const [team3checked, setTeam3Checked] = useState(false);
   const [team4checked, setTeam4Checked] = useState(false);
 
-  // useEffect(() => {
   const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
   const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
   const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
   const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
+  
+  // useEffect(() => {
 
-    // window.document.getElementById('i1').addEventListener('click', check1);
-    // window.document.getElementById('p1').addEventListener('click', check1);
+  //   window.document.getElementById('i1').addEventListener('click', check1);
+  //   window.document.getElementById('p1').addEventListener('click', check1);
 
-    // window.document.getElementById('i2').addEventListener('click', check2);
-    // window.document.getElementById('p2').addEventListener('click', check2);
+  //   window.document.getElementById('i2').addEventListener('click', check2);
+  //   window.document.getElementById('p2').addEventListener('click', check2);
 
-    // window.document.getElementById('i3').addEventListener('click', check3);
-    // window.document.getElementById('p3').addEventListener('click', check3);
+  //   window.document.getElementById('i3').addEventListener('click', check3);
+  //   window.document.getElementById('p3').addEventListener('click', check3);
 
-    // window.document.getElementById('i4').addEventListener('click', check4);
-    // window.document.getElementById('p4').addEventListener('click', check4);
-    // return () => {
-    //   window.document.getElementById('i1').removeEventListener('click', check1);
-    //   window.document.getElementById('p1').removeEventListener('click', check1);
+  //   window.document.getElementById('i4').addEventListener('click', check4);
+  //   window.document.getElementById('p4').addEventListener('click', check4);
+  //   return () => {
+  //     window.document.getElementById('i1').removeEventListener('click', check1);
+  //     window.document.getElementById('p1').removeEventListener('click', check1);
 
-    //   window.document.getElementById('i2').removeEventListener('click', check2);
-    //   window.document.getElementById('p2').removeEventListener('click', check2);
+  //     window.document.getElementById('i2').removeEventListener('click', check2);
+  //     window.document.getElementById('p2').removeEventListener('click', check2);
 
-    //   window.document.getElementById('i3').removeEventListener('click', check3);
-    //   window.document.getElementById('p3').removeEventListener('click', check3);
+  //     window.document.getElementById('i3').removeEventListener('click', check3);
+  //     window.document.getElementById('p3').removeEventListener('click', check3);
 
-    //   window.document.getElementById('i4').removeEventListener('click', check4);
-    //   window.document.getElementById('p4').removeEventListener('click', check4);
-    // }
-  // }, [team1checked, team2checked, team3checked, team4checked]);
+  //     window.document.getElementById('i4').removeEventListener('click', check4);
+  //     window.document.getElementById('p4').removeEventListener('click', check4);
+  //   }
+  // }, [team1checked, team2checked, team3checked, team4checked,setTeam1Checked, setTeam2Checked, setTeam3Checked, setTeam4Checked])
 
   return (
     <div className={styles.teamContainer}>
@@ -1431,163 +1432,28 @@ function MintModalLoading() {
 }
 function MintModal() {
   const [mintLoading, setMintLoading] = useState(false);
-  const [mintError, setMintError] = useState(false);
-  const [mintErrorMessage, setMintErrorMessage] = useState("");
-  const [mintSuccess, setMintSuccess] = useState(false);
-  const [mintSuccessMessage, setMintSuccessMessage] = useState("");
   const [mintButtonDisabled, setMintButtonDisabled] = useState(false);
-  
+
+  const [mintError, setMintError] = useState(false);
+  const [mintSuccess, setMintSuccess] = useState(false);
+  const [mintErrorMessage, setMintErrorMessage] = useState("");
+  const [mintSuccessMessage, setMintSuccessMessage] = useState("");
+
   const [titleText, setTitleText] = useState("Presale Mint");
   const [mintButtonText, setMintButtonText] = useState("Mint");
-  const [mintAmount, setMintAmount] = useState(1);
-  const [totalMintPrice, setTotalMintPrice] = useState(0.1);
   const [presaleData, setPresaleData] = useState({});
-  
-  const [isPresale, setIsPresale] = useState(false); //TODO change this to be based on solidity whitelist and disable buttons if not on it
-  const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10); //TO DO change to n/a before data is fetched
-  const [amountMintedAlready, setAmountMintedAlready] = useState(0);
+  const [isPresale, setIsPresale] = useState(true); 
+
   const [totalMintAmount, setTotalMintAmount] = useState(0);
-  const [pricePerNFT, setPricePerNFT] = useState(0.1);
+  const [amountMintedAlready, setAmountMintedAlready] = useState(0);
   const [publicWalletLimit, setPublicWalletLimit] = useState(0);
 
-  //purchase NFT for presale and public sales via mint button
-  //TODO IF NOT WORK Split the public and pre and then just cal them with usestate vars presale from main function component
-  const makePurchase = () => { //response is the presale allocation api response data
-    function publicPurchase() { 
-      window.contract.methods.purchase(mintAmount).send({
-        from: window.provider.selectedAddress, 
-        value: window.web3.utils.toWei(totalMintPrice, 'ether')
-      }).then(function(receipt) {
-          console.log(receipt);
-          setMintSuccess(true);
-          setMintSuccessMessage('Minted ' + receipt.events.Purchase.returnValues.length + ' tokens!');
-      }).catch(err => {
-        setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err.message);
-      });
-    }
-
-    function presalePurchase() {
-      // Solidity .sol contract presale function
-      // function presalePurchase(
-      //   uint256 _quantity, uint256 _tier, bytes32 _hash, bytes memory _signature)
-      fetchWhitelistData().then(_data => {
-        setPresaleData(_data);
-        setMaxMintForCurrentWallet(_data.allocation);
-      });
-
-      window.contract.presalePurchase(
-        mintAmount, 
-        presaleData.data.teir, 
-        presaleData.data.hash, 
-        presaleData.data.signature
-      ).send({from: window.provider.selectedAddress, 
-              value: window.web3.utils.toWei(totalMintPrice, 'ether')
-      }).then(function(receipt) {
-          console.log(receipt);
-          setMintSuccess(true);
-          setMintSuccessMessage('Minted ' + receipt.events.PresalePurchase.returnValues.length + ' tokens!');
-      }).catch(err => {
-        setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err.message);
-      });
-
-    }
-
-    function testMint() {
-      window.contract.methods.mint(1).send({from: window.provider.selectedAddress
-                    // , value: window.web3.utils.toWei(totalMintPrice.toString(), 'ether')
-      }).then(function(receipt) {
-          console.log(receipt);
-          setMintSuccess(true);
-          setMintSuccessMessage('Mint Success: https://ropsten.etherscan.io/tx/' + receipt.transactionHash);
-          
-          setMintButtonDisabled(false);
-          setMintButtonText("Mint");
-          setMintLoading(false);
-      }).catch(err => {
-        console.log(err.message)
-        setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err.message);
-
-        setMintButtonDisabled(false);
-        setMintButtonText("Mint");
-        setMintLoading(false);
-      });
-    }
-
-    if (mintAmount > 0 && totalMintPrice > 0) {
-      testMint();
-    } else {
-      setMintError(true);
-      setMintErrorMessage('Must mint more than 0 NFTs');
-    }
-    
-    if (false && mintAmount > 0 && totalMintPrice > 0) {
-      fetchIsPresale().then(data => {
-      setIsPreSale(data).then(() => {
-        if (isPresale) {
-          try {
-            response = presaleData;
-      
-            if (typeof response.data.allocation !== 'undefined') {
-              if (response.data.allocation > 0) {                
-                if (mintAmount > response.data.allocation) {
-                  alert('You can only mint up to ' + response.data.allocation + ' tokens in the presale');
-                  return;
-                }
-                if (mintAmount > 0 && typeof response.data.tier !== 'undefined' && 
-                                        typeof response.data.hash !== 'undefined' && 
-                                        typeof response.data.signature !== 'undefined') {
-                    presalePurchase(response);
-                } else {
-                  alert('Wallet not white listed for presale or presale API down', response);
-                }  
-              }
-            } else {
-              alert('Wallet not white listed for presale');
-            }
-          } catch (e) {
-            console.log('Wallet not white listed for presale or presale API down', e);
-          }
-        } else {
-          console.log('Public sale is live')
-          publicPurchase();
-        }
-      })
-      });
-    }
-  }
-  //called from mint button
-  const mint = () => {
-    if (typeof window.provider === 'undefined' ||
-        typeof window.provider.selectedAddress === 'undefined') {
-      alert('Please connect to a wallet');
-      return;
-    } else if (typeof window.contract === 'undefined') {
-      connectToContract();
-    }
-    // print total mint price, mintamount
-    console.log(totalMintPrice, mintAmount);
-    //Try to mint
-    if (window.contract) {
-      //TODO make sure we have contract data variables like public price
-      setPresaleData({});
-      setMintButtonDisabled(true);
-      setMintButtonText("Minting");
-      setMintError(false); 
-      setMintErrorMessage("");
-      setMintSuccess(false); 
-      setMintSuccessMessage("");
-      setMintLoading(true);
-
-      fetchAndSetRemoteData();
-      makePurchase();
-    } else {
-      setMintError(true);
-      setMintErrorMessage('Error connecting to ETH Contract');
-    }
-  }
+  const [mintAmount, setMintAmount] = useState(1);
+  const [totalMintPrice, setTotalMintPrice] = useState(0);
+  const [pricePerNFT, setPricePerNFT] = useState(0.01);
+  const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
+  
+  const {mintModalOpen, setMintModalOpen} = useState(false);
 
   //Fetch Contract Data & Call Whitelist API
   const fetchAndSetRemoteData = () => {
@@ -1611,39 +1477,180 @@ function MintModal() {
           if (_data.isPresale === true) {
             setTitleText('Presale Mint');
             setPricePerNFT(data.presalePrice);
-            
+
             if (window.document.getElementById('mintAmountBox') !== null) {
               const num = parseInt(window.document.getElementById('mintAmountBox').value);
               setTotalMintPrice(Math.round(num * data.presalePrice * 100) / 100);
-            } 
+            }
             //fetch presale allocation API data for wallet
             if (typeof window.provider.selectedAddress !== 'undefined') {
               fetchWhitelistData().then(__data => {
                 setPresaleData(__data);
                 setMaxMintForCurrentWallet(__data.data.allocation);
               }).catch(err => {
-                console.log('Error fetching whitelist data, setting max for wallet as public max', err.message);
-                  setMaxMintForCurrentWallet(data.publicWalletMax);
+                console.log('Error fetching whitelist data, defaulting to public max', err.message);
+                setMaxMintForCurrentWallet(data.publicWalletMax);
               });
             } else {
               setMaxMintForCurrentWallet(data.publicWalletMax);
             }
-          } else { 
+          } else { //is public sale
+            setPresaleData({}); 
             setTitleText('Public Mint'); 
             setPricePerNFT(data.publicPrice); 
-            setPresaleData({}); 
             setMaxMintForCurrentWallet(data.publicWalletMax);
             if (window.document.getElementById('mintAmountBox') !== null) {
               const num = parseInt(window.document.getElementById('mintAmountBox').value);
               setTotalMintPrice(Math.round(num * data.publicPrice * 100) / 100);
             }
           }
+        }).catch(err => {
+          console.log('Error fetching Dynamic contract data', err.message);
         });
+      }).catch(err => {
+        console.log('Error fetching contract data', err.message);
       });
     }
   }
+  //called from mint button
+  const mint = () => {
+    if (typeof window.provider === 'undefined' ||
+        typeof window.provider.selectedAddress === 'undefined') {
+      alert('Please connect to a wallet');
+      return;
+    } else if (typeof window.contract === 'undefined') {
+      connectToContract();
+    }
+    
+    //Try to mint
+    if (window.contract) {
+      fetchAndSetRemoteData(); //grab contract and whitelist data
 
-  // mint popup functions called on click events
+      if (pricePerNFT > 0.01) {
+        setMintButtonDisabled(true);
+        setMintButtonText("Minting");
+
+        setMintError(false); setMintSuccess(false); 
+        setMintErrorMessage(""); setMintSuccessMessage("");
+    
+        setMintLoading(true); //bring up loading spinner
+
+        //TODO next comment this out and see if it stops the mint
+        makePurchase();
+      } else {
+        setMintError(true);
+        setMintErrorMessage('Error connecting to ETH Contract');
+      }
+    }
+  }  
+  //purchase NFT for presale and public sales via mint button
+  const makePurchase = () => { 
+
+
+    function publicPurchase() { 
+      window.contract.methods.purchase(mintAmount).send({
+        from: window.provider.selectedAddress, 
+        value: window.web3.utils.toWei(totalMintPrice, 'ether')
+      }).then(function(receipt) {
+          console.log(receipt);
+          setMintSuccess(true);
+          setMintSuccessMessage('Minted ' + receipt.events.Purchase.returnValues.length + ' tokens!');
+          afterMintUIChanges();
+      }).catch(err => {
+        setMintError(true);
+        setMintErrorMessage('Error minting tokens: ' + err.message);
+        afterMintUIChanges();
+      });
+    }
+
+    function presalePurchase() {
+      // Solidity .sol contract presale function
+      // function presalePurchase(
+      //   uint256 _quantity, uint256 _tier, bytes32 _hash, bytes memory _signature)
+      window.contract.presalePurchase(
+        mintAmount, 
+        presaleData.data.teir, 
+        presaleData.data.hash, 
+        presaleData.data.signature
+      ).send({from: window.provider.selectedAddress, 
+              value: window.web3.utils.toWei(totalMintPrice, 'ether')
+      }).then(function(receipt) {
+          console.log(receipt);
+          setMintSuccess(true);
+          setMintSuccessMessage('Minted ' + receipt.events.PresalePurchase.returnValues.length + ' tokens!');
+          afterMintUIChanges();
+      }).catch(err => {
+        setMintError(true);
+        setMintErrorMessage('Error minting tokens: ' + err.message);
+        afterMintUIChanges();
+      });
+
+    }
+
+    function testMint() {
+      window.contract.methods.mint(mintAmount).send({
+        from: window.provider.selectedAddress//,
+        // value: window.web3.utils.toWei(totalMintPrice.toString(), 'ether')
+      }).then(function(receipt) {
+          console.log(receipt);
+          setMintSuccess(true); //todo switch ropsten to nothing and add opensea link
+          setMintSuccessMessage('Mint Success: https://ropsten.etherscan.io/tx/' + receipt.transactionHash);
+          afterMintUIChanges();
+      }).catch(err => {
+        console.log(err.message)
+        setMintError(true);
+        setMintErrorMessage('Error minting tokens: ' + err.message);
+        afterMintUIChanges();
+      });
+    }
+
+    //call mint function   
+    if (mintAmount > 0 && totalMintPrice > 0) {
+      if (isPresale) {
+        try {   
+          if (typeof presaleData.data !== 'undefined' &&
+              typeof presaleData.data.allocation !== 'undefined' &&
+              typeof presaleData.data.teir !== 'undefined' &&
+              typeof presaleData.data.hash !== 'undefined' &&
+              typeof presaleData.data.signature !== 'undefined') {
+            if (presaleData.data.allocation > 0) {                
+              if (mintAmount > presaleData.data.allocation) {
+                setMintError(true);
+                setMintErrorMessage('Error: You can only mint up to ' + presaleData.data.allocation + ' tokens in the presale');
+                afterMintUIChanges();
+                return;
+              }
+              if (mintAmount > 0) {
+                  testMint(); //TODO UNCOMMENT
+                  // presalePurchase(presaleData);
+              } else {
+                alert('Wallet not white listed for presale or presale API down', presaleData);
+              }  
+            }
+          } else {
+            alert('Wallet not whitelisted for presale');
+          }
+        } catch (err) {
+          alert('Wallet not white listed for presale or presale API down', err.message);
+        }
+      } else {
+        console.log('Public sale is live. Minting Public.')
+        testMint();
+        // publicPurchase();
+      }
+    } else {
+      setMintError(true);
+      setMintErrorMessage('Zero Mint Error: Please Reload the page and try again.');
+    }
+  }
+  //reset mint modal button, etc.
+  const afterMintUIChanges = () => {
+    setMintButtonDisabled(false);
+    setMintButtonText("Mint");
+    setMintLoading(false);
+  }  
+
+  // Plus and Minus NFT amount buttons
   const incrementMintAmountNumberBox = (maxMint) => {
     const num = parseInt(window.document.getElementById('mintAmountBox').value);
     if (num < maxMint) {
@@ -1660,12 +1667,7 @@ function MintModal() {
         Math.round((num - 1) * pricePerNFT * 100) / 100);
     }
   }
-
-  useEffect(() => {
-    editConnectButton();
-    fetchAndSetRemoteData();
-  }, []);
-
+  //click events for closing alert popups
   useEffect(() => {
     function closeAlertPopup() {
       setMintError(false);
@@ -1674,65 +1676,92 @@ function MintModal() {
       setMintSuccessMessage("");
     }
 
-    if (mintError) {
-      window.document.onclick = function(event) {
-        if (event.target === window.document.getElementById('alertBG')) {closeAlertPopup();}}
+    if (mintError === true || mintSuccess === true) {
+      // window.document.onclick = function(event) {
+      //   if (event.target === window.document.getElementById('alertBG')) {closeAlertPopup();}}
       window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
-    }
-    if (mintSuccess) {
-      window.document.onclick = function(event) {
-        if (event.target === window.document.getElementById('alertBG')) {closeAlertPopup();}}
-      window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
+      return () => {
+        window.document.getElementById('closeAlertButton').removeEventListener('click', closeAlertPopup);
+      }
     }
   }, [mintError, mintSuccess]);
 
-  
+  useEffect(() => {
+    if (mintModalOpen === true) {
+      editConnectButton();
+      fetchAndSetRemoteData();
+      return () => {
+        window.document.onclick = null;
+        window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
+        window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
+      }
+    }
+  }, []);
+
   return (
     <div>
-      { mintLoading && <MintModalLoading /> }
+      {/* conditionally rendered popups */}
+      { mintLoading && <MintModalLoading /> } {/* loading spinner */}
       { mintError   && <div className={styles.alertPopup} id='alertBG'>
                          <a>{mintErrorMessage}<div id='closeAlertButton'></div></a></div> }
       { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
                          <a>{mintSuccessMessage}<div id='closeAlertButton'></div></a></div> }
+      
+      {/* Mint Modal popup */}
       <div id='mintModal' className={styles.mintModal}>
         <div className={styles.mintModalBody}>
+
           <div className={styles.mintModalHeader}>
-            <h2>{titleText}</h2><button id='closeModalButton' className={styles.mintModalCloseButton}/>  
+            <h2>{titleText}</h2><button id='closeModalButton' 
+                                        className={styles.mintModalCloseButton}/>  
           </div>
+
           <div className={styles.mintModalHeader2}>
             <div className={styles.mintModalInputContainer}>
               <button className={styles.mintPopup_ConnectButton}
                       id='mintConnectButton'>Connect</button>
             </div>
+
             <div className={styles.mintModalHeader}>
               <div className={styles.mintModalInputContainer2}>
                 <div className={styles.mintModalSection_left}>
                   <h3>This Wallet's Max
-                    <div><h3 id='maxMint'>{isPresale || publicWalletLimit
-                                            ? maxMintForCurrentWallet.toString()
-                                            : 'No Max'
-                                          }</h3></div></h3>
+                    <div>
+                      <h3 id='maxMint'>
+                        {isPresale || publicWalletLimit
+                                    ? maxMintForCurrentWallet.toString()
+                                    : 'No Max'}
+                      </h3>
+                    </div>
+                  </h3>
                 </div>
                 <div className={styles.mintModalSection_right}>
-                  <h3>Total Minted<div><h3>{amountMintedAlready.toString()}/{totalMintAmount.toString()}</h3></div></h3>
+                  <h3>Total Minted
+                    <div>
+                      <h3>{amountMintedAlready.toString()}/{totalMintAmount.toString()}</h3>
+                    </div>
+                  </h3>
                 </div>
               </div>
             </div>
           </div>
+
           <div className={styles.mintModalInputContainer}>
             <p>Amount to Mint</p>
             <div className={styles.mintNumberBoxWithButtons}>
-              <div id='minusButton' className={styles.minusSign}
-                  onClick={() => {decrementMintAmountNumberBox();}}
+              <div id='minusButton' 
+                   className={styles.minusSign}
+                   onClick={decrementMintAmountNumberBox}
               >-</div>
               <input id='mintAmountBox' className={styles.inputNumber} 
                     value={mintAmount} type="number" disabled />
               <div id='plusButton' 
-                  className={styles.plusSign}
-                  onClick={() => {incrementMintAmountNumberBox(maxMintForCurrentWallet);}}
+                   className={styles.plusSign}
+                   onClick={() => {incrementMintAmountNumberBox(maxMintForCurrentWallet);}}
               >+</div>
             </div>
           </div>
+
           <div className={styles.mintModalInputContainer2}>
             <div className={styles.mintModalSection_left}> 
               <p>Total Price</p>
@@ -1743,6 +1772,7 @@ function MintModal() {
               <input className={styles.inputNumber2} type="text" value={pricePerNFT.toString() + ' ETH'} disabled/>
             </div>
           </div>
+
           <div className={styles.mintModalInputContainer}>
             <button id='mintButtonOnPopup' className={styles.mintModalButton} 
                     onClick={mint} disabled={mintButtonDisabled}>{mintButtonText}</button>
@@ -1757,6 +1787,13 @@ function PDFViewer() {
   function onDocumentLoadSuccess({ numPages: nextNumPages }) {
     console.log('PDF Loaded')
   }
+
+  // useEffect (() => {
+  //   return () => {
+  //     window.document.onclick = null;
+  //     window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
+  //   }
+  // }, []);
 
   return (
     <div className={styles.pdfBG} id='pdfBG'>
@@ -1987,13 +2024,10 @@ export default function Home() {
     connectWallet();
   }
   const closeMintModal = () => {
-    window.document.onclick = null;
-    window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-    window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
     setMintModalOpen(false);
   }
   useEffect(() => {
-    if (mintModalOpen) {
+    if (mintModalOpen === true) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
       window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
@@ -2003,12 +2037,10 @@ export default function Home() {
 
   //PDF Popup
   const closePDFModal = () => {
-    window.document.onclick = null;
-    window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
     setCollectorsAgreementOpen(false);
   }
   useEffect(() => {
-    if (collectorsAgreementOpen) {
+    if (collectorsAgreementOpen === true) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}
       window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);

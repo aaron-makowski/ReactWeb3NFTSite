@@ -45,6 +45,8 @@
   margin-bottom: 1.25rem;
   padding: 1.75rem 1.75rem;
   text-align: center;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 .mainContent_2 {
   padding: 0.5rem 0.5rem;
@@ -85,6 +87,8 @@
   margin-bottom: 1.75rem;
   padding: 1.75rem 1.75rem;
   color: #202020;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 .sampleNFT {
   border-radius: 0.5rem;
@@ -146,6 +150,7 @@
   margin-bottom: 0px;
   border-radius: 10px;
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
+  transition: all .2s,box-shadow .08s ease-in;
 }
 @media (max-width: 1300px) {
   .FAQItem {
@@ -200,51 +205,20 @@
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
 }
-.pdfHeader {
-  padding-top: 14px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 17px;
-  background-color: rgb(255, 209, 117);
-  color: rgb(0, 0, 0);
-  font-size: 1.2em;
-  padding-right: 1.5rem;
-  font-weight: 100;
-  font-family: 'Fredoka One', cursive;
-  font-variant : small-caps;
-  cursor: pointer;
-  display: block;
-  border-radius: 10px;
-}
-
 .pdfViewBox {
   background-color: rgb(255, 212, 55);
-  border-radius: 20px;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 90% !important;
-  height: 90% !important;
-  max-width: 550px;
-  min-height: 750px;
-  overflow: hidden;
+  width: 90%;
+  height: 90%;
+  overflow: auto;
   margin-top: 1rem;
-}
-@media (max-width: 1300px) {
-  .pdfViewBox {
-    width: 90%;
-  }
-}
-@media (max-width: 860px) {
-  .pdfViewBox {
-    width: 90%;
-  }
+  max-width: fit-content;
 }
 .pdfBG span {
   float: right;
@@ -370,6 +344,8 @@
   padding-right: 1.25rem; 
   text-align: center;
   width: 60%;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 @media (max-width: 1300px) {
   .roadmapTextBox {
@@ -404,6 +380,7 @@
   margin-top: 0.75rem;  
   margin-left: 0.25rem;  
   margin-right: 0.25rem;  
+  transition: all .2s,box-shadow .08s ease-in;
 }
 .teamMemberImage {
   border-top-left-radius: 50% 50%;
@@ -420,6 +397,8 @@
   color: #141414;
   font-family: 'Fredoka One', cursive;
   cursor: pointer;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 .teamMemberText {
   min-width: 100%;
@@ -428,6 +407,8 @@
   font-size: 1.2rem;
   color: #151515;
   font-family: 'Fredoka One', cursive;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 
 
@@ -489,6 +470,8 @@
   touch-action: manipulation;
   cursor: pointer;
   color: #242424;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 .socialButton_twitter {
   margin-top: 1rem;
@@ -500,6 +483,8 @@
   touch-action: manipulation;
   cursor: pointer;
   color: #242424;
+  transition: all .2s,box-shadow .08s ease-in;
+
 }
 @media (max-width: 815px) {
   .socialButton_discord {
@@ -651,19 +636,19 @@
 }
 .alertPopup a {
   background-color: rgb(255, 212, 55);
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: auto;
   width: 70%;
+  max-width: 90%;
   padding: 2.5rem;
+  word-wrap: break-word;
 }
 .alertPopup div::after {
   float: right;
@@ -791,7 +776,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 90%;
+  height: 80%;
   width: 90%;
   max-width: 550px;
   min-height: 750px;
