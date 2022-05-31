@@ -1431,7 +1431,7 @@ function MintModalLoading() {
 }
 function MintModal() {
   const [mintLoading, setMintLoading] = useState(false);
-  const [mintButtonDisabled, setMintButtonDisabled] = useState(false);
+  const [mintButtonDisabled, setMintButtonDisabled] = useState(true);
 
   const [mintError, setMintError] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
@@ -1521,8 +1521,7 @@ function MintModal() {
     
     //Try to mint
     if (window.contract) {
-      fetchAndSetRemoteData(); //grab contract and whitelist data
-
+      fetchAndSetRemoteData();
       if (pricePerNFT > 0.01) {
         setMintButtonDisabled(true);
         setMintButtonText("Minting");
@@ -1536,7 +1535,7 @@ function MintModal() {
         makePurchase();
       } else {
         setMintError(true);
-        setMintErrorMessage('Error connecting to ETH Contract');
+        setMintErrorMessage('Please Wait for Contract Data to load');
       }
     }
   }  
@@ -1677,7 +1676,7 @@ function MintModal() {
     }
   }, [mintError, mintSuccess]);
 
-  useEffect(() => {    
+  useEffect(() => {
     editConnectButton();
     fetchAndSetRemoteData();
   }, []);

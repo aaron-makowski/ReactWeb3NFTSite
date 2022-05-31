@@ -634,8 +634,8 @@
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
-  opacity: 1;
-  pointer-events: none;
+  /* opacity: 1;
+  pointer-events: none; */
 }
 .alertPopup a {
   background-color: rgb(255, 212, 55);
