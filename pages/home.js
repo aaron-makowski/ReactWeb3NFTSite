@@ -1036,8 +1036,7 @@ const connectWallet = () => {
 
       connectToContract();
       editConnectButton();
-    }).catch(err => {
-        alert('Error connecting to wallet', err.message);
+    }).catch(err => {  //try backups     
         if (typeof window.provider === 'undefined' ||
                 (typeof window.provider !== 'undefined' && 
                   typeof window.provider.selectedAddress === 'undefined')) {
@@ -1453,8 +1452,6 @@ function MintModal() {
   const [pricePerNFT, setPricePerNFT] = useState(0.01);
   const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
   
-  const {mintModalOpen, setMintModalOpen} = useState(false);
-
   //Fetch Contract Data & Call Whitelist API
   const fetchAndSetRemoteData = () => {
 
@@ -1675,27 +1672,14 @@ function MintModal() {
       setMintSuccess(false);
       setMintSuccessMessage("");
     }
-
     if (mintError === true || mintSuccess === true) {
-      // window.document.onclick = function(event) {
-      //   if (event.target === window.document.getElementById('alertBG')) {closeAlertPopup();}}
       window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
-      return () => {
-        window.document.getElementById('closeAlertButton').removeEventListener('click', closeAlertPopup);
-      }
     }
   }, [mintError, mintSuccess]);
 
-  useEffect(() => {
-    if (mintModalOpen === true) {
-      editConnectButton();
-      fetchAndSetRemoteData();
-      return () => {
-        window.document.onclick = null;
-        window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-        window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
-      }
-    }
+  useEffect(() => {    
+    editConnectButton();
+    fetchAndSetRemoteData();
   }, []);
 
   return (

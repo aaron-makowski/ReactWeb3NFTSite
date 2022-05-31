@@ -297,6 +297,7 @@
   margin-left: 1.5rem;
   margin-right: 1.5rem;
   font-variant : small-caps;
+  text-align: center;
 }
 .roadmapTitle {
   font-family: 'Fredoka One', cursive;
@@ -633,6 +634,8 @@
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
+  opacity: 1;
+  pointer-events: none;
 }
 .alertPopup a {
   background-color: rgb(255, 212, 55);
