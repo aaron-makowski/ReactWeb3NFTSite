@@ -11,13 +11,14 @@
   background: #000000;
 }
 
+
 .mainContent {
   align-items: left;
   border-bottom: 1px solid #000000;
 }
 .mainContentRoadmap {
-  align-items: left;
   border-bottom: 1px solid #000000;
+  transition: all .2s,box-shadow .08s ease-in;
 }
 .aboutContentBG {
   flex: 1; 
@@ -32,6 +33,7 @@
   overflow: hidden;
   width: 100%;
   object-fit: cover;
+  transition: all .2s,box-shadow .08s ease-in;
 }
 .aboutContent {
   background: rgba(255, 208, 108, 0.95);
@@ -127,6 +129,8 @@
     margin-bottom: 2rem;
   }
 }
+
+
 
 /* /roadmap */
 .FAQContainer {

@@ -5,14 +5,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Document, Page, pdfjs, View } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
 //Import Social Icons & Icon Component
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fab)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
@@ -894,7 +894,9 @@ let abi = [
 	}
 ];
 
+
 let innerWidth = 700;
+let innerHeight = 80;
 //get window width
 const useWidth = () => {
   const [innerWidth, setWidth] = useState(700); // default width, detect on server.
@@ -904,6 +906,15 @@ const useWidth = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
   return innerWidth;
+}
+const useHeight = () => {
+  const [innerHeight, setHeight] = useState(700); // default width, detect on server.
+  const handleResize2 = () => setHeight(window.innerHeight);
+  useEffect(() => {
+    window.addEventListener('resize', handleResize2);
+    return () => window.removeEventListener('resize', handleResize2);
+  }, [handleResize2]);
+  return innerHeight;
 }
 
 
@@ -1037,6 +1048,7 @@ const connectWallet = () => {
       connectToContract();
       editConnectButton();
     }).catch(err => {  //try backups     
+        alert('Fancy web3 fail (testing msg)', err.message)
         if (typeof window.provider === 'undefined' ||
                 (typeof window.provider !== 'undefined' && 
                   typeof window.provider.selectedAddress === 'undefined')) {
@@ -1186,6 +1198,7 @@ const connectWallet = () => {
       return;
     }
 
+    alert('connecting to contract (testing msg)')
     connectToContract();
     editConnectButton();
   }
@@ -1193,61 +1206,14 @@ const connectWallet = () => {
 
 
 // Fetch ETH contract data
-// Static data
-async function fetchTotalSupply() {
-  let data = await window.contract.methods.MAX_SUPPLY().call()
-  return data;
-}
-async function fetchPublicPrice() {
-  let data = await window.contract.methods.PUBLIC_PRICE().call()
-  return window.web3.utils.fromWei(data, 'ether');
-}
-async function fetchPresalePrice() {
-  let data = await window.contract.methods.PRESALE_PRICE().call()
-  return window.web3.utils.fromWei(data, 'ether')
-}
-async function fetchPublicWalletMax() {
-  let data = await window.contract.methods.PUBLIC_MINT_LIMIT().call()
-  return data;
-}
-
-//Dynamnc data
-async function fetchIsPresale() {
-  let data = await window.contract.methods.isPresale().call()
-  return data;
-}
-async function fetchTotalMinted() {
-  let data = await window.contract.methods.nextTokenId().call()
-  return data;
-}
-async function fetchPublicWalletLimit() {
-  let data = await window.contract.methods.publicWalletLimit().call()
-  return data; //BOOL TRUE IF LIMITED
-}
-
-// Unused Contract data getter functions
-async function PUBLIC_SUPPLY() {
-  let data = await window.contract.methods.PUBLIC_SUPPLY().call()
-  return data;
-}
-async function PROVENANCE_HASH() {
-  let data = await window.contract.methods.PROVENANCE_HASH().call()
-  return data;
-}
-async function fetchIsRevealed() {
-  let data = await window.contract.methods.isRevealed().call()
-  return data;
-}
-
-//call and aggregate the data from the above funcs
 async function fetchStaticData() {
-  const totalSupply = await fetchTotalSupply();
-  const publicPrice = await fetchPublicPrice();
-  const presalePrice = await fetchPresalePrice();
-  const publicWalletMax = await fetchPublicWalletMax();
+  const totalSupply = await window.contract.methods.MAX_SUPPLY().call();
+  const publicPrice = await window.web3.utils.fromWei(await window.contract.methods.PUBLIC_PRICE().call(), 'ether');
+  const presalePrice = await window.web3.utils.fromWei(await window.contract.methods.PRESALE_PRICE().call(), 'ether');
+  const publicWalletMax = await window.contract.methods.publicWalletLimit().call();
   //unused data currently:
-  const publicSupply = await PUBLIC_SUPPLY();
-  const provenanceHash = await PROVENANCE_HASH();
+  const publicSupply = await window.contract.methods.PUBLIC_SUPPLY().call();
+  const provenanceHash = await window.contract.methods.PROVENANCE_HASH().call();
 
   const staticData = {
     'totalSupply': totalSupply,
@@ -1260,11 +1226,11 @@ async function fetchStaticData() {
   return staticData;
 }
 async function fetchDynamicData() {
-  const isPresale = await fetchIsPresale();
-  const totalMinted = await fetchTotalMinted();
-  const publicWalletLimit = await fetchPublicWalletLimit();
+  const isPresale = await window.contract.methods.isPresale().call();
+  const totalMinted = await window.contract.methods.nextTokenId().call();
+  const publicWalletLimit = await window.contract.methods.PUBLIC_MINT_LIMIT().call();
   //unused data currently
-  const isRevealed = await fetchIsRevealed();
+  const isRevealed = await window.contract.methods.isRevealed().call();
 
   const dynamicData = {
     'isPresale': isPresale,
@@ -1278,7 +1244,7 @@ async function fetchDynamicData() {
 async function fetchWhitelistData() {
   // const response = await axios.post('https://APIURL/presale', 
   //                     {wallet: window.provider.selectedAddress});
-  const response = {"data":{"allocation":15,"teir":1,"hash":"sha3_325252","signature":"0x23525262"}}
+  const response = {"data":{"allocation":19,"teir":2,"hash":"sha3_32552","signature":"0x2352262"}}
   console.log('Whitelist API Response:', response);
   return response
 }
@@ -1780,6 +1746,7 @@ function PDFViewer() {
 
   return (
     <div className={styles.pdfBG} id='pdfBG'>
+      <a href='https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement' target='_blank'>Open Document</a>
       <span id='closePDFButton'>X</span>
       <Document className={styles.pdfViewBox}
                 file="/Menjis_World_Collector_Agreement.pdf"
@@ -1886,6 +1853,7 @@ function FAQSection() {
 } 
 function RoadmapPage() {
   innerWidth = useWidth();
+  innerHeight = useHeight();
 
   return (<>
 
@@ -1894,7 +1862,7 @@ function RoadmapPage() {
       <a href='/roadmap.jpg' target="_blank">
         <Image className={styles.roadmapImage} 
               src={"/roadmap.jpg"} 
-              width={1080} height='500vh'
+              width={innerWidth} height={innerHeight/2}
               alt="Menji about" 
               layout='responsive'
               objectFit="cover"/>

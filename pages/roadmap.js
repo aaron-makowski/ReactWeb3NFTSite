@@ -3,7 +3,8 @@ import styles from '../styles/Home.module.css'
 
 import { useState, useEffect } from 'react'
 
-import { NavBar, PDFViewer, RoadmapPage, FAQSection, editConnectButton, connectWallet, MintModal } from './home.js'
+import { NavBar, PDFViewer, RoadmapPage  , FAQSection, 
+         editConnectButton, connectWallet, MintModal } from './home.js'
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
@@ -14,9 +15,9 @@ export default function Home() {
     connectWallet();
   }
   const closeMintModal = () => {
-    window.document.onclick = null;
-    window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-    window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
+    // window.document.onclick = null;
+    // window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
+    // window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
     setMintModalOpen(false);
   }
   const openMintModal = () => {
@@ -29,11 +30,11 @@ export default function Home() {
       window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
       window.document.getElementById('mintConnectButton').addEventListener('click', closeAndConnect);
     }
-  }, [mintModalOpen]);
+  }, [mintModalOpen, closeMintModal, closeAndConnect]);
 
   const closePDFModal = () => {
-    window.document.onclick = null;
-    window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
+    // window.document.onclick = null;
+    // window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
     setCollectorsAgreementOpen(false);
   }
   useEffect(() => {
@@ -42,13 +43,13 @@ export default function Home() {
         if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}
       window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);
     }
-  }, [collectorsAgreementOpen]);
+  }, [collectorsAgreementOpen, closePDFModal]);
 
   //on page load
   useEffect(() => {
     editConnectButton();
     window.document.getElementById('mintButton2').addEventListener('click', openMintModal);
-  }, []);
+  }, [openMintModal]);
 
   return (
     <div className={styles.container}>
@@ -67,7 +68,7 @@ export default function Home() {
       </main>
       <div className={styles.copyright}>
         <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-        <a className={styles.pdfPopupLink} 
+        <a className={styles.pdfPopupLink}
             onClick={() => {setCollectorsAgreementOpen(true);}}>Collectors Agreement</a>
       </div>
     </div>
