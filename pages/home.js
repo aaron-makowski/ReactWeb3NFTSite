@@ -1749,13 +1749,6 @@ function PDFViewer() {
     console.log('PDF Loaded')
   }
 
-  // useEffect (() => {
-  //   return () => {
-  //     window.document.onclick = null;
-  //     window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
-  //   }
-  // }, []);
-
   return (
     <div className={styles.pdfBG} id='pdfBG'>
       <div className={styles.pdfHeader}>
@@ -2022,7 +2015,7 @@ export default function Home() {
 
   useEffect(() => {
     editConnectButton();
-    // setDefaultProvider();
+    setDefaultProvider();
   }, [])
 
   return (
