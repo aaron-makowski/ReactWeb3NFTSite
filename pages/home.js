@@ -966,6 +966,23 @@ const setDefaultProvider = () => {
     console.log('Error setting provider and web3', err.message);
   }
 }
+const switchChainToMainnet = () => {
+  // TODO change to 0x1 for launch
+  try {
+    if (window.provider.chainId !== '0x3') { 
+      window.provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: "0x3" }],
+      }).catch(err => {
+        alert('Please switch to the ETH Mainnet', err.message)
+      });
+    } else {
+      alert('Please Reload the page.');
+    }
+  } catch (err) {
+    alert('Please switch to the ETH Mainnet Network or Reload the page.')
+  }
+}
 const connectToContract = () => {
   setDefaultProvider(); //use Infura to get contract info w.o connected wallet
 
@@ -995,15 +1012,7 @@ const connectWallet = () => {
     web3Modal.connect().then(provider => {
       window.provider = provider;
       // if we are connected, switch to ROPSTEN 
-      // TODO change to 0x1 for launch
-      if (provider.chainId !== '0x3') {
-        provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: "0x3" }],
-        }).catch(err => {
-          alert('Please switch to the ETH Mainnet', err.message)
-        });
-      }
+      switchChainToMainnet();
 
       //enable provider and subscribe rto aprovider events
       if (typeof provider === 'undefined' ||
@@ -1098,15 +1107,8 @@ const connectWallet = () => {
       //switch network, if needed + set window.web3 var
       if (typeof window.provider !== 'undefined') {
         // if we are connected, switch to ROPSTEN 
-        // TODO change to 0x1 for launch
-        if (window.provider.chainId !== '0x3') {
-          window.provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: "0x3" }],
-          }).catch(err => {
-            alert('Please switch to the ETH Mainnet', err.message)
-          });
-        }
+        switchChainToMainnet();
+
 
         //set web3 var
         try { 
@@ -1175,15 +1177,8 @@ const connectWallet = () => {
 
     //switch network, if needed + set window.web3 var
     if (typeof window.provider !== 'undefined') {
-      // TODO change to 0x1 for launch
-      if (window.provider.chainId !== '0x3') {
-        window.provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: "0x3" }],
-        }).catch(err => {
-          alert('Please switch to the ETH Mainnet', err.message)
-        });
-      }
+      switchChainToMainnet();
+
 
       //set web3 var
       try { 
@@ -1291,13 +1286,17 @@ function NavBar() {
   )
 }
 function MainImage() {
+  innerWidth = useWidth();
+  innerHeight = useHeight();
   return (
-    <div className={styles.mainContent}>
-    <Image src={"/_mainart.jpg"} 
-           width={1350} height={1080} 
-           alt="Menji's World Main Art" 
-           layout='responsive'
-          //  priority={true}
+    // className={styles.mainContentRoadmap}
+    <div className={styles.mainContentRoadmap}>
+    <Image className={styles.roadmapImage} 
+          src={"/_mainart.jpg"} 
+          width={innerWidth} height={innerHeight/2}
+          alt="Menji's World Main Art" 
+          layout='responsive'
+          objectFit="cover"
            />
   </div>
   )
@@ -1418,12 +1417,15 @@ function MintModal() {
   const [pricePerNFT, setPricePerNFT] = useState(0.01);
   const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
   
+
+  const setMintPriceBoxValue = (price) => {
+    if (window.document.getElementById('mintAmountBox') !== null) {
+      const num = parseInt(window.document.getElementById('mintAmountBox').value);
+      setTotalMintPrice(Math.round(num * price * 100) / 100);
+    }
+  }
   //Fetch Contract Data & Call Whitelist API
   const fetchAndSetRemoteData = () => {
-
-    if (typeof window.contract === 'undefined') {
-      connectToContract();
-    }
 
     if (window.contract) {
       fetchStaticData().then(data => {
@@ -1431,47 +1433,42 @@ function MintModal() {
 
         //total minted + check if presale
         fetchDynamicData().then(_data => {
-          setPublicWalletLimit(_data.publicWalletLimit);
-          setAmountMintedAlready(_data.totalMinted); 
           setIsPresale(_data.isPresale);
+          setAmountMintedAlready(_data.totalMinted); 
+          setPublicWalletLimit(_data.publicWalletLimit);
 
-          // if presale or public sale
-          // then set Mint window text + NFT Price 
+          // if presale or public sale then set Mint window text + NFT Price 
           if (_data.isPresale === true) {
             setTitleText('Presale Mint');
             setPricePerNFT(data.presalePrice);
+            setMintPriceBoxValue(data.presalePrice);
 
-            if (window.document.getElementById('mintAmountBox') !== null) {
-              const num = parseInt(window.document.getElementById('mintAmountBox').value);
-              setTotalMintPrice(Math.round(num * data.presalePrice * 100) / 100);
-            }
             //fetch presale allocation API data for wallet
             if (typeof window.provider.selectedAddress !== 'undefined') {
               fetchWhitelistData().then(__data => {
                 setPresaleData(__data);
                 setMaxMintForCurrentWallet(__data.data.allocation);
               }).catch(err => {
-                console.log('Error fetching whitelist data, defaulting to public max', err.message);
                 setMaxMintForCurrentWallet(data.publicWalletMax);
+                console.log('Error fetching whitelist data, defaulting to public max', err.message);
               });
             } else {
               setMaxMintForCurrentWallet(data.publicWalletMax);
             }
+
           } else { //is public sale
             setPresaleData({}); 
             setTitleText('Public Mint'); 
             setPricePerNFT(data.publicPrice); 
+            setMintPriceBoxValue(data.publicPrice);
             setMaxMintForCurrentWallet(data.publicWalletMax);
-            if (window.document.getElementById('mintAmountBox') !== null) {
-              const num = parseInt(window.document.getElementById('mintAmountBox').value);
-              setTotalMintPrice(Math.round(num * data.publicPrice * 100) / 100);
-            }
           }
         }).catch(err => {
           console.log('Error fetching Dynamic contract data', err.message);
         });
       }).catch(err => {
-        console.log('Error fetching contract data', err.message);
+        console.log('Error fetching static contract data', err.message)
+        switchChainToMainnet();
       });
     }
   }
@@ -1481,16 +1478,15 @@ function MintModal() {
         typeof window.provider.selectedAddress === 'undefined') {
       alert('Please connect to a wallet');
       return;
-    } else if (typeof window.contract === 'undefined') {
-      connectToContract();
     }
+    
+    connectToContract();
     
     //Try to mint
     if (window.contract) {
       fetchAndSetRemoteData();
       if (pricePerNFT > 0.01) {
-        setMintButtonDisabled(true);
-        setMintButtonText("Minting");
+        setMintButtonText("Minting"); setMintButtonDisabled(true);
 
         setMintError(false); setMintSuccess(false); 
         setMintErrorMessage(""); setMintSuccessMessage("");
@@ -1863,7 +1859,7 @@ function RoadmapPage() {
         <Image className={styles.roadmapImage} 
               src={"/roadmap.jpg"} 
               width={innerWidth} height={innerHeight/2}
-              alt="Menji about" 
+              alt="Click to open Roadmap Image" 
               layout='responsive'
               objectFit="cover"/>
       </a>
@@ -1976,14 +1972,14 @@ export default function Home() {
   const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
 
   //Mint Modal Popup
-  const closeAndConnect = () => {
-    closeMintModal();
-    connectWallet();
-  }
-  const closeMintModal = () => {
-    setMintModalOpen(false);
-  }
   useEffect(() => {
+    const closeAndConnect = () => {
+      closeMintModal();
+      connectWallet();
+    }
+    const closeMintModal = () => {
+      setMintModalOpen(false);
+    }
     if (mintModalOpen === true) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
@@ -1993,10 +1989,10 @@ export default function Home() {
   }, [mintModalOpen]);
 
   //PDF Popup
-  const closePDFModal = () => {
-    setCollectorsAgreementOpen(false);
-  }
   useEffect(() => {
+    const closePDFModal = () => {
+      setCollectorsAgreementOpen(false);
+    }
     if (collectorsAgreementOpen === true) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}

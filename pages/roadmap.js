@@ -10,46 +10,48 @@ export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
   const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
 
-  const closeAndConnect = () => {
-    closeMintModal();
-    connectWallet();
-  }
-  const closeMintModal = () => {
-    // window.document.onclick = null;
-    // window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-    // window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
-    setMintModalOpen(false);
-  }
-  const openMintModal = () => {
-    setMintModalOpen(true);
-  }
+
   useEffect(() => {
+    const closeAndConnect = () => {
+      closeMintModal();
+      connectWallet();
+    }
+    const closeMintModal = () => {
+      // window.document.onclick = null;
+      // window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
+      // window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
+      setMintModalOpen(false);
+    }    
     if (mintModalOpen) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
       window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
       window.document.getElementById('mintConnectButton').addEventListener('click', closeAndConnect);
     }
-  }, [mintModalOpen, closeMintModal, closeAndConnect]);
+  }, [mintModalOpen]);
 
-  const closePDFModal = () => {
-    // window.document.onclick = null;
-    // window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
-    setCollectorsAgreementOpen(false);
-  }
+
   useEffect(() => {
+    const closePDFModal = () => {
+      // window.document.onclick = null;
+      // window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
+      setCollectorsAgreementOpen(false);
+    }
     if (collectorsAgreementOpen) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}
       window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);
     }
-  }, [collectorsAgreementOpen, closePDFModal]);
+  }, [collectorsAgreementOpen]);
 
   //on page load
   useEffect(() => {
+    const openMintModal = () => {
+      setMintModalOpen(true);
+    }
     editConnectButton();
     window.document.getElementById('mintButton2').addEventListener('click', openMintModal);
-  }, [openMintModal]);
+  }, []);
 
   return (
     <div className={styles.container}>
