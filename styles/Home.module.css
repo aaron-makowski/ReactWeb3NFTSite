@@ -228,10 +228,32 @@
   margin-top: 1rem;
   max-width: fit-content;
 }
-.pdfBG span {
+.pdfHeader {
+  display: flex;
+  background-color: rgba(255, 212, 55, 0.722);
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 3.25rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  padding-left: 2rem;
+  max-width: fit-content;
+}
+.pdfHeader span::after {
   float: right;
   right: 10%;
   cursor: pointer;
+}
+.pdfHeader a {
+  font-variant: small-caps;
+  font-size: 1.25rem;
+  margin-right: 14rem;
+  text-decoration: underline;
+  word-wrap: none;
 }
 .copyright {
   background-color: rgb(255, 171, 0);

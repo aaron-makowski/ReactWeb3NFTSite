@@ -976,11 +976,13 @@ const switchChainToMainnet = () => {
       }).catch(err => {
         alert('Please switch to the ETH Mainnet', err.message)
       });
-    } else {
-      alert('Please Reload the page.');
     }
   } catch (err) {
-    alert('Please switch to the ETH Mainnet Network or Reload the page.')
+    if (window.provider && typeof window.provider.chainId !== 'undefined') {
+      if (window.provider.chainId !== '0x3') { 
+        alert('Please switch to the ETH Mainnet Network or Reload the page.')
+      }
+    }
   }
 }
 const connectToContract = () => {
@@ -1425,7 +1427,7 @@ function MintModal() {
     }
   }
   //Fetch Contract Data & Call Whitelist API
-  const fetchAndSetRemoteData = () => {
+  const fetchAndSetRemoteData = (secondTry = false) => {
 
     if (window.contract) {
       fetchStaticData().then(data => {
@@ -1467,9 +1469,23 @@ function MintModal() {
           console.log('Error fetching Dynamic contract data', err.message);
         });
       }).catch(err => {
-        console.log('Error fetching static contract data', err.message)
-        switchChainToMainnet();
+        if (!secondTry) {
+          console.log('Error fetching static contract data', err.message)
+          switchChainToMainnet();
+          connectToContract();
+          fetchAndSetRemoteData(true);
+        } else {
+          alert('Please Reload the page. Error connecting to contract.')
+        }
       });
+    } else {
+      if (!secondTry) {
+        switchChainToMainnet();
+        connectToContract();
+        fetchAndSetRemoteData(true);
+      } else {
+        alert('Please Reload the page. Error connecting to contract.')
+      }
     }
   }
   //called from mint button
@@ -1742,8 +1758,11 @@ function PDFViewer() {
 
   return (
     <div className={styles.pdfBG} id='pdfBG'>
-      <a href='https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement' target='_blank'>Open Document</a>
-      <span id='closePDFButton'>X</span>
+      <div className={styles.pdfHeader}>
+        <a href='https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement' target='_blank'>Open Document</a>
+        <span id='closePDFButton'>X</span>
+      </div>
+
       <Document className={styles.pdfViewBox}
                 file="/Menjis_World_Collector_Agreement.pdf"
                 onLoadSuccess={onDocumentLoadSuccess}>
@@ -1755,6 +1774,7 @@ function PDFViewer() {
         />
       </Document>
       </div>
+      
   );
 }
 //Roadmap Page Sections/HTML
@@ -1999,6 +2019,11 @@ export default function Home() {
       window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);
     }
   }, [collectorsAgreementOpen]);
+
+  useEffect(() => {
+    editConnectButton();
+    // setDefaultProvider();
+  }, [])
 
   return (
     <div className={styles.container}>
