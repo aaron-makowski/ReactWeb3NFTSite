@@ -1035,27 +1035,27 @@ const connectWallet = () => {
   //ridiculously redundant code because it solved the errors
   if (typeof window === 'undefined') return;
 
-  try {
-    //Get provider
-    web3Modal = new Web3Modal({
-      network: "ropsten", //TODO change to mainnet
-      cacheProvider: false, // optional
-      providerOptions, // required
-      disableInjectedProvider: false,
-    });
-    
-    web3Modal.connect().then(provider => {
-      window.provider = provider;
-      enableProvider();
-      switchChainToMainnet();
-      setWeb3();
-      connectToContract();
-      editConnectButton();
-      return;
-    }).catch(err => {
-      alert('Trying Backup Providers (testing msg)', err.message)
-    });
+  //Get provider
+  web3Modal = new Web3Modal({
+    network: "ropsten", //TODO change to mainnet
+    cacheProvider: false, // optional
+    providerOptions, // required
+    disableInjectedProvider: false,
+  });
+  
+  web3Modal.connect().then(provider => {
+    window.provider = provider;
+    enableProvider();
+    switchChainToMainnet();
+    setWeb3();
+    connectToContract();
+    editConnectButton();
+    return;
+  }).catch(err => {
+    alert('Trying Backup Providers (testing msg)', err.message)
+  });
 
+  try {
     if (typeof window.provider === 'undefined') {
       if (typeof window.ethereum !== 'undefined') {
         window.provider = window.ethereum;
@@ -1068,17 +1068,12 @@ const connectWallet = () => {
         return;
       }
     }
-    
     //enable provider and subscribe to provider events
-    if (window.provider) {
-      enableProvider();
-      switchChainToMainnet();
-      setWeb3();
-      connectToContract();
-      editConnectButton();
-    } else {
-      alert('Failed to connect to wallet. Please reload the page.');
-    }
+    enableProvider();
+    switchChainToMainnet();
+    setWeb3();
+    connectToContract();
+    editConnectButton();
   } catch (err) {
     alert('Failed to connect to wallet. Please reload the page', err.message)
   }
