@@ -967,6 +967,20 @@ const setDefaultProvider = () => {
     console.log('Error setting provider and web3', err.message);
   }
 }
+
+const connectToContract = () => {
+  setDefaultProvider(); //use Infura to get contract info w.o connected wallet
+
+  if (typeof window.web3 !== 'undefined') {
+    try {
+      window.contract = new window.web3.eth.Contract(abi, address);
+    } catch (err) {
+      console.log('Error setting contract:', err.message);
+    }
+  } else {
+    console.log('Web3 is undefined.');
+  }
+}
 const switchChainToMainnet = () => {
   // TODO change to 0x1 for launch
   try {
@@ -984,19 +998,6 @@ const switchChainToMainnet = () => {
         alert('Please switch to the ETH Mainnet Network or Reload the page.')
       }
     }
-  }
-}
-const connectToContract = () => {
-  setDefaultProvider(); //use Infura to get contract info w.o connected wallet
-
-  if (typeof window.web3 !== 'undefined') {
-    try {
-      window.contract = new window.web3.eth.Contract(abi, address);
-    } catch (err) {
-      console.log('Error setting contract:', err.message);
-    }
-  } else {
-    console.log('Web3 is undefined.');
   }
 }
 const setWeb3 = () => {
@@ -1033,28 +1034,34 @@ const enableProvider = () => {
 const connectWallet = () => {
   //ridiculously redundant code because it solved the errors
   if (typeof window === 'undefined') return;
+
   try {
     //Get provider
-    if (typeof window.ethereum !== 'undefined') {
-      window.provider = window.ethereum;
-      alert('chose ethereum (testing msg)')
-    } else if (typeof window.web3 !== 'undefined') {
-      window.provider = window.web3.currentProvider;
-      alert('chose web3currprov (testing msg)')
-    } else { //Try Fancy Web3Modal connect
-      web3Modal = new Web3Modal({
-        network: "ropsten", //TODO change to mainnet
-        cacheProvider: false, // optional
-        providerOptions, // required
-        disableInjectedProvider: false,
-      });
-      
-      web3Modal.connect().then(provider => {
-        window.provider = provider;
-        alert('chose modal web3 (testing msg)')
-      }).catch(err => {
-        alert('Fancy web3 fail (testing msg)', err.message)
-      });
+    web3Modal = new Web3Modal({
+      network: "ropsten", //TODO change to mainnet
+      cacheProvider: false, // optional
+      providerOptions, // required
+      disableInjectedProvider: false,
+    });
+    
+    web3Modal.connect().then(provider => {
+      window.provider = provider;
+      alert('chose modal web3 (testing msg)')
+    }).catch(err => {
+      alert('Trying Backup Providers (testing msg)', err.message)
+    });
+
+    if (typeof window.provider === 'undefined') {
+      if (typeof window.ethereum !== 'undefined') {
+        window.provider = window.ethereum;
+        alert('chose ethereum (testing msg)')
+      } else if (typeof window.web3 !== 'undefined') {
+        window.provider = window.web3.currentProvider;
+        alert('chose web3currprov (testing msg)')
+      } else { //Couldnt connect to wallet
+        alert('Failed to connect to wallet, please reload and try again.')
+        return;
+      }
     }
     
     //enable provider and subscribe to provider events
@@ -1121,7 +1128,26 @@ async function fetchWhitelistData() {
   return response
 }
 
-
+function ConnectButton() {
+  return (
+    <button className={styles.navBarItem_ConnectButton} id='connectButton'
+            onClick={connectWallet}>Connect</button>
+  )
+}
+function DiscordIcon() {
+  return (
+    <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
+    </a>
+  )
+}
+function TwitterIcon() {
+  return (
+    <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
+    </a>
+  )
+}
 //Main Page Sections/HTML
 function NavBar() {
   innerWidth = useWidth();
@@ -1134,29 +1160,18 @@ function NavBar() {
                   alt="Menji's World Logo" />
       </nav>
 
-      {/* unsure why i had to double the code in each conditional render just to changethe order of the buttons*/}
       {innerWidth <= 815 && 
         <nav className={styles.navBarRight}>
-          <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
-          </a>
-          <button className={styles.navBarItem_ConnectButton} id='connectButton'
-                  onClick={connectWallet}>Connect</button>
-          <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
-          </a>
+          <DiscordIcon />
+          <ConnectButton />
+          <TwitterIcon />
         </nav>
       }
       {innerWidth > 815 && 
         <nav className={styles.navBarRight}>
-          <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
-          </a>
-          <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-            <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
-          </a>
-          <button className={styles.navBarItem_ConnectButton} id='connectButton'
-                  onClick={connectWallet}>Connect</button>
+          <DiscordIcon />
+          <TwitterIcon />
+          <ConnectButton />
         </nav>
       }
     </nav>
@@ -1165,17 +1180,18 @@ function NavBar() {
 function MainImage() {
   innerWidth = useWidth();
   innerHeight = useHeight();
+  
   return (
     // className={styles.mainContentRoadmap}
     <div className={styles.mainContentRoadmap}>
-    <Image className={styles.roadmapImage} 
-          src={"/_mainart.jpg"} 
-          width={innerWidth} height={innerHeight/2}
-          alt="Menji's World Main Art" 
-          layout='responsive'
-          objectFit="cover"
-           />
-  </div>
+      <Image className={styles.roadmapImage} 
+            src={"/_mainart.jpg"} 
+            width={innerWidth} height={innerHeight/2}
+            alt="Menji's World Main Art" 
+            layout='responsive'
+            objectFit="cover"
+            />
+    </div>
   )
 }
 function AboutMenjiSection() {
@@ -1529,11 +1545,6 @@ function MintModal() {
     }
   }, [mintError, mintSuccess]);
 
-  useEffect(() => {
-    editConnectButton();
-    fetchAndSetRemoteData();
-  }, []);
-
   return (
     <div>
       {/* conditionally rendered popups */}
@@ -1544,7 +1555,12 @@ function MintModal() {
                          <a>{mintSuccessMessage}<div id='closeAlertButton'></div></a></div> }
       
       {/* Mint Modal popup */}
-      <div id='mintModal' className={styles.mintModal}>
+      {/* onload */}
+      
+      <div id='mintModal' className={styles.mintModal} onLoad={() => {
+            editConnectButton();
+            fetchAndSetRemoteData();
+      }}>
         <div className={styles.mintModalBody}>
 
           <div className={styles.mintModalHeader}>
@@ -1888,13 +1904,11 @@ export default function Home() {
     }
   }, [collectorsAgreementOpen]);
 
-  useEffect(() => {
-    editConnectButton();
-    setDefaultProvider();
-  }, [])
-
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onLoad={() => {
+      editConnectButton();
+      setDefaultProvider();
+    }}>
       <Head>
         <title>MENJi's World NFT Drop</title>
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
