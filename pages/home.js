@@ -1008,7 +1008,7 @@ const setWeb3 = () => {
   }
 }
 const enableProvider = () => {
-  window.provider.enable().then(() => { 
+  // window.provider.enable().then(() => { 
     console.log('Selected Address:', window.provider.selectedAddress)
 
     window.provider.on("accountsChanged", (accounts) => {
@@ -1027,9 +1027,9 @@ const enableProvider = () => {
         alert('Please Switch to the Ethereum Mainnet Network'); 
       }
     });
-  }).catch(err => {
-    alert('Error enabling provider', err.message);
-  });
+  // }).catch(err => {
+  //   alert('Error enabling provider', err.message);
+  // });
 }
 const connectWallet = () => {
   //ridiculously redundant code because it solved the errors
