@@ -1052,31 +1052,30 @@ const connectWallet = () => {
     editConnectButton();
     return;
   }).catch(err => {
-    alert('Trying Backup Providers (testing msg)', err.message)
-  });
-
-  try {
-    if (typeof window.provider === 'undefined') {
-      if (typeof window.ethereum !== 'undefined') {
-        window.provider = window.ethereum;
-        alert('chose ethereum (testing msg)')
-      } else if (typeof window.web3 !== 'undefined') {
-        window.provider = window.web3.currentProvider;
-        alert('chose web3currprov (testing msg)')
-      } else { //Couldnt connect to wallet
-        alert('Failed to connect to wallet, please reload and try again.')
-        return;
+    alert(err.message.toString())
+    try {
+      if (typeof window.provider === 'undefined') {
+        if (typeof window.ethereum !== 'undefined') {
+          window.provider = window.ethereum;
+          alert('chose ethereum (testing msg)')
+        } else if (typeof window.web3 !== 'undefined') {
+          window.provider = window.web3.currentProvider;
+          alert('chose web3currprov (testing msg)')
+        } else { //Couldnt connect to wallet
+          alert('Failed to connect to wallet, please reload and try again.')
+          return;
+        }
       }
+      //enable provider and subscribe to provider events
+      enableProvider();
+      switchChainToMainnet();
+      setWeb3();
+      connectToContract();
+      editConnectButton();
+    } catch (err) {
+      alert(err.message.toString())
     }
-    //enable provider and subscribe to provider events
-    enableProvider();
-    switchChainToMainnet();
-    setWeb3();
-    connectToContract();
-    editConnectButton();
-  } catch (err) {
-    alert('Failed to connect to wallet. Please reload the page', err.message)
-  }
+  });
 }
 
 
