@@ -1046,7 +1046,12 @@ const connectWallet = () => {
     
     web3Modal.connect().then(provider => {
       window.provider = provider;
-      alert('chose modal web3 (testing msg)')
+      enableProvider();
+      switchChainToMainnet();
+      setWeb3();
+      connectToContract();
+      editConnectButton();
+      return;
     }).catch(err => {
       alert('Trying Backup Providers (testing msg)', err.message)
     });
@@ -1067,20 +1072,16 @@ const connectWallet = () => {
     //enable provider and subscribe to provider events
     if (window.provider) {
       enableProvider();
-      alert('1 (testing msg)')
       switchChainToMainnet();
-      alert('2 (testing msg)')
       setWeb3();
-      alert('3 (testing msg)')
       connectToContract();
-      alert('4 (testing msg)')
+      editConnectButton();
     } else {
       alert('Failed to connect to wallet. Please reload the page.');
     }
   } catch (err) {
     alert('Failed to connect to wallet. Please reload the page', err.message)
   }
-  editConnectButton();
 }
 
 
