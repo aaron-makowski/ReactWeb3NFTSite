@@ -1008,33 +1008,34 @@ const setWeb3 = () => {
   }
 }
 const enableProvider = () => {
-  // window.provider.enable().then(() => { 
-    console.log('Selected Address:', window.provider.selectedAddress)
+  try {
+    window.provider.enable().then(() => { 
+      console.log('Selected Address:', window.provider.selectedAddress)
 
-    window.provider.on("accountsChanged", (accounts) => {
-      editConnectButton();
-      console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
+      window.provider.on("accountsChanged", (accounts) => {
+        editConnectButton();
+        console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
+      });
+      window.provider.on("chainChanged", (chainId) => {
+        console.log('Chain changed to', chainId);
+        if (chainId != 1) {
+          alert('Please Switch to the Ethereum Mainnet Network'); 
+        }
+      });
+      window.provider.on("connect", (info) => {
+        console.log('Connected to Wallet:', info);
+        if (info.chainId != 1) {
+          alert('Please Switch to the Ethereum Mainnet Network'); 
+        }
+      });
+    }).catch(err => {
+      alert('Error provider.on', err.message);
     });
-    window.provider.on("chainChanged", (chainId) => {
-      console.log('Chain changed to', chainId);
-      if (chainId != 1) {
-        alert('Please Switch to the Ethereum Mainnet Network'); 
-      }
-    });
-    window.provider.on("connect", (info) => {
-      console.log('Connected to Wallet:', info);
-      if (info.chainId != 1) {
-        alert('Please Switch to the Ethereum Mainnet Network'); 
-      }
-    });
-  // }).catch(err => {
-  //   alert('Error enabling provider', err.message);
-  // });
+  } catch (err) {
+    alert('Error enabling provider', err.message);
+  }
 }
-const connectWallet = () => {
-  //ridiculously redundant code because it solved the errors
-  if (typeof window === 'undefined') return;
-
+const connectModalWeb3 = () => {
   //Get provider
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
@@ -1045,37 +1046,47 @@ const connectWallet = () => {
   
   web3Modal.connect().then(provider => {
     window.provider = provider;
+  }).catch(err => {
+    alert(err.message.toString())
+  });
+}
+const connectBackupProviders  = () => {
+  try {
+    if (typeof window.provider === 'undefined') {
+      if (typeof window.ethereum !== 'undefined') {
+        window.provider = window.ethereum;
+        alert('chose ethereum (testing msg)')
+      } else if (typeof window.web3 !== 'undefined') {
+        window.provider = window.web3.currentProvider;
+        alert('chose web3currprov (testing msg)')
+      } else { //Couldnt connect to wallet
+        alert('Failed to connect to wallet, please reload and try again.')
+        return;
+      }
+    }
+  } catch (err) {
+    alert(err.message.toString())
+  }
+}
+const connectWallet = () => {
+  if (typeof window === 'undefined') return;
+
+  connectModalWeb3();
+  try {
     enableProvider();
     switchChainToMainnet();
     setWeb3();
     connectToContract();
     editConnectButton();
-    return;
-  }).catch(err => {
+  } catch (err) {
     alert(err.message.toString())
-    try {
-      if (typeof window.provider === 'undefined') {
-        if (typeof window.ethereum !== 'undefined') {
-          window.provider = window.ethereum;
-          alert('chose ethereum (testing msg)')
-        } else if (typeof window.web3 !== 'undefined') {
-          window.provider = window.web3.currentProvider;
-          alert('chose web3currprov (testing msg)')
-        } else { //Couldnt connect to wallet
-          alert('Failed to connect to wallet, please reload and try again.')
-          return;
-        }
-      }
-      //enable provider and subscribe to provider events
-      enableProvider();
-      switchChainToMainnet();
-      setWeb3();
-      connectToContract();
-      editConnectButton();
-    } catch (err) {
-      alert(err.message.toString())
-    }
-  });
+    connectBackupProviders();
+    enableProvider();
+    switchChainToMainnet();
+    setWeb3();
+    connectToContract();
+    editConnectButton();
+  } 
 }
 
 
