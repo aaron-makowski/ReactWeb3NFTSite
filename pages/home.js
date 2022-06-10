@@ -900,201 +900,150 @@ let innerWidth = 700;
 let innerHeight = 80;
 //get window width
 const useWidth = () => {
-  const [innerWidth, setWidth] = useState(700); // default width, detect on server.
+  const [_innerWidth, setWidth] = useState(700); // default width, detect on server.
   const handleResize = () => setWidth(window.innerWidth);
   useEffect(() => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
-  return innerWidth;
+  return _innerWidth;
 }
 const useHeight = () => {
-  const [innerHeight, setHeight] = useState(700); // default width, detect on server.
+  const [_innerHeight, setHeight] = useState(700); // default width, detect on server.
   const handleResize2 = () => setHeight(window.innerHeight);
   useEffect(() => {
     window.addEventListener('resize', handleResize2);
     return () => window.removeEventListener('resize', handleResize2);
   }, [handleResize2]);
-  return innerHeight;
+  return _innerHeight;
 }
 
 
 //Web3 - connect wallet & connect to eth contract
-const editConnectButton = () => {
+const editAddressForConnectButton = (address) => {
   try {
-    if (typeof window.provider !== 'undefined') {
-      if (typeof window.provider.selectedAddress !== 'undefined') {
-        document.getElementById('connectButton').innerText = window.provider.selectedAddress.substr(0, 4) 
-                                + '....' + window.provider.selectedAddress.substr(window.provider.selectedAddress.length - 4, 4);
-        if (document.getElementById('mintConnectButton')) {
-            document.getElementById('mintConnectButton').innerText = window.provider.selectedAddress.substr(0, 4) 
-                   + '....' + window.provider.selectedAddress.substr(window.provider.selectedAddress.length - 4, 4);
-        }
-      } else { 
-        document.getElementById('connectButton').innerText = "Connect"; 
-        if (document.getElementById('mintConnectButton')) {
-          document.getElementById('mintConnectButton').innerText = "Connect"; 
-        }
-      } 
-    }
+    if (typeof address !== 'undefined' && address.length > 12) {
+        return address.substr(0, 4) + '....' + address.substr(address.length - 4, 4);
+    } 
   } catch (error) {
     console.log('Error setting connect button text', error.message);
   }
+  return "Connect";
 }
 //Use Infura as default
 const setDefaultProvider = () => {
-  if (typeof window.provider !== 'undefined' &&
-      typeof window.web3 !== 'undefined') {
-    return;
-  }
-
-  try {
-    window.provider = new Web3.providers.HttpProvider(
-      'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
-      //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
-  } catch (err) {
-    console.log('Failed to set Infura as default walletless provider', err.message);
-  } 
-  
-  try {
-    if (typeof window.provider !== 'undefined') {
-      window.web3 = new Web3(window.provider);
-      // window.provider.enable().catch(function(err) {
-      //   console.log('Error enabling', err.message);
-      // });
-    }
-  } catch (err) {
-    console.log('Error setting provider and web3', err.message);
-  }
+  return new Web3.providers.HttpProvider(
+    'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
+    //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
 }
-
-const connectToContract = () => {
-  setDefaultProvider(); //use Infura to get contract info w.o connected wallet
-
-  if (typeof window.web3 !== 'undefined') {
-    try {
-      window.contract = new window.web3.eth.Contract(abi, address);
-    } catch (err) {
-      console.log('Error setting contract:', err.message);
-    }
-  } else {
-    console.log('Web3 is undefined.');
-  }
+const connectToContract = (web3) => {
+  window.contract = new web3.eth.Contract(abi, address);
 }
-const switchChainToMainnet = () => {
-  // TODO change to 0x1 for launch
-  try {
-    if (window.provider.chainId !== '0x3') { 
-      window.provider.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: "0x3" }],
-      }).catch(err => {
-        alert('Please switch to the ETH Mainnet', err.message)
-      });
-    }
-  } catch (err) {
-    if (window.provider && typeof window.provider.chainId !== 'undefined') {
-      if (window.provider.chainId !== '0x3') { 
-        alert('Please switch to the ETH Mainnet Network or Reload the page.')
-      }
-    }
-  }
-}
-const setWeb3 = () => {
-  try { //set web3 var
-    window.web3 = new Web3(window.provider);
-  } catch (err) {
-    alert('Failed create web3 instance:', err.message);
-  }
-}
-const enableProvider = () => {
-  try {
-    window.provider.enable().then(() => { 
-      console.log('Selected Address:', window.provider.selectedAddress)
-
-      window.provider.on("accountsChanged", (accounts) => {
-        editConnectButton();
-        console.log('Selected Address:', window.provider.selectedAddress, accounts[0])
-      });
-      window.provider.on("chainChanged", (chainId) => {
-        console.log('Chain changed to', chainId);
-        if (chainId != 1) {
-          alert('Please Switch to the Ethereum Mainnet Network'); 
-        }
-      });
-      window.provider.on("connect", (info) => {
-        console.log('Connected to Wallet:', info);
-        if (info.chainId != 1) {
-          alert('Please Switch to the Ethereum Mainnet Network'); 
-        }
-      });
+const switchChainToMainnet = (provider) => {
+  if (provider.chainId !== '0x3') { 
+    provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: "0x3" }],
     }).catch(err => {
-      alert('Error provider.on', err.message);
+      alert('Please switch to the ETH Mainnet', err.message)
     });
-  } catch (err) {
-    alert('Error enabling provider', err.message);
   }
 }
-const connectModalWeb3 = () => {
-  //Get provider
-  web3Modal = new Web3Modal({
-    network: "ropsten", //TODO change to mainnet
-    cacheProvider: false, // optional
-    providerOptions, // required
-    disableInjectedProvider: false,
-  });
-  
-  web3Modal.connect().then(provider => {
-    window.provider = provider;
-  }).catch(err => {
-    alert(err.message.toString())
-  });
-}
-const connectBackupProviders  = () => {
-  try {
-    if (typeof window.provider === 'undefined') {
-      if (typeof window.ethereum !== 'undefined') {
-        window.provider = window.ethereum;
-        alert('chose ethereum (testing msg)')
-      } else if (typeof window.web3 !== 'undefined') {
-        window.provider = window.web3.currentProvider;
-        alert('chose web3currprov (testing msg)')
-      } else { //Couldnt connect to wallet
-        alert('Failed to connect to wallet, please reload and try again.')
-        return;
+const enableProvider = (provider) => {
+  alert('Enabling provider');
+  provider.enable().then(() => { 
+    console.log('Selected Address:', provider.selectedAddress)
+
+    provider.on("accountsChanged", (accounts) => {
+      editAddressForConnectButton(accounts[0]);
+      console.log('Selected Address:', provider.selectedAddress)
+    });
+    provider.on("chainChanged", (chainId) => {
+      console.log('Chain changed to', chainId);
+      if (chainId != 1) {
+        alert('Please Switch to the Ethereum Mainnet Network'); 
       }
-    }
-  } catch (err) {
-    alert(err.message.toString())
+    });
+    provider.on("connect", (info) => {
+      console.log('Connected to Wallet:', info);
+      if (info.chainId != 1) {
+        alert('Please Switch to the Ethereum Mainnet Network'); 
+      }
+    });
+  });
+}
+const connectBackupProviders = () => {
+  if (typeof window.ethereum !== 'undefined') {
+    alert('chose ethereum (testing msg)')
+    return window.ethereum;
+  } else if (typeof window.web3 !== 'undefined') {
+    alert('chose web3currprov (testing msg)')
+    return window.web3.currentProvider;
+  } else { //Couldnt connect to wallet
+    alert('Failed to connect to wallet, please reload and try again.')
   }
 }
-const connectWallet = () => {
-  if (typeof window === 'undefined') return;
+function ConnectButton() {
+  const [address, setAddress] = useState("Connect");
 
-  connectModalWeb3();
-  try {
-    enableProvider();
-    switchChainToMainnet();
-    setWeb3();
-    connectToContract();
-    editConnectButton();
-  } catch (err) {
-    alert(err.message.toString())
-    connectBackupProviders();
-    enableProvider();
-    switchChainToMainnet();
-    setWeb3();
-    connectToContract();
-    editConnectButton();
-  } 
+  const connectWallet = () => { 
+    try {
+      //Get provider
+      web3Modal = new Web3Modal({
+        network: "ropsten", //TODO change to mainnet
+        cacheProvider: false, // optional
+        providerOptions, // required
+        disableInjectedProvider: false,
+      });
+      
+      web3Modal.connect().then(provider => {
+        alert('Connected to wallet modal 3');
+        window.provider = provider;
+
+        setAddress(editAddressForConnectButton(provider.selectedAddress));
+        console.log(provider.selectedAddress);
+        enableProvider(provider);
+        switchChainToMainnet(provider);
+        let web3 = new Web3(provider);
+        window._web3 = web3;
+        connectToContract(web3);
+      }).catch(err => {
+        alert(err.message);
+        let _provider = connectBackupProviders();
+        window.provider = _provider;
+
+        let web3 = new Web3(_provider);
+        window._web3 = web3;
+        connectToContract(web3);
+      });
+    } catch (error) {
+      alert('Backup providers 2', err.message);
+      let _provider = connectBackupProviders();
+      window.provider = _provider;
+
+      let web3 = new Web3(_provider);
+      window._web3 = web3;
+      connectToContract(web3);
+    }
+  }
+
+  useEffect(() => {
+    if (window.provider && typeof window.provider.selectedAddress !== 'undefined') {
+      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+    }
+  }, []);
+
+  return (
+    <button className={styles.navBarItem_ConnectButton} id='connectButton'
+            onClick={connectWallet}>{address}</button>
+  )
 }
-
 
 // Fetch ETH contract data
 async function fetchStaticData() {
   const totalSupply = await window.contract.methods.MAX_SUPPLY().call();
-  const publicPrice = await window.web3.utils.fromWei(await window.contract.methods.PUBLIC_PRICE().call(), 'ether');
-  const presalePrice = await window.web3.utils.fromWei(await window.contract.methods.PRESALE_PRICE().call(), 'ether');
+  const publicPrice = await window._web3.utils.fromWei(await window.contract.methods.PUBLIC_PRICE().call(), 'ether');
+  const presalePrice = await window._web3.utils.fromWei(await window.contract.methods.PRESALE_PRICE().call(), 'ether');
   const publicWalletMax = await window.contract.methods.publicWalletLimit().call();
   //unused data currently:
   const publicSupply = await window.contract.methods.PUBLIC_SUPPLY().call();
@@ -1134,12 +1083,6 @@ async function fetchWhitelistData() {
   return response
 }
 
-function ConnectButton() {
-  return (
-    <button className={styles.navBarItem_ConnectButton} id='connectButton'
-            onClick={connectWallet}>Connect</button>
-  )
-}
 function DiscordIcon() {
   return (
     <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
@@ -1293,7 +1236,8 @@ function MintModalLoading() {
     </div>
   )
 }
-function MintModal() {
+//accept a callback function to be called when the modal is closed
+function MintModal(props) {
   const [mintLoading, setMintLoading] = useState(false);
   const [mintButtonDisabled, setMintButtonDisabled] = useState (false);
 
@@ -1315,7 +1259,48 @@ function MintModal() {
   const [totalMintPrice, setTotalMintPrice] = useState(0);
   const [pricePerNFT, setPricePerNFT] = useState(0.01);
   const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
-  
+  const [address, setAddress] = useState("Connect");
+
+  const connectWallet = () => { 
+    try {
+      //Get provider
+      web3Modal = new Web3Modal({
+        network: "ropsten", //TODO change to mainnet
+        cacheProvider: false, // optional
+        providerOptions, // required
+        disableInjectedProvider: false,
+      });
+      
+      web3Modal.connect().then(provider => {
+        alert('Connected to wallet modal 3');
+        window.provider = provider;
+
+        setAddress(editAddressForConnectButton(provider.selectedAddress));
+        console.log(provider.selectedAddress);
+        enableProvider(provider);
+        switchChainToMainnet(provider);
+        let web3 = new Web3(provider);
+        window._web3 = web3;
+        connectToContract(web3);
+      }).catch(err => {
+        alert(err.message);
+        let _provider = connectBackupProviders();
+        window.provider = _provider;
+
+        let web3 = new Web3(_provider);
+        window._web3 = web3;
+        connectToContract(web3);
+      });
+    } catch (error) {
+      alert('Backup providers 2', err.message);
+      let _provider = connectBackupProviders();
+      window.provider = _provider;
+
+      let web3 = new Web3(_provider);
+      window._web3 = web3;
+      connectToContract(web3);
+    }
+  }
 
   const setMintPriceBoxValue = (price) => {
     if (window.document.getElementById('mintAmountBox') !== null) {
@@ -1354,7 +1339,6 @@ function MintModal() {
             } else {
               setMaxMintForCurrentWallet(data.publicWalletMax);
             }
-
           } else { //is public sale
             setPresaleData({}); 
             setTitleText('Public Mint'); 
@@ -1368,8 +1352,8 @@ function MintModal() {
       }).catch(err => {
         if (!secondTry) {
           console.log('Error fetching static contract data', err.message)
-          switchChainToMainnet();
-          connectToContract();
+          switchChainToMainnet(window.provider);
+          connectToContract(window._web3);
           fetchAndSetRemoteData(true);
         } else {
           alert('Please Reload the page. Error connecting to contract.')
@@ -1377,8 +1361,8 @@ function MintModal() {
       });
     } else {
       if (!secondTry) {
-        switchChainToMainnet();
-        connectToContract();
+        switchChainToMainnet(window.provider);
+        connectToContract(window._web3);
         fetchAndSetRemoteData(true);
       } else {
         alert('Please Reload the page. Error connecting to contract.')
@@ -1388,12 +1372,13 @@ function MintModal() {
   //called from mint button
   const mint = () => {
     if (typeof window.provider === 'undefined' ||
-        typeof window.provider.selectedAddress === 'undefined') {
+        typeof window.provider.selectedAddress === 'undefined' ||
+        typeof window._web3 === 'undefined') {
       alert('Please connect to a wallet');
       return;
     }
     
-    connectToContract();
+    connectToContract(window._web3);
     
     //Try to mint
     if (window.contract) {
@@ -1421,7 +1406,7 @@ function MintModal() {
     function publicPurchase() { 
       window.contract.methods.purchase(mintAmount).send({
         from: window.provider.selectedAddress, 
-        value: window.web3.utils.toWei(totalMintPrice, 'ether')
+        value: window._web3.utils.toWei(totalMintPrice, 'ether')
       }).then(function(receipt) {
           console.log(receipt);
           setMintSuccess(true);
@@ -1444,7 +1429,7 @@ function MintModal() {
         presaleData.data.hash, 
         presaleData.data.signature
       ).send({from: window.provider.selectedAddress, 
-              value: window.web3.utils.toWei(totalMintPrice, 'ether')
+              value: window._web3.utils.toWei(totalMintPrice, 'ether')
       }).then(function(receipt) {
           console.log(receipt);
           setMintSuccess(true);
@@ -1461,7 +1446,7 @@ function MintModal() {
     function testMint() {
       window.contract.methods.mint(mintAmount).send({
         from: window.provider.selectedAddress//,
-        // value: window.web3.utils.toWei(totalMintPrice.toString(), 'ether')
+        // value: window._web3.utils.toWei(totalMintPrice.toString(), 'ether')
       }).then(function(receipt) {
           console.log(receipt);
           setMintSuccess(true); //todo switch ropsten to nothing and add opensea link
@@ -1551,6 +1536,13 @@ function MintModal() {
     }
   }, [mintError, mintSuccess]);
 
+
+  useEffect(() => {
+    if (window.provider && typeof window.provider.selectedAddress !== 'undefined') {
+      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+    }
+  }, []);
+
   return (
     <div>
       {/* conditionally rendered popups */}
@@ -1564,8 +1556,7 @@ function MintModal() {
       {/* onload */}
       
       <div id='mintModal' className={styles.mintModal} onLoad={() => {
-            editConnectButton();
-            fetchAndSetRemoteData();
+        fetchAndSetRemoteData();
       }}>
         <div className={styles.mintModalBody}>
 
@@ -1577,7 +1568,10 @@ function MintModal() {
           <div className={styles.mintModalHeader2}>
             <div className={styles.mintModalInputContainer}>
               <button className={styles.mintPopup_ConnectButton}
-                      id='mintConnectButton'>Connect</button>
+                      id='mintConnectButton'
+                      onClick={() => {
+                        props.setConnectModalOpen(false);
+                        connectWallet();}}>{address}</button>
             </div>
 
             <div className={styles.mintModalHeader}>
@@ -1873,20 +1867,16 @@ function RoadmapPage() {
     </>)
 }
 //roadmap.js needs these functions exported to be able to render
-export { NavBar, PDFViewer, MintModal, FAQSection, RoadmapPage, editConnectButton, connectWallet };
+export { NavBar, PDFViewer, MintModal, FAQSection, RoadmapPage, setDefaultProvider };
 
 
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
   const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
-
+  
   //Mint Modal Popup
   useEffect(() => {
-    const closeAndConnect = () => {
-      closeMintModal();
-      connectWallet();
-    }
     const closeMintModal = () => {
       setMintModalOpen(false);
     }
@@ -1894,7 +1884,6 @@ export default function Home() {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
       window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
-      window.document.getElementById('mintConnectButton').addEventListener('click', closeAndConnect);
     }
   }, [mintModalOpen]);
 
@@ -1912,8 +1901,10 @@ export default function Home() {
 
   return (
     <div className={styles.container} onLoad={() => {
-      editConnectButton();
-      setDefaultProvider();
+      if (typeof window.provider !== 'undefined' && 
+          typeof window.provider.selectedAddess !== 'undefined') {
+        window.provider = setDefaultProvider(); 
+      }
     }}>
       <Head>
         <title>MENJi's World NFT Drop</title>
@@ -1924,7 +1915,7 @@ export default function Home() {
       { collectorsAgreementOpen && <PDFViewer /> }
 
       {/* Takes over page when Mint Button clicked */}
-      { mintModalOpen && <MintModal /> }
+      { mintModalOpen && <MintModal setConnectModalOpen={setMintModalOpen}/> }
 
       <NavBar />  {/* At top of both pages: Logo + Connect button + Social Buttons*/}
       <MainImage />

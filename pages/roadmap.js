@@ -3,38 +3,26 @@ import styles from '../styles/Home.module.css'
 
 import { useState, useEffect } from 'react'
 
-import { NavBar, PDFViewer, RoadmapPage  , FAQSection, 
-         editConnectButton, connectWallet, MintModal } from './home.js'
+import { NavBar, PDFViewer, RoadmapPage, FAQSection, MintModal, setDefaultProvider } from './home.js'
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
   const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
 
-
   useEffect(() => {
-    const closeAndConnect = () => {
-      closeMintModal();
-      connectWallet();
-    }
     const closeMintModal = () => {
-      // window.document.onclick = null;
-      // window.document.getElementById('closeModalButton').removeEventListener('click', closeMintModal);
-      // window.document.getElementById('mintConnectButton').removeEventListener('click', closeAndConnect);
       setMintModalOpen(false);
-    }    
+    }
     if (mintModalOpen) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
       window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
-      window.document.getElementById('mintConnectButton').addEventListener('click', closeAndConnect);
     }
   }, [mintModalOpen]);
 
 
   useEffect(() => {
     const closePDFModal = () => {
-      // window.document.onclick = null;
-      // window.document.getElementById('closePDFButton').removeEventListener('click', closePDFModal);
       setCollectorsAgreementOpen(false);
     }
     if (collectorsAgreementOpen) {
@@ -49,19 +37,23 @@ export default function Home() {
     const openMintModal = () => {
       setMintModalOpen(true);
     }
-    editConnectButton();
     window.document.getElementById('mintButton2').addEventListener('click', openMintModal);
   }, []);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onLoad={() => {
+      if (typeof window.provider !== 'undefined' && 
+          typeof window.provider.selectedAddess !== 'undefined') {
+        window.provider = setDefaultProvider(); 
+      }
+    }}>
       <Head>
         <title>MENJi's World NFT Drop</title>
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       { collectorsAgreementOpen && <PDFViewer /> }
-      { mintModalOpen && <MintModal /> } {/* Takes over page when Mint Button clicked */}
+      { mintModalOpen && <MintModal setConnectModalOpen={setMintModalOpen}/> } {/* Takes over page when Mint Button clicked */}
 
       <NavBar />
       <main>{/* Theoretically useful for SEO */}
