@@ -940,7 +940,7 @@ const connectToContract = (web3) => {
   window.contract = new web3.eth.Contract(abi, address);
 }
 const switchChainToMainnet = (provider) => {
-  if (provider.chainId !== '0x3') { 
+  if (provider && provider.chainId && provider.chainId !== '0x3') { 
     provider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: "0x3" }],
@@ -952,18 +952,18 @@ const switchChainToMainnet = (provider) => {
 const enableProvider = (provider) => {
   alert('Enabling provider');
   provider.enable().then(() => { 
-    console.log('Selected Address:', provider.selectedAddress)
-
     provider.on("accountsChanged", (accounts) => {
       editAddressForConnectButton(accounts[0]);
       console.log('Selected Address:', provider.selectedAddress)
     });
+
     provider.on("chainChanged", (chainId) => {
       console.log('Chain changed to', chainId);
       if (chainId != 1) {
         alert('Please Switch to the Ethereum Mainnet Network'); 
       }
     });
+
     provider.on("connect", (info) => {
       console.log('Connected to Wallet:', info);
       if (info.chainId != 1) {
@@ -983,61 +983,7 @@ const connectBackupProviders = () => {
     alert('Failed to connect to wallet, please reload and try again.')
   }
 }
-function ConnectButton() {
-  const [address, setAddress] = useState("Connect");
 
-  const connectWallet = () => { 
-    try {
-      //Get provider
-      web3Modal = new Web3Modal({
-        network: "ropsten", //TODO change to mainnet
-        cacheProvider: false, // optional
-        providerOptions, // required
-        disableInjectedProvider: false,
-      });
-      
-      web3Modal.connect().then(provider => {
-        alert('Connected to wallet modal 3');
-        window.provider = provider;
-
-        setAddress(editAddressForConnectButton(provider.selectedAddress));
-        console.log(provider.selectedAddress);
-        enableProvider(provider);
-        switchChainToMainnet(provider);
-        let web3 = new Web3(provider);
-        window._web3 = web3;
-        connectToContract(web3);
-      }).catch(err => {
-        alert(err.message);
-        let _provider = connectBackupProviders();
-        window.provider = _provider;
-
-        let web3 = new Web3(_provider);
-        window._web3 = web3;
-        connectToContract(web3);
-      });
-    } catch (error) {
-      alert('Backup providers 2', err.message);
-      let _provider = connectBackupProviders();
-      window.provider = _provider;
-
-      let web3 = new Web3(_provider);
-      window._web3 = web3;
-      connectToContract(web3);
-    }
-  }
-
-  useEffect(() => {
-    if (window.provider && typeof window.provider.selectedAddress !== 'undefined') {
-      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
-    }
-  }, []);
-
-  return (
-    <button className={styles.navBarItem_ConnectButton} id='connectButton'
-            onClick={connectWallet}>{address}</button>
-  )
-}
 
 // Fetch ETH contract data
 async function fetchStaticData() {
@@ -1238,157 +1184,97 @@ function MintModalLoading() {
 }
 //accept a callback function to be called when the modal is closed
 function MintModal(props) {
+  const [titleText, setTitleText] = useState("Presale Mint");
+  const [mintAmount, setMintAmount] = useState(1);
+  const [pricePerNFT, setPricePerNFT] = useState(0.01);
+  const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
+  const [presaleData, setPresaleData] = useState({});
+  const [isPresale, setIsPresale] = useState(true); 
+  const [totalMintAmount, setTotalMintAmount] = useState(0);
+  const [amountMintedAlready, setAmountMintedAlready] = useState(0);
+  const [publicWalletLimit, setPublicWalletLimit] = useState(0);  
+
   const [mintLoading, setMintLoading] = useState(false);
   const [mintButtonDisabled, setMintButtonDisabled] = useState (false);
-
   const [mintError, setMintError] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
   const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [mintSuccessMessage, setMintSuccessMessage] = useState("");
-
-  const [titleText, setTitleText] = useState("Presale Mint");
   const [mintButtonText, setMintButtonText] = useState("Mint");
-  const [presaleData, setPresaleData] = useState({});
-  const [isPresale, setIsPresale] = useState(true); 
-
-  const [totalMintAmount, setTotalMintAmount] = useState(0);
-  const [amountMintedAlready, setAmountMintedAlready] = useState(0);
-  const [publicWalletLimit, setPublicWalletLimit] = useState(0);
-
-  const [mintAmount, setMintAmount] = useState(1);
   const [totalMintPrice, setTotalMintPrice] = useState(0);
-  const [pricePerNFT, setPricePerNFT] = useState(0.01);
-  const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
-  const [address, setAddress] = useState("Connect");
+  const [isClosing, setIsClosing] = useState(false);
 
-  const connectWallet = () => { 
-    try {
-      //Get provider
-      web3Modal = new Web3Modal({
-        network: "ropsten", //TODO change to mainnet
-        cacheProvider: false, // optional
-        providerOptions, // required
-        disableInjectedProvider: false,
-      });
-      
-      web3Modal.connect().then(provider => {
-        alert('Connected to wallet modal 3');
-        window.provider = provider;
-
-        setAddress(editAddressForConnectButton(provider.selectedAddress));
-        console.log(provider.selectedAddress);
-        enableProvider(provider);
-        switchChainToMainnet(provider);
-        let web3 = new Web3(provider);
-        window._web3 = web3;
-        connectToContract(web3);
-      }).catch(err => {
-        alert(err.message);
-        let _provider = connectBackupProviders();
-        window.provider = _provider;
-
-        let web3 = new Web3(_provider);
-        window._web3 = web3;
-        connectToContract(web3);
-      });
-    } catch (error) {
-      alert('Backup providers 2', err.message);
-      let _provider = connectBackupProviders();
-      window.provider = _provider;
-
-      let web3 = new Web3(_provider);
-      window._web3 = web3;
-      connectToContract(web3);
-    }
-  }
-
-  const setMintPriceBoxValue = (price) => {
-    if (window.document.getElementById('mintAmountBox') !== null) {
-      const num = parseInt(window.document.getElementById('mintAmountBox').value);
-      setTotalMintPrice(Math.round(num * price * 100) / 100);
-    }
-  }
   //Fetch Contract Data & Call Whitelist API
-  const fetchAndSetRemoteData = (secondTry = false) => {
+  const fetchAndSetRemoteData = (firstTry = true) => {
+    fetchStaticData().then(data => {
+      setTotalMintAmount(data.totalSupply);
 
-    if (window.contract) {
-      fetchStaticData().then(data => {
-        setTotalMintAmount(data.totalSupply);
+      //total minted + check if presale
+      fetchDynamicData().then(_data => {
+        setIsPresale(_data.isPresale);
+        setAmountMintedAlready(_data.totalMinted); 
+        setPublicWalletLimit(_data.publicWalletLimit);
 
-        //total minted + check if presale
-        fetchDynamicData().then(_data => {
-          setIsPresale(_data.isPresale);
-          setAmountMintedAlready(_data.totalMinted); 
-          setPublicWalletLimit(_data.publicWalletLimit);
+        // if presale or public sale then set Mint window text + NFT Price 
+        if (_data.isPresale === true) {
+          setTitleText('Presale Mint');
+          setPricePerNFT(data.presalePrice);
+          setMintPriceBoxValue(data.presalePrice);
 
-          // if presale or public sale then set Mint window text + NFT Price 
-          if (_data.isPresale === true) {
-            setTitleText('Presale Mint');
-            setPricePerNFT(data.presalePrice);
-            setMintPriceBoxValue(data.presalePrice);
-
-            //fetch presale allocation API data for wallet
-            if (typeof window.provider.selectedAddress !== 'undefined') {
-              fetchWhitelistData().then(__data => {
-                setPresaleData(__data);
-                setMaxMintForCurrentWallet(__data.data.allocation);
-              }).catch(err => {
-                setMaxMintForCurrentWallet(data.publicWalletMax);
-                console.log('Error fetching whitelist data, defaulting to public max', err.message);
-              });
-            } else {
+          //fetch presale allocation API data for wallet
+          if (typeof window.provider.selectedAddress !== 'undefined') {
+            fetchWhitelistData().then(__data => {
+              setPresaleData(__data);
+              setMaxMintForCurrentWallet(__data.data.allocation);
+            }).catch(err => {
               setMaxMintForCurrentWallet(data.publicWalletMax);
-            }
-          } else { //is public sale
-            setPresaleData({}); 
-            setTitleText('Public Mint'); 
-            setPricePerNFT(data.publicPrice); 
-            setMintPriceBoxValue(data.publicPrice);
+              console.log('Error fetching whitelist data, defaulting to public max', err.message);
+            });
+          } else {
             setMaxMintForCurrentWallet(data.publicWalletMax);
           }
-        }).catch(err => {
-          console.log('Error fetching Dynamic contract data', err.message);
-        });
-      }).catch(err => {
-        if (!secondTry) {
-          console.log('Error fetching static contract data', err.message)
-          switchChainToMainnet(window.provider);
-          connectToContract(window._web3);
-          fetchAndSetRemoteData(true);
-        } else {
-          alert('Please Reload the page. Error connecting to contract.')
+        } else { //is public sale
+          setPresaleData({}); 
+          setTitleText('Public Mint'); 
+          setPricePerNFT(data.publicPrice); 
+          setMintPriceBoxValue(data.publicPrice);
+          setMaxMintForCurrentWallet(data.publicWalletMax);
         }
+      }).catch(err => {
+        console.log('Error fetching Dynamic contract data', err.message);
       });
-    } else {
-      if (!secondTry) {
+    }).catch(err => {
+      if (firstTry) {
+        console.log('Error fetching static contract data', err.message)
         switchChainToMainnet(window.provider);
         connectToContract(window._web3);
-        fetchAndSetRemoteData(true);
+        fetchAndSetRemoteData(false);
       } else {
         alert('Please Reload the page. Error connecting to contract.')
       }
-    }
+    });
   }
   //called from mint button
   const mint = () => {
+    //abort if we dont have a proper wallet connection
     if (typeof window.provider === 'undefined' ||
         typeof window.provider.selectedAddress === 'undefined' ||
         typeof window._web3 === 'undefined') {
       alert('Please connect to a wallet');
       return;
     }
-    
-    connectToContract(window._web3);
-    
+    //get contract if not has contract
+    if (typeof window.contract === 'undefined') {
+      connectToContract(window._web3);
+    }
+
     //Try to mint
     if (window.contract) {
       fetchAndSetRemoteData();
       if (pricePerNFT > 0.01) {
-        setMintButtonText("Minting"); setMintButtonDisabled(true);
-
         setMintError(false); setMintSuccess(false); 
         setMintErrorMessage(""); setMintSuccessMessage("");
-    
+        setMintButtonText("Minting"); setMintButtonDisabled(true);
         setMintLoading(true); //bring up loading spinner
 
         //TODO next comment this out and see if it stops the mint
@@ -1397,11 +1283,12 @@ function MintModal(props) {
         setMintError(true);
         setMintErrorMessage('Please Wait for Contract Data to load');
       }
+    } else {
+      alert('Please connect to a wallet or reload the page and try again.');
     }
-  }  
+  }
   //purchase NFT for presale and public sales via mint button
   const makePurchase = () => { 
-
 
     function publicPurchase() { 
       window.contract.methods.purchase(mintAmount).send({
@@ -1504,7 +1391,7 @@ function MintModal(props) {
     setMintButtonDisabled(false);
     setMintButtonText("Mint");
     setMintLoading(false);
-  }  
+  }
 
   // Plus and Minus NFT amount buttons
   const incrementMintAmountNumberBox = (maxMint) => {
@@ -1523,6 +1410,13 @@ function MintModal(props) {
         Math.round((num - 1) * pricePerNFT * 100) / 100);
     }
   }
+  const setMintPriceBoxValue = (price) => {
+    if (window.document.getElementById('mintAmountBox') !== null) {
+      const num = parseInt(window.document.getElementById('mintAmountBox').value);
+      setTotalMintPrice(Math.round(num * price * 100) / 100);
+    }
+  }
+
   //click events for closing alert popups
   useEffect(() => {
     function closeAlertPopup() {
@@ -1538,10 +1432,18 @@ function MintModal(props) {
 
 
   useEffect(() => {
-    if (window.provider && typeof window.provider.selectedAddress !== 'undefined') {
-      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+    if (!isClosing) { 
+      if (typeof window.contract === 'undefined' && window._web3) {
+        console.log('asdd')
+        connectToContract(window._web3);
+        fetchAndSetRemoteData();
+      } else {
+        console.log('asdsdgsd')
+        fetchAndSetRemoteData();
+      }
     }
   }, []);
+    
 
   return (
     <div>
@@ -1553,11 +1455,7 @@ function MintModal(props) {
                          <a>{mintSuccessMessage}<div id='closeAlertButton'></div></a></div> }
       
       {/* Mint Modal popup */}
-      {/* onload */}
-      
-      <div id='mintModal' className={styles.mintModal} onLoad={() => {
-        fetchAndSetRemoteData();
-      }}>
+      <div id='mintModal' className={styles.mintModal}>
         <div className={styles.mintModalBody}>
 
           <div className={styles.mintModalHeader}>
@@ -1567,11 +1465,9 @@ function MintModal(props) {
 
           <div className={styles.mintModalHeader2}>
             <div className={styles.mintModalInputContainer}>
-              <button className={styles.mintPopup_ConnectButton}
-                      id='mintConnectButton'
-                      onClick={() => {
-                        props.setConnectModalOpen(false);
-                        connectWallet();}}>{address}</button>
+              <ConnectButton mintConnectButton={true}
+                             setIsClosing={setIsClosing}
+                             setConnectModalOpen={props.setConnectModalOpen}/>
             </div>
 
             <div className={styles.mintModalHeader}>
@@ -1635,6 +1531,80 @@ function MintModal(props) {
   )
 }
 
+function ConnectButton(props) {
+  const [address, setAddress] = useState("Connect");
+
+  const tryBackupProviders = (err) => {
+    try {
+      alert('Backup providers 2', err.message);
+      connectWalletFunctions(connectBackupProviders());
+    } catch (error) {
+      alert('Failed to connect to backup wallet providers.', error.message.toString())
+    }
+  }
+  const connectWalletFunctions = (provider) => {
+    alert('Connected to wallet modal 3');
+    window.provider = provider;
+    enableProvider(provider);
+
+    setAddress(editAddressForConnectButton(provider.selectedAddress));
+    switchChainToMainnet(provider);
+
+    let web3 = new Web3(provider);
+    window._web3 = web3;
+    connectToContract(web3);
+  }
+
+  const connectWallet = () => { 
+    //Get wallet provider
+    try {
+      web3Modal = new Web3Modal({
+        network: "ropsten", //TODO change to mainnet
+        cacheProvider: false, // optional
+        providerOptions, // required
+        disableInjectedProvider: false,
+      });
+    } catch (err) {
+      tryBackupProviders(err)
+    }
+
+    web3Modal.connect().then(provider => { 
+      connectWalletFunctions(provider); 
+    }).catch (err => {
+      tryBackupProviders(err)
+    });
+  }
+
+  useEffect(() => {
+    if (typeof window.provider !== 'undefined' && 
+        typeof window.provider.selectedAddress !== 'undefined') {
+      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+    } else {
+      setAddress("Connect")
+    }
+  }, []);
+  
+  return (<>
+    { typeof props.mintConnectButton !== 'undefined'
+             && 
+             props.mintConnectButton === true 
+      ?
+        <button className={styles.mintPopup_ConnectButton}
+                id='mintConnectButton'
+                onClick={() => {
+                  props.setIsClosing(true);
+                  props.setConnectModalOpen(false);
+                  connectWallet();
+                }}
+        >{address}</button>
+      : 
+        <button className={styles.navBarItem_ConnectButton} 
+                id='connectButton'
+                onClick={connectWallet}
+        >{address}</button>
+    }
+  </>)
+}
 function PDFViewer() {
   function onDocumentLoadSuccess({ numPages: nextNumPages }) {
     console.log('PDF Loaded')
@@ -1668,7 +1638,7 @@ function FAQSection() {
   const [faq3checked, setFaq3Checked] = useState(false);
   // const [faq4checked, setFaq4Checked] = useState(false);
 
-  return (<>
+  return (<div>
     <BrowserView>
       <div className={styles.FAQContainer}>
         <nav className={styles.FAQItem}>
@@ -1748,14 +1718,14 @@ function FAQSection() {
         </nav> */}
       </div>
     </MobileView>
-
-    </>)
+  </div>)
 } 
 function RoadmapPage() {
   innerWidth = useWidth();
   innerHeight = useHeight();
 
-  return (<>
+  return (<div>
+    <NavBar />
 
     <div className={styles.mainContentRoadmap}>
       {/* link to view roadmap.jpg in a new tab */}
@@ -1769,6 +1739,7 @@ function RoadmapPage() {
       </a>
 
     </div>
+
     <BrowserView>
     <div className={styles.roadmapTextBG}>
       <div className={styles.roadmapTitle1}>Utility Roadmap</div>
@@ -1845,6 +1816,7 @@ function RoadmapPage() {
       </div>
     </div>
     </MobileView>
+
     <div className={styles.roadmapButtons}>
       <button className={styles.mintButton2} id='mintButton2'>
                                   <BrowserView>Mint Now</BrowserView>
@@ -1863,11 +1835,12 @@ function RoadmapPage() {
       </Link> }
       
     </div>
-    
-    </>)
+
+    <FAQSection />
+    </div>)
 }
 //roadmap.js needs these functions exported to be able to render
-export { NavBar, PDFViewer, MintModal, FAQSection, RoadmapPage, setDefaultProvider };
+export { PDFViewer, MintModal, RoadmapPage, setDefaultProvider };
 
 
 

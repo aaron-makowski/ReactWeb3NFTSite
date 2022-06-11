@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css'
 
 import { useState, useEffect } from 'react'
 
-import { NavBar, PDFViewer, RoadmapPage, FAQSection, MintModal, setDefaultProvider } from './home.js'
+import { PDFViewer, RoadmapPage, MintModal, setDefaultProvider } from './home.js'
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
@@ -55,10 +55,8 @@ export default function Home() {
       { collectorsAgreementOpen && <PDFViewer /> }
       { mintModalOpen && <MintModal setConnectModalOpen={setMintModalOpen}/> } {/* Takes over page when Mint Button clicked */}
 
-      <NavBar />
       <main>{/* Theoretically useful for SEO */}
         <RoadmapPage />{/*  Roadmap Image + Mint Button + Home Button */}
-        <FAQSection />
       </main>
       <div className={styles.copyright}>
         <a>© 2022 MENJi's WORLD. All rights reserved.</a>
