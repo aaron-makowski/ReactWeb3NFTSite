@@ -6,18 +6,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 //Import Social Icons & Icon Component
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fab)
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+//PDF viewer
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
+//useful
 import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
 import axios from 'axios'; //for whitelist API call
 
+//Web3 sauces
 import Web3 from 'web3' //Classic web3 lib
 import Web3Modal from "web3modal"; //Nice Web3 Popup with multiple connections
 //Web3Modal Multiple Providers
@@ -26,6 +29,7 @@ import Fortmatic from "fortmatic";
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 //Web3Modal Options
+let web3Modal;
 const providerOptions = {
   // injected: {
   //   package: null,
@@ -55,11 +59,10 @@ const providerOptions = {
     }
   }
 };
-let web3Modal;
 
 // TODO put Menji solidity contract address and ABI here
 // Contract Details
-let address = '0xb585da9872d092498f020a938d65091fd96abbaf';
+let contractAddress = '0xb585da9872d092498f020a938d65091fd96abbaf';
 let abi = [
 	{
 		"inputs": [],
@@ -896,8 +899,12 @@ let abi = [
 ];
 
 
+
+
+let addressChanged = 0;
+let addressChanged2 = 0;
 let innerWidth = 700;
-let innerHeight = 80;
+let innerHeight = 800;
 //get window width
 const useWidth = () => {
   const [_innerWidth, setWidth] = useState(700); // default width, detect on server.
@@ -919,72 +926,15 @@ const useHeight = () => {
 }
 
 
-//Web3 - connect wallet & connect to eth contract
-const editAddressForConnectButton = (address) => {
-  try {
-    if (typeof address !== 'undefined' && address.length > 12) {
-        return address.substr(0, 4) + '....' + address.substr(address.length - 4, 4);
-    } 
-  } catch (error) {
-    console.log('Error setting connect button text', error.message);
-  }
-  return "Connect";
-}
-//Use Infura as default
-const setDefaultProvider = () => {
-  return new Web3.providers.HttpProvider(
-    'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
-    //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
-}
-const connectToContract = (web3) => {
-  window.contract = new web3.eth.Contract(abi, address);
-}
-const switchChainToMainnet = (provider) => {
-  if (provider && provider.chainId && provider.chainId !== '0x3') { 
-    provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: "0x3" }],
-    }).catch(err => {
-      alert('Please switch to the ETH Mainnet', err.message)
-    });
-  }
-}
-const enableProvider = (provider) => {
-  alert('Enabling provider');
-  provider.enable().then(() => { 
-    provider.on("accountsChanged", (accounts) => {
-      editAddressForConnectButton(accounts[0]);
-      console.log('Selected Address:', provider.selectedAddress)
-    });
 
-    provider.on("chainChanged", (chainId) => {
-      console.log('Chain changed to', chainId);
-      if (chainId != 1) {
-        alert('Please Switch to the Ethereum Mainnet Network'); 
-      }
-    });
-
-    provider.on("connect", (info) => {
-      console.log('Connected to Wallet:', info);
-      if (info.chainId != 1) {
-        alert('Please Switch to the Ethereum Mainnet Network'); 
-      }
-    });
-  });
+//TODO replace with actual CHEF API Call
+async function fetchWhitelistData() {
+  // const response = await axios.post('https://APIURL/presale', 
+  //                     {wallet: window.provider.selectedAddress});
+  const response = {"data":{"allocation":19,"teir":2,"hash":"sha3_32552","signature":"0x2352262"}}
+  console.log('Whitelist API Response:', response);
+  return response
 }
-const connectBackupProviders = () => {
-  if (typeof window.ethereum !== 'undefined') {
-    alert('chose ethereum (testing msg)')
-    return window.ethereum;
-  } else if (typeof window.web3 !== 'undefined') {
-    alert('chose web3currprov (testing msg)')
-    return window.web3.currentProvider;
-  } else { //Couldnt connect to wallet
-    alert('Failed to connect to wallet, please reload and try again.')
-  }
-}
-
-
 // Fetch ETH contract data
 async function fetchStaticData() {
   const totalSupply = await window.contract.methods.MAX_SUPPLY().call();
@@ -1020,30 +970,123 @@ async function fetchDynamicData() {
   }
   return dynamicData;
 }
-//TODO replace with actual CHEF API Call
-async function fetchWhitelistData() {
-  // const response = await axios.post('https://APIURL/presale', 
-  //                     {wallet: window.provider.selectedAddress});
-  const response = {"data":{"allocation":19,"teir":2,"hash":"sha3_32552","signature":"0x2352262"}}
-  console.log('Whitelist API Response:', response);
-  return response
+
+//Functions used via connect buttons
+const editAddressForConnectButton = (address) => {
+  try {
+    if (typeof address !== 'undefined' && address.length > 12) {
+        return address.substr(0, 4) + '....' + address.substr(address.length - 4, 4);
+    } 
+  } catch (error) {
+    console.log('Error setting connect button text', error.message);
+  }
+  return "Connect";
+}
+const switchChainToMainnet = (provider) => {
+  if (provider && provider.chainId && provider.chainId !== '0x3') { 
+    provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: "0x3" }],
+    }).catch(err => {
+      alert('Please switch to the ETH Mainnet', err.message)
+    });
+  }
+}
+const connectToContract = (web3) => {
+  if (web3) {
+    window.contract = new web3.eth.Contract(abi, contractAddress);
+  } else {
+    console.log('No web3? You should consider trying MetaMask!');
+  }
 }
 
-function DiscordIcon() {
-  return (
-    <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
-    </a>
-  )
+const setDefaultProvider = () => {
+  return new Web3.providers.HttpProvider(
+    'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
+    //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
 }
-function TwitterIcon() {
-  return (
-    <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
-    </a>
-  )
+const connectBackupProviders = () => {
+  if (typeof window.ethereum !== 'undefined') {
+    alert('chose ethereum (testing msg)')
+    return window.ethereum;
+  } else if (typeof window.web3 !== 'undefined') {
+    return window.web3.currentProvider;
+  } else { //Couldnt connect to wallet
+    alert('Failed to connect to wallet, please reload and try again.')
+  }
 }
-//Main Page Sections/HTML
+const enableProvider = (provider) => {
+  alert('Enabling provider');
+  provider.request({method: 'eth_requestAccounts',}).then(() => { 
+    provider.on("accountsChanged", (accounts) => {
+      addressChanged += 1;
+      addressChanged2 += 1;
+      console.log('Newly Selected Address:', provider.selectedAddress)
+    });
+
+    provider.on("chainChanged", (chainId) => {
+      console.log('Chain changed to', chainId);
+      if (chainId != 1) {
+        alert('Please Switch to the Ethereum Mainnet Network'); 
+      }
+    });
+
+    provider.on("connect", (info) => {
+      console.log('Connected to Wallet:', info);
+      if (info.chainId != 1) {
+        alert('Please Switch to the Ethereum Mainnet Network'); 
+      }
+    });
+  }).catch((err) => {
+    console.log('Error Connecting to wallet. Try Again.', err.message);
+  });
+}
+const tryBackupProviders = (err, setAddress) => {
+  try {
+    alert('Backup providers 2', err.message);
+    connectWalletFunctions(connectBackupProviders(), setAddress);
+  } catch (error) {
+    alert('Failed to connect to backup wallet providers.', error.message.toString())
+  }
+}
+const connectWalletFunctions = (provider, setAddress) => {
+  alert('Connected to wallet modal 3');
+  if (provider && provider.selectedAddress) {
+    window.provider = provider;
+    enableProvider(provider);
+    setAddress(editAddressForConnectButton(provider.selectedAddress));
+    switchChainToMainnet(provider);
+
+    let web3 = new Web3(provider);
+    window._web3 = web3;
+    connectToContract(web3);
+  } else {
+    console.log('provider undefined/address undefined');
+  }
+}
+const connectWallet = (setAddress) => { 
+  //Get wallet provider
+  try {
+    web3Modal = new Web3Modal({
+      network: "ropsten", //TODO change to mainnet
+      cacheProvider: false,
+      providerOptions, // required
+      disableInjectedProvider: false,
+    });
+    web3Modal.connect().then(provider => { 
+      connectWalletFunctions(provider, setAddress); 
+    }).catch (err => {
+      console.log('Error connecting to wallet', err.message);
+      tryBackupProviders(err, setAddress)
+    });
+  } catch (err) {
+    console.log('Error connecting to wallet2', err.message);
+    tryBackupProviders(err, setAddress)
+  }
+}
+
+
+//UI Components
 function NavBar() {
   innerWidth = useWidth();
 
@@ -1071,6 +1114,66 @@ function NavBar() {
       }
     </nav>
   )
+}
+function DiscordIcon() {
+  return (
+    <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
+    </a>
+  )
+}
+function TwitterIcon() {
+  return (
+    <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
+    </a>
+  )
+}
+function ConnectButton() {
+  const [address, setAddress] = useState("Connect");
+
+  useEffect(() => {
+    if (typeof window.provider !== 'undefined' && 
+        typeof window.provider.selectedAddress !== 'undefined') {
+      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+    } else {
+      setAddress("Connect")
+    }
+  }, [addressChanged]);
+
+  return (<>
+        <button className={styles.navBarItem_ConnectButton} 
+                id='connectButton'
+                onClick={() => {connectWallet(setAddress)}}
+        >{address}</button>
+  </>)
+}
+function MintConnectButton(props) {
+  const [address, setAddress] = useState("Connect");
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (!isClosing) {
+      if (typeof window.provider !== 'undefined' && 
+          typeof window.provider.selectedAddress !== 'undefined') {
+        setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+      } else {
+        setAddress("Connect")
+      }
+    }
+  }, [addressChanged2]);
+
+  return (<>
+      <button className={styles.mintPopup_ConnectButton}
+              id='mintConnectButton'
+              onClick={() => {
+                setIsClosing(true);
+                props.setIsClosing(true);
+                props.setMintModalOpen(false);
+                connectWallet(setAddress);
+              }}
+      >{address}</button>
+  </>)
 }
 function MainImage() {
   innerWidth = useWidth();
@@ -1104,71 +1207,79 @@ function AboutMenjiSection() {
     </div>
   )
 }
-function TEAMSection() {
-  //might have to use useEffect to add and remove efvent listeners from commented code below
-  const [team1checked, setTeam1Checked] = useState(false);
-  const [team2checked, setTeam2Checked] = useState(false);
-  const [team3checked, setTeam3Checked] = useState(false);
-  const [team4checked, setTeam4Checked] = useState(false);
-
-  const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
-  const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
-  const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
-  const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
-  
-  // useEffect(() => {
-
-  //   window.document.getElementById('i1').addEventListener('click', check1);
-  //   window.document.getElementById('p1').addEventListener('click', check1);
-
-  //   window.document.getElementById('i2').addEventListener('click', check2);
-  //   window.document.getElementById('p2').addEventListener('click', check2);
-
-  //   window.document.getElementById('i3').addEventListener('click', check3);
-  //   window.document.getElementById('p3').addEventListener('click', check3);
-
-  //   window.document.getElementById('i4').addEventListener('click', check4);
-  //   window.document.getElementById('p4').addEventListener('click', check4);
-  //   return () => {
-  //     window.document.getElementById('i1').removeEventListener('click', check1);
-  //     window.document.getElementById('p1').removeEventListener('click', check1);
-
-  //     window.document.getElementById('i2').removeEventListener('click', check2);
-  //     window.document.getElementById('p2').removeEventListener('click', check2);
-
-  //     window.document.getElementById('i3').removeEventListener('click', check3);
-  //     window.document.getElementById('p3').removeEventListener('click', check3);
-
-  //     window.document.getElementById('i4').removeEventListener('click', check4);
-  //     window.document.getElementById('p4').removeEventListener('click', check4);
-  //   }
-  // }, [team1checked, team2checked, team3checked, team4checked,setTeam1Checked, setTeam2Checked, setTeam3Checked, setTeam4Checked])
-
+function AboutSection2() {
   return (
-    <div className={styles.teamContainer}>
-      <div className={styles.teamMember}>
-        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} onClick={check3}/>
-        <p id='p3' className={styles.teamMemberName} onClick={check3}>Menji <a>+</a></p>
-        { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
-      </div>
-      <div className={styles.teamMember}>
-        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} onClick={check2} />
-        <p id='p2' className={styles.teamMemberName} onClick={check2}>Jay <a>+</a></p>
-        { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
-      </div>   
-      <div className={styles.teamMember}>
-        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} onClick={check4} />
-        <p id='p4' className={styles.teamMemberName} onClick={check4}>Doc <a>+</a></p>
-        { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
-      </div>         
-      <div className={styles.teamMember}>
-        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} onClick={check1} />
-        <p id='p1' className={styles.teamMemberName} onClick={check1}>Sticky <a>+</a></p>
-        { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
-      </div>
+    <p className={styles.aboutContent_2}> 
+      Menji's World
+      <br/><br/>
+        Menji is an American Digital artist and painter from California with a goal to build a world that lives beyond his physical and digital work.
+        <br/><br/>
+        Menji's world was created with a sole focus to create unique experiences, bend the limitations of fashion, and be an example that anyone can create a world that is unique to themselves and inclusive to those who care to explore it.
+        <br/><br/>
+        Welcome to Menji's World.
+    </p>
+  )
+}
+function SampleNFTimage() {
+  return (
+    <div className={styles.mainContent_2_left}>
+      <Image src={"/sample_nft_sm.jpg"} 
+            width={1054} height={854} 
+            alt="Menji's World Sample Art"
+            />
     </div>
   )
-} 
+}
+function MintPopupButton(props) {
+  return (
+    <a className={styles.mintButton} id='mintButton' 
+       onClick={() => {props.setMintModalOpen(true);}}>Mint</a>
+  )
+}
+function Page2Button() {
+  return (
+    <Link href="/roadmap">
+      <a className={styles.mintButton} id='page2Button'
+        >FAQ / Roadmap</a>
+    </Link> 
+  )
+}
+function CopyRightFooter(props) {
+  return (<>
+    {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
+    <div className={styles.copyright}>
+      <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+      <a className={styles.pdfPopupLink}
+        onClick={() => {props.setCollectorsAgreementOpen(true);}}>Collectors Agreement</a>
+    </div>
+  </>)
+}
+function PDFViewer() {
+  function onDocumentLoadSuccess({ numPages: nextNumPages }) {
+    console.log('PDF Loaded')
+  }
+
+  return (
+    <div className={styles.pdfBG} id='pdfBG'>
+      <div className={styles.pdfHeader}>
+        <a href='https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement' target='_blank'>Open Document</a>
+        <span id='closePDFButton'>X</span>
+      </div>
+
+      <Document className={styles.pdfViewBox}
+                file="/Menjis_World_Collector_Agreement.pdf"
+                onLoadSuccess={onDocumentLoadSuccess}>
+        <Page
+          key={`page_1`}
+          pageNumber={1}
+          renderAnnotationLayer={false}
+          renderTextLayer={false}
+        />
+      </Document>
+      </div>
+      
+  );
+}
 function MintModalLoading() {
   return (
     <div className={styles.mintModalLoading} id='mintModalLoading' >
@@ -1182,7 +1293,6 @@ function MintModalLoading() {
     </div>
   )
 }
-//accept a callback function to be called when the modal is closed
 function MintModal(props) {
   const [titleText, setTitleText] = useState("Presale Mint");
   const [mintAmount, setMintAmount] = useState(1);
@@ -1386,13 +1496,13 @@ function MintModal(props) {
       setMintErrorMessage('Zero Mint Error: Please Reload the page and try again.');
     }
   }
+
   //reset mint modal button, etc.
   const afterMintUIChanges = () => {
     setMintButtonDisabled(false);
     setMintButtonText("Mint");
     setMintLoading(false);
   }
-
   // Plus and Minus NFT amount buttons
   const incrementMintAmountNumberBox = (maxMint) => {
     const num = parseInt(window.document.getElementById('mintAmountBox').value);
@@ -1416,43 +1526,44 @@ function MintModal(props) {
       setTotalMintPrice(Math.round(num * price * 100) / 100);
     }
   }
+  function closeAlertPopup() {
+    setMintError(false);
+    setMintErrorMessage("");
+    setMintSuccess(false);
+    setMintSuccessMessage("");
+  }
 
-  //click events for closing alert popups
-  useEffect(() => {
-    function closeAlertPopup() {
-      setMintError(false);
-      setMintErrorMessage("");
-      setMintSuccess(false);
-      setMintSuccessMessage("");
-    }
-    if (mintError === true || mintSuccess === true) {
-      window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
-    }
-  }, [mintError, mintSuccess]);
+  // //click events for closing alert popups
+  // useEffect(() => {
+
+  //   if (mintError === true || mintSuccess === true) {
+  //     window.document.getElementById('closeAlertButton').addEventListener('click', closeAlertPopup);
+  //   }
+  // }, [mintError, mintSuccess]);
 
 
   useEffect(() => {
     if (!isClosing) { 
       if (typeof window.contract === 'undefined' && window._web3) {
-        console.log('asdd')
         connectToContract(window._web3);
         fetchAndSetRemoteData();
       } else {
-        console.log('asdsdgsd')
         fetchAndSetRemoteData();
       }
     }
   }, []);
     
-
+  
   return (
     <div>
       {/* conditionally rendered popups */}
       { mintLoading && <MintModalLoading /> } {/* loading spinner */}
       { mintError   && <div className={styles.alertPopup} id='alertBG'>
-                         <a>{mintErrorMessage}<div id='closeAlertButton'></div></a></div> }
+                         <a>{mintErrorMessage}<div id='closeAlertButton' 
+                                                   onClick={closeAlertPopup}></div></a></div> }
       { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
-                         <a>{mintSuccessMessage}<div id='closeAlertButton'></div></a></div> }
+                         <a>{mintSuccessMessage}<div id='closeAlertButton'
+                                                     onClick={closeAlertPopup}></div></a></div> }
       
       {/* Mint Modal popup */}
       <div id='mintModal' className={styles.mintModal}>
@@ -1460,14 +1571,15 @@ function MintModal(props) {
 
           <div className={styles.mintModalHeader}>
             <h2>{titleText}</h2><button id='closeModalButton' 
-                                        className={styles.mintModalCloseButton}/>  
+                                        className={styles.mintModalCloseButton}
+                                        onClick={() => {setIsClosing(true); 
+                                                        props.setMintModalOpen(false);}}/>  
           </div>
 
           <div className={styles.mintModalHeader2}>
             <div className={styles.mintModalInputContainer}>
-              <ConnectButton mintConnectButton={true}
-                             setIsClosing={setIsClosing}
-                             setConnectModalOpen={props.setConnectModalOpen}/>
+              <MintConnectButton setIsClosing={setIsClosing}
+                                 setMintModalOpen={props.setMintModalOpen}/>
             </div>
 
             <div className={styles.mintModalHeader}>
@@ -1530,108 +1642,43 @@ function MintModal(props) {
     </div> 
   )
 }
+function TEAMSection() {
+  //might have to use useEffect to add and remove efvent listeners from commented code below
+  const [team1checked, setTeam1Checked] = useState(false);
+  const [team2checked, setTeam2Checked] = useState(false);
+  const [team3checked, setTeam3Checked] = useState(false);
+  const [team4checked, setTeam4Checked] = useState(false);
 
-function ConnectButton(props) {
-  const [address, setAddress] = useState("Connect");
-
-  const tryBackupProviders = (err) => {
-    try {
-      alert('Backup providers 2', err.message);
-      connectWalletFunctions(connectBackupProviders());
-    } catch (error) {
-      alert('Failed to connect to backup wallet providers.', error.message.toString())
-    }
-  }
-  const connectWalletFunctions = (provider) => {
-    alert('Connected to wallet modal 3');
-    window.provider = provider;
-    enableProvider(provider);
-
-    setAddress(editAddressForConnectButton(provider.selectedAddress));
-    switchChainToMainnet(provider);
-
-    let web3 = new Web3(provider);
-    window._web3 = web3;
-    connectToContract(web3);
-  }
-
-  const connectWallet = () => { 
-    //Get wallet provider
-    try {
-      web3Modal = new Web3Modal({
-        network: "ropsten", //TODO change to mainnet
-        cacheProvider: false, // optional
-        providerOptions, // required
-        disableInjectedProvider: false,
-      });
-    } catch (err) {
-      tryBackupProviders(err)
-    }
-
-    web3Modal.connect().then(provider => { 
-      connectWalletFunctions(provider); 
-    }).catch (err => {
-      tryBackupProviders(err)
-    });
-  }
-
-  useEffect(() => {
-    if (typeof window.provider !== 'undefined' && 
-        typeof window.provider.selectedAddress !== 'undefined') {
-      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
-    } else {
-      setAddress("Connect")
-    }
-  }, []);
+  const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
+  const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
+  const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
+  const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
   
-  return (<>
-    { typeof props.mintConnectButton !== 'undefined'
-             && 
-             props.mintConnectButton === true 
-      ?
-        <button className={styles.mintPopup_ConnectButton}
-                id='mintConnectButton'
-                onClick={() => {
-                  props.setIsClosing(true);
-                  props.setConnectModalOpen(false);
-                  connectWallet();
-                }}
-        >{address}</button>
-      : 
-        <button className={styles.navBarItem_ConnectButton} 
-                id='connectButton'
-                onClick={connectWallet}
-        >{address}</button>
-    }
-  </>)
-}
-function PDFViewer() {
-  function onDocumentLoadSuccess({ numPages: nextNumPages }) {
-    console.log('PDF Loaded')
-  }
-
   return (
-    <div className={styles.pdfBG} id='pdfBG'>
-      <div className={styles.pdfHeader}>
-        <a href='https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement' target='_blank'>Open Document</a>
-        <span id='closePDFButton'>X</span>
+    <div className={styles.teamContainer}>
+      <div className={styles.teamMember}>
+        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} onClick={check3}/>
+        <p id='p3' className={styles.teamMemberName} onClick={check3}>Menji <a>+</a></p>
+        { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
       </div>
-
-      <Document className={styles.pdfViewBox}
-                file="/Menjis_World_Collector_Agreement.pdf"
-                onLoadSuccess={onDocumentLoadSuccess}>
-        <Page
-          key={`page_1`}
-          pageNumber={1}
-          renderAnnotationLayer={false}
-          renderTextLayer={false}
-        />
-      </Document>
+      <div className={styles.teamMember}>
+        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} onClick={check2} />
+        <p id='p2' className={styles.teamMemberName} onClick={check2}>Jay <a>+</a></p>
+        { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
+      </div>   
+      <div className={styles.teamMember}>
+        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} onClick={check4} />
+        <p id='p4' className={styles.teamMemberName} onClick={check4}>Doc <a>+</a></p>
+        { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
+      </div>         
+      <div className={styles.teamMember}>
+        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} onClick={check1} />
+        <p id='p1' className={styles.teamMemberName} onClick={check1}>Sticky <a>+</a></p>
+        { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
       </div>
-      
-  );
+    </div>
+  )
 }
-//Roadmap Page Sections/HTML
 function FAQSection() {
   const [faq1checked, setFaq1Checked] = useState(false);
   const [faq2checked, setFaq2Checked] = useState(false);
@@ -1719,8 +1766,88 @@ function FAQSection() {
       </div>
     </MobileView>
   </div>)
-} 
-function RoadmapPage() {
+}
+function RoadmapTextBoxStack() {
+  return (<>
+    <BrowserView>
+      <div className={styles.roadmapTextBG}>
+        <div className={styles.roadmapTitle1}>Utility Roadmap</div>
+
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Free T-Shirt</div>
+          <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Physical Prints</div>
+          <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Menji's World Trailer</div>
+          <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Menji's World X Team Trees</div>
+          <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>High Quality Merch</div>
+          <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Collectibles</div>
+          <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Farmers Market Event</div>
+          <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitle}>Meditation App</div>
+          <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
+        </div>
+      </div>
+    </BrowserView>
+    <MobileView>
+      <div className={styles.roadmapTextBG}>
+        <div className={styles.roadmapTitle1}>Utility Roadmap</div>
+
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Free T-Shirt</div>
+          <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Physical Prints</div>
+          <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Menji's World Trailer</div>
+          <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Menji's World X Team Trees</div>
+          <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>High Quality Merch</div>
+          <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Collectibles</div>
+          <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Farmers Market Event</div>
+          <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
+        </div>
+        <div className={styles.roadmapTextBox}>
+          <div className={styles.roadmapTitleMobile}>Meditation App</div>
+          <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
+        </div>
+      </div>
+    </MobileView>
+  </>)
+}
+function RoadmapPage(props) {
   innerWidth = useWidth();
   innerHeight = useHeight();
 
@@ -1740,104 +1867,31 @@ function RoadmapPage() {
 
     </div>
 
-    <BrowserView>
-    <div className={styles.roadmapTextBG}>
-      <div className={styles.roadmapTitle1}>Utility Roadmap</div>
-
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Free T-Shirt</div>
-        <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Physical Prints</div>
-        <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Menji's World Trailer</div>
-        <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Menji's World X Team Trees</div>
-        <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>High Quality Merch</div>
-        <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Collectibles</div>
-        <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Farmers Market Event</div>
-        <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitle}>Meditation App</div>
-        <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
-      </div>
-    </div>
-    </BrowserView>
-    <MobileView>
-    <div className={styles.roadmapTextBG}>
-      <div className={styles.roadmapTitle1}>Utility Roadmap</div>
-
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Free T-Shirt</div>
-        <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Physical Prints</div>
-        <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Menji's World Trailer</div>
-        <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Menji's World X Team Trees</div>
-        <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>High Quality Merch</div>
-        <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Collectibles</div>
-        <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Farmers Market Event</div>
-        <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
-      </div>
-      <div className={styles.roadmapTextBox}>
-        <div className={styles.roadmapTitleMobile}>Meditation App</div>
-        <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
-      </div>
-    </div>
-    </MobileView>
+    <RoadmapTextBoxStack />
 
     <div className={styles.roadmapButtons}>
-      <button className={styles.mintButton2} id='mintButton2'>
+      <button className={styles.mintButton2} id='mintButton2' 
+              onClick={() => {props.setMintModalOpen(true);}}>
                                   <BrowserView>Mint Now</BrowserView>
-                                  <MobileView>Mint</MobileView>    
+                                  <MobileView>Mint</MobileView>
       </button>
-
+      
       { innerWidth >= 515 && 
-      <Link href="/home">
-        <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
-                                          <MobileView>Home</MobileView> </a> 
-      </Link> }
+        <Link href="/home">
+          <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
+                                            <MobileView>Home</MobileView> </a> 
+        </Link> }
 
       { innerWidth < 515 && 
-      <Link href="/home">
-        <a className={styles.mintButton2}>Home</a> 
-      </Link> }
-      
+        <Link href="/home">
+          <a className={styles.mintButton2}>Home</a> 
+        </Link> }
     </div>
 
     <FAQSection />
-    </div>)
+    <CopyRightFooter setCollectorsAgreementOpen={props.setCollectorsAgreementOpen}/>  {/* + User Agreement */}
+
+  </div>)
 }
 //roadmap.js needs these functions exported to be able to render
 export { PDFViewer, MintModal, RoadmapPage, setDefaultProvider };
@@ -1856,7 +1910,7 @@ export default function Home() {
     if (mintModalOpen === true) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
-      window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
+      // window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
     }
   }, [mintModalOpen]);
 
@@ -1874,8 +1928,8 @@ export default function Home() {
 
   return (
     <div className={styles.container} onLoad={() => {
-      if (typeof window.provider !== 'undefined' && 
-          typeof window.provider.selectedAddess !== 'undefined') {
+      if (typeof window.provider === 'undefined') {
+        // preload contract data with infura
         window.provider = setDefaultProvider(); 
       }
     }}>
@@ -1884,57 +1938,26 @@ export default function Home() {
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
-      { collectorsAgreementOpen && <PDFViewer /> }
 
-      {/* Takes over page when Mint Button clicked */}
-      { mintModalOpen && <MintModal setConnectModalOpen={setMintModalOpen}/> }
+      {/* Popups */}
+      { collectorsAgreementOpen && <PDFViewer /> }
+      { mintModalOpen && <MintModal setMintModalOpen={setMintModalOpen}/> }
 
       <NavBar />  {/* At top of both pages: Logo + Connect button + Social Buttons*/}
       <MainImage />
-      <main> {/* Theoretically useful for SEO */}
+      <main> {/* Useful tag for SEO */}
         <AboutMenjiSection />
-
-        {/* Section with Mint button, roadmap page button, about project */}
         <div className={styles.mainContent_2}>
-          {/* NFT Breakdown Image */}
-          <div className={styles.mainContent_2_left}>
-            <Image src={"/sample_nft_sm.jpg"} 
-                  width={1054} height={854} 
-                  alt="Menji's World Sample Art"
-                  />
-          </div>
-
-          {/* Mint Button + Page 2 Button + About Menji's World Text */}
+          <SampleNFTimage />
           <div className={styles.mainContent_2_right}>
-            <a className={styles.mintButton} id='mintButton'
-                onClick={() => {setMintModalOpen(true);}}>Mint</a>
-            <p className={styles.aboutContent_2}> 
-              Menji's World
-              <br/><br/>
-                Menji is an American Digital artist and painter from California with a goal to build a world that lives beyond his physical and digital work.
-                <br/><br/>
-                Menji's world was created with a sole focus to create unique experiences, bend the limitations of fashion, and be an example that anyone can create a world that is unique to themselves and inclusive to those who care to explore it.
-                <br/><br/>
-                Welcome to Menji's World.
-            </p>
-            <Link href="/roadmap">
-              <a className={styles.mintButton} id='page2Button'
-                >FAQ / Roadmap</a>
-            </Link>        
+            <MintPopupButton setMintModalOpen={setMintModalOpen}/>
+            <AboutSection2 />
+            <Page2Button />      
           </div>
         </div>
       </main>
-
-      <TEAMSection />  {/* 4 circular images with expandable member descriptions */}
-      <div>
-        {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
-        <div className={styles.copyright}>
-          <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-          <a className={styles.pdfPopupLink} 
-             onClick={() => {setCollectorsAgreementOpen(true);}}>Collectors Agreement</a>
-        </div>
-      </div>
+      <TEAMSection />
+      <CopyRightFooter setCollectorsAgreementOpen={setCollectorsAgreementOpen}/>  {/* + User Agreement */}
     </div>
   )
 }

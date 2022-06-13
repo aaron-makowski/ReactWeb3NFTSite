@@ -32,18 +32,10 @@ export default function Home() {
     }
   }, [collectorsAgreementOpen]);
 
-  //on page load
-  useEffect(() => {
-    const openMintModal = () => {
-      setMintModalOpen(true);
-    }
-    window.document.getElementById('mintButton2').addEventListener('click', openMintModal);
-  }, []);
-
   return (
     <div className={styles.container} onLoad={() => {
-      if (typeof window.provider !== 'undefined' && 
-          typeof window.provider.selectedAddess !== 'undefined') {
+      if (typeof window.provider === 'undefined' && 
+          typeof window.provider.selectedAddess === 'undefined') {
         window.provider = setDefaultProvider(); 
       }
     }}>
@@ -52,17 +44,14 @@ export default function Home() {
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
       { collectorsAgreementOpen && <PDFViewer /> }
       { mintModalOpen && <MintModal setConnectModalOpen={setMintModalOpen}/> } {/* Takes over page when Mint Button clicked */}
 
       <main>{/* Theoretically useful for SEO */}
-        <RoadmapPage />{/*  Roadmap Image + Mint Button + Home Button */}
+        <RoadmapPage setMintModalOpen={setMintModalOpen}
+                     setCollectorsAgreementOpen={setCollectorsAgreementOpen} />{/*  Roadmap Image + Mint Button + Home Button */}
       </main>
-      <div className={styles.copyright}>
-        <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-        <a className={styles.pdfPopupLink}
-            onClick={() => {setCollectorsAgreementOpen(true);}}>Collectors Agreement</a>
-      </div>
     </div>
   )
 }
