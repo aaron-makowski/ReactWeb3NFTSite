@@ -1050,16 +1050,23 @@ const tryBackupProviders = (err, setAddress) => {
   }
 }
 const connectWalletFunctions = (provider, setAddress) => {
-  alert('Connected to wallet modal 3');
-  if (provider && provider.selectedAddress) {
+  alert('Connected to wallet modal 0');
+
+  if (provider) {
     window.provider = provider;
     enableProvider(provider);
+    alert('Connected to wallet modal 1');
+
     setAddress(editAddressForConnectButton(provider.selectedAddress));
+    alert('Connected to wallet modal 2');
+
     switchChainToMainnet(provider);
+    alert('Connected to wallet modal 3');
 
     let web3 = new Web3(provider);
     window._web3 = web3;
     connectToContract(web3);
+    alert('Connected to wallet modal 4');
   } else {
     console.log('provider undefined/address undefined');
   }
