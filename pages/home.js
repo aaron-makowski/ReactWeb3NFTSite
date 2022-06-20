@@ -1010,25 +1010,21 @@ const setDefaultProvider = () => {
 }
 
 
-const connectWallet = (setAddress) => { 
-  //Get wallet provider
-  try {
-    web3Modal = new Web3Modal({
-      network: "ropsten", //TODO change to mainnet
-      cacheProvider: false,
-      providerOptions, // required
-      disableInjectedProvider: false,
-    });
-    web3Modal.connect().then(provider => { 
-      connectWalletFunctions(provider, setAddress); 
-    }).catch (err => {
-      console.log('Error connecting to Modal Wallet', err.message);
-      ethersJSConnectWallet(setAddress);
-    });
-  } catch (err) {
-    console.log('Error connecting to wallet2', err.message);
-    ethersJSConnectWallet(setAddress);
-  }
+function connectWallet(setProvider) { 
+
+  web3Modal = new Web3Modal({
+    network: "ropsten", //TODO change to mainnet
+    cacheProvider: false,
+    providerOptions, // required
+    disableInjectedProvider: false,
+  });
+  web3Modal.connect().then(provider => { 
+    console.log(provider)
+    alert('AFTER APP OPENS ( testing msg)', provider.toString())
+    setProvider(provider)
+  }).catch (err => {
+    console.log('Error connecting to Modal Wallet', err.code, err.message);
+  });
 }
 
 // user ethers.js to connect to wallet
@@ -1049,18 +1045,18 @@ const ethersJSConnectWallet = (setAddress) => {
     // console.log(Ethers)
     // let provider = new Ethers.providers.Web3Provider(window.web3.currentProvider);
 
-    provider.getSigner().then(signer => {
-      provider.signingKey = signer.address;
-      provider.selectedAddress = signer.address;
-      provider.chainId = signer.chainId;
-      connectWalletFunctions(provider, setAddress);
-      window.provider = provider;
-    }).catch(err => {
-      console.log('Error connecting to wallet', err.message);
-    });
+    // provider.getSigner().then(signer => {
+    //   provider.signingKey = signer.address;
+    //   provider.selectedAddress = signer.address;
+    //   provider.chainId = signer.chainId;
+    //   connectWalletFunctions(provider, setAddress);
+    //   window.provider = provider;
+    // }).catch(err => {
+    //   console.log('Error connecting to wallet', err.message);
+    // });
   } catch (err) {
     console.log('Error connecting to wallet', err.message);
-    tryBackupProviders(err, setAddress)
+    // tryBackupProviders(err, setAddress)
   }
 }
 
@@ -1085,17 +1081,18 @@ const tryBackupProviders = (err, setAddress) => {
 }
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
-    alert('Enabling provider');
     
-    provider.getSigner().then(signer => {
-      provider.signingKey = signer.address;
-      provider.selectedAddress = signer.address;
-      provider.chainId = signer.chainId;
-      connectWalletFunctions(provider, setAddress);
-      window.provider = provider;
-    }).catch(err => {
-      console.log('Error connecting to wallet', err.message);
-    });
+    // provider.getSigner().then(signer => {
+    //   provider.signingKey = signer.address;
+    //   provider.selectedAddress = signer.address;
+    //   provider.chainId = signer.chainId;
+    //   connectWalletFunctions(provider, setAddress);
+    //   window.provider = provider;
+    // }).catch(err => {
+    //   console.log('Error connecting to wallet', err.message);
+    // });
+
+    alert('Enabling provider');
 
     provider.request({method: 'eth_requestAccounts',}).then(() => { 
       provider.on("accountsChanged", (accounts) => {
@@ -1116,7 +1113,8 @@ const connectWalletFunctions = (provider, setAddress) => {
         }
       });
 
-      alert('Connected to wallet modal 2', provider.selectedAddress);
+
+      alert(provider.selectedAddress);
       setAddress(editAddressForConnectButton(provider.selectedAddress));
 
       switchChainToMainnet(provider);
@@ -1125,7 +1123,6 @@ const connectWalletFunctions = (provider, setAddress) => {
       window._web3 = web3;
 
       connectToContract(web3);
-
       alert('Connected to wallet modal 4', window.contract);
       window.provider = provider;
 
@@ -1184,20 +1181,32 @@ function TwitterIcon() {
 }
 function ConnectButton() {
   const [address, setAddress] = useState("Connect");
+  const [provider, setProvider] = useState(null);
 
   useEffect(() => {
-    if (typeof window.provider !== 'undefined' && 
-        typeof window.provider.selectedAddress !== 'undefined') {
-      setAddress(editAddressForConnectButton(window.provider.selectedAddress));
+    if (provider !== null) { 
+      if (provider.selectedAddress !== null) {
+        setAddress(editAddressForConnectButton(provider.selectedAddress));
+      } else {
+        setAddress("Connect")
+      }
     } else {
       setAddress("Connect")
     }
   }, [addressChanged]);
 
+  useEffect(() => {
+    if (provider) {
+      alert('2AFTER APP OPENS ( testing msg)', provider.toString())
+      connectWalletFunctions(provider, setAddress);
+      // ethersJSConnectWallet(setAddress);
+    }
+  }, [provider]);
+
   return (<>
         <button className={styles.navBarItem_ConnectButton} 
                 id='connectButton'
-                onClick={() => {connectWallet(setAddress)}}
+                onClick={() => {connectWallet(setProvider)}}
         >{address}</button>
   </>)
 }
