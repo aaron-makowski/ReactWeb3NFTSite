@@ -982,7 +982,7 @@ const setDefaultProvider = () => {
 }
 
 
-function connectWallet(setProvider) { 
+function connectWalletf(setProvider) { 
   let providerOptions = {
     // injected: {
     //   package: null,
@@ -1025,7 +1025,7 @@ function connectWallet(setProvider) {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
 }
-function connectWalletMobile(setProvider) { 
+function connectWallet(setProvider) { 
   let providerOptions = {
     injected: {
       package: null,
@@ -1064,6 +1064,16 @@ function connectWalletMobile(setProvider) {
   }).catch (err => {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
+
+  // let provider = new ethers.providers.Web3Provider(window.ethereum);
+  // provider.getSigner().then(signer => {
+  //   alert('signer')
+  //   // provider.signingKey = signer.address;
+  //   // provider.selectedAddress = signer.address;
+  //   // provider.chainId = signer.chainId;
+  // }).catch(err => {
+  //   console.log('Error connecting to wallet', err.message);
+  // });    // let _provider = new ethers.providers.Web3Provider(window.ethereum);
 }
 // user ethers.js to connect to wallet
 const ethersJSConnectWallet = (setAddress) => {
