@@ -1011,7 +1011,7 @@ const setDefaultProvider = () => {
 }
 
 
-function connectWalletf(setProvider) { 
+function connectWallet(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
@@ -1025,7 +1025,7 @@ function connectWalletf(setProvider) {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
 }
-async function connectWallet(setProvider) { 
+function connectWallet8(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
