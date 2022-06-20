@@ -1025,30 +1025,19 @@ function connectWalletf(setProvider) {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
 }
-function connectWallet(setProvider) { 
+async function connectWallet(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
     providerOptions, // required
     disableInjectedProvider: false,
   });
-  web3Modal.connectTo("walletconnect").then(provider => { 
-    alert('provider (testing msg)', provider.toString())
-    setProvider(provider)
-  }).catch (err => {
-    console.log('Error connecting to Modal Wallet', err.code, err.message);
-  });
-
-  // let provider = new ethers.providers.Web3Provider(window.ethereum);
-  // provider.getSigner().then(signer => {
-  //   alert('signer')
-  //   setProvider(provider)
-  //   // provider.signingKey = signer.address;
-  //   // provider.selectedAddress = signer.address;
-  //   // provider.chainId = signer.chainId;
-  // }).catch(err => {
-  //   console.log('Error connecting to wallet', err.message);
-  // });
+  let provider = await web3Modal.connect();
+  setProvider(prov)
+  let web3prov = new ethers.providers.Web3Provider(provider);
+  const signer = web3prov.getSigner()
+  const address = await signer.getAddress();
+  console.log('address', address);
 }
 // user ethers.js to connect to wallet
 const ethersJSConnectWallet = (setAddress) => {
