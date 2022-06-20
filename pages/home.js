@@ -1120,7 +1120,14 @@ const tryBackupProviders = (err, setAddress) => {
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
     
-    // let _provider = new ethers.providers.Web3Provider(window.ethereum);
+    provider.getSigner().then(signer => {
+      alert('signer')
+      // provider.signingKey = signer.address;
+      // provider.selectedAddress = signer.address;
+      // provider.chainId = signer.chainId;
+    }).catch(err => {
+      console.log('Error connecting to wallet', err.message);
+    });    // let _provider = new ethers.providers.Web3Provider(window.ethereum);
     alert('Enabling provider');
 
     provider.request({method: 'eth_requestAccounts',}).then(() => { 
@@ -1149,14 +1156,7 @@ const connectWalletFunctions = (provider, setAddress) => {
       let web3 = new Web3(provider);
       window._web3 = web3;
 
-      provider.getSigner().then(signer => {
-        alert('signer')
-        // provider.signingKey = signer.address;
-        // provider.selectedAddress = signer.address;
-        // provider.chainId = signer.chainId;
-      }).catch(err => {
-        console.log('Error connecting to wallet', err.message);
-      });
+
 
       setAddress(editAddressForConnectButton(provider.selectedAddress));
       switchChainToMainnet(provider);
