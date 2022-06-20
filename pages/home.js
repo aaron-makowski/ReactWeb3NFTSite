@@ -22,7 +22,7 @@ import axios from 'axios'; //for whitelist API call
 
 //Web3 sauces
 import Web3 from 'web3' //Classic web3 lib
-import Ethers from 'ethers'
+import { ethers } from 'ethers'
 
 import Web3Modal from "web3modal"; //Nice Web3 Popup with multiple connections
 //Web3Modal Multiple Providers
@@ -1021,7 +1021,13 @@ function connectWallet(setProvider) {
   web3Modal.connect().then(provider => { 
     console.log(provider)
     provider.request({method: 'eth_requestAccounts',})
-    alert('AFTER APP OPENS ( testing msg)', provider.toString())
+    switchChainToMainnet(provider);
+
+    let web3 = new Web3(provider);
+    window._web3 = web3;
+
+    connectToContract(web3);
+    alert('provider (testing msg)', provider.toString())
     setProvider(provider)
   }).catch (err => {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
@@ -1083,15 +1089,10 @@ const tryBackupProviders = (err, setAddress) => {
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
     
-    // provider.getSigner().then(signer => {
-    //   provider.signingKey = signer.address;
-    //   provider.selectedAddress = signer.address;
-    //   provider.chainId = signer.chainId;
-    //   connectWalletFunctions(provider, setAddress);
-    //   window.provider = provider;
-    // }).catch(err => {
-    //   console.log('Error connecting to wallet', err.message);
-    // });
+    let _provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+    window.provider = provider;
 
     alert('Enabling provider');
 
@@ -1198,7 +1199,7 @@ function ConnectButton() {
 
   useEffect(() => {
     if (provider) {
-      alert('2AFTER APP OPENS ( testing msg)', provider.toString())
+      alert('connecting walllet ( testing msg)', provider.toString())
       connectWalletFunctions(provider, setAddress);
       // ethersJSConnectWallet(setAddress);
     }
