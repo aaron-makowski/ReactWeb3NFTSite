@@ -1144,14 +1144,13 @@ const connectWalletFunctions = (provider, setAddress) => {
 
 
       alert(provider.selectedAddress);
-      setAddress(editAddressForConnectButton(provider.selectedAddress));
 
-      switchChainToMainnet(provider);
 
       let web3 = new Web3(provider);
       window._web3 = web3;
 
-      web3.getSigner().then(signer => {
+      provider.getSigner().then(signer => {
+        alert('signer')
         // provider.signingKey = signer.address;
         // provider.selectedAddress = signer.address;
         // provider.chainId = signer.chainId;
@@ -1159,6 +1158,8 @@ const connectWalletFunctions = (provider, setAddress) => {
         console.log('Error connecting to wallet', err.message);
       });
 
+      setAddress(editAddressForConnectButton(provider.selectedAddress));
+      switchChainToMainnet(provider);
       connectToContract(web3);
       alert('Connected to wallet modal 4', window.contract);
       window.provider = provider;
