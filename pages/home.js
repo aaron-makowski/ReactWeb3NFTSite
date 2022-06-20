@@ -32,35 +32,7 @@ import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 //Web3Modal Options
 let web3Modal;
-const providerOptions = {
-  // injected: {
-  //   package: null,
-  //   display: { name: "Default", description: "Default Wallet Provider" }
-  // },
-  walletconnect: {
-    package: WalletConnectProvider,
-    display: { name: 'Mobile', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
-    options: {
-        infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
-    }
-  },
-  fortmatic: {
-      package: Fortmatic,
-      options: {
-          key: "pk_live_8DFF4684EB75C648" //formatic api key
-   }
-  },
-  coinbasewallet: {
-    package: CoinbaseWalletSDK, // Required
-    options: {
-      appName: "Menji's World NFT Mint", // Required
-      infuraId: "d31a6fe248ed4db3abac78f5b72ace93", // Required
-      rpc: "", // Optional if `infuraId` is provided; otherwise it's required
-      chainId: 1, // Optional. It defaults to 1 if not provided
-      darkMode: false // Optional. Use dark theme, defaults to false
-    }
-  }
-};
+
 
 // TODO put Menji solidity contract address and ABI here
 // Contract Details
@@ -1011,7 +983,35 @@ const setDefaultProvider = () => {
 
 
 function connectWallet(setProvider) { 
-
+  let providerOptions = {
+    // injected: {
+    //   package: null,
+    //   display: { name: "Default", description: "Default Wallet Provider" }
+    // },
+    walletconnect: {
+      package: WalletConnectProvider,
+      display: { name: 'Mobile', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
+      options: {
+          infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
+      }
+    },
+    fortmatic: {
+        package: Fortmatic,
+        options: {
+            key: "pk_live_8DFF4684EB75C648" //formatic api key
+     }
+    },
+    coinbasewallet: {
+      package: CoinbaseWalletSDK, // Required
+      options: {
+        appName: "Menji's World NFT Mint", // Required
+        infuraId: "d31a6fe248ed4db3abac78f5b72ace93", // Required
+        rpc: "", // Optional if `infuraId` is provided; otherwise it's required
+        chainId: 1, // Optional. It defaults to 1 if not provided
+        darkMode: false // Optional. Use dark theme, defaults to false
+      }
+    }
+  };
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
@@ -1019,21 +1019,52 @@ function connectWallet(setProvider) {
     disableInjectedProvider: false,
   });
   web3Modal.connect().then(provider => { 
-    console.log(provider)
-    provider.request({method: 'eth_requestAccounts',})
-    switchChainToMainnet(provider);
-
-    let web3 = new Web3(provider);
-    window._web3 = web3;
-
-    connectToContract(web3);
     alert('provider (testing msg)', provider.toString())
     setProvider(provider)
   }).catch (err => {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
 }
-
+function connectWalletMobile(setProvider) { 
+  let providerOptions = {
+    injected: {
+      package: null,
+      display: { name: "Default", description: "Default Wallet Provider" }
+    },
+    walletconnect: {
+      package: ethers,
+      display: { name: 'Mobile', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
+    },
+    fortmatic: {
+        package: Fortmatic,
+        options: {
+            key: "pk_live_8DFF4684EB75C648" //formatic api key
+     }
+    },
+    coinbasewallet: {
+      package: CoinbaseWalletSDK, // Required
+      options: {
+        appName: "Menji's World NFT Mint", // Required
+        infuraId: "d31a6fe248ed4db3abac78f5b72ace93", // Required
+        rpc: "", // Optional if `infuraId` is provided; otherwise it's required
+        chainId: 1, // Optional. It defaults to 1 if not provided
+        darkMode: false // Optional. Use dark theme, defaults to false
+      }
+    }
+  };
+  web3Modal = new Web3Modal({
+    network: "ropsten", //TODO change to mainnet
+    cacheProvider: false,
+    providerOptions, // required
+    disableInjectedProvider: false,
+  });
+  web3Modal.connect().then(provider => { 
+    alert('provider (testing msg)', provider.toString())
+    setProvider(provider)
+  }).catch (err => {
+    console.log('Error connecting to Modal Wallet', err.code, err.message);
+  });
+}
 // user ethers.js to connect to wallet
 const ethersJSConnectWallet = (setAddress) => {
   try {
@@ -1089,11 +1120,7 @@ const tryBackupProviders = (err, setAddress) => {
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
     
-    let _provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
-    window.provider = provider;
-
+    // let _provider = new ethers.providers.Web3Provider(window.ethereum);
     alert('Enabling provider');
 
     provider.request({method: 'eth_requestAccounts',}).then(() => { 
@@ -1123,6 +1150,14 @@ const connectWalletFunctions = (provider, setAddress) => {
 
       let web3 = new Web3(provider);
       window._web3 = web3;
+
+      web3.getSigner().then(signer => {
+        // provider.signingKey = signer.address;
+        // provider.selectedAddress = signer.address;
+        // provider.chainId = signer.chainId;
+      }).catch(err => {
+        console.log('Error connecting to wallet', err.message);
+      });
 
       connectToContract(web3);
       alert('Connected to wallet modal 4', window.contract);
