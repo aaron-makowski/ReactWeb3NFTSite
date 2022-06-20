@@ -1093,17 +1093,7 @@ const tryBackupProviders = (err, setAddress) => {
 }
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
-    
-    provider.getSigner().then(signer => {
-      alert('signer')
-      // provider.signingKey = signer.address;
-      // provider.selectedAddress = signer.address;
-      // provider.chainId = signer.chainId;
-    }).catch(err => {
-      console.log('Error connecting to wallet', err.message);
-    });    // let _provider = new ethers.providers.Web3Provider(window.ethereum);
     alert('Enabling provider');
-
     provider.request({method: 'eth_requestAccounts',}).then(() => { 
       provider.on("accountsChanged", (accounts) => {
         addressChanged += 1;
