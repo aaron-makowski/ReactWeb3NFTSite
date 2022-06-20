@@ -1033,7 +1033,7 @@ async function connectWallet(setProvider) {
     disableInjectedProvider: false,
   });
   let provider = await web3Modal.connect();
-  setProvider(prov)
+  setProvider(provider)
   let web3prov = new ethers.providers.Web3Provider(provider);
   const signer = web3prov.getSigner()
   const address = await signer.getAddress();
