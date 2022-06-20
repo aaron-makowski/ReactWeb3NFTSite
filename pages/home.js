@@ -1020,6 +1020,7 @@ function connectWallet(setProvider) {
   });
   web3Modal.connect().then(provider => { 
     console.log(provider)
+    provider.request({method: 'eth_requestAccounts',})
     alert('AFTER APP OPENS ( testing msg)', provider.toString())
     setProvider(provider)
   }).catch (err => {
