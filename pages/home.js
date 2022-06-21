@@ -1025,6 +1025,7 @@ function connectWalletgg(setProvider) {
   });
 }
 function connectWallet(setProvider) { 
+  alert('test')
   let provider = new ethers.providers.Web3Provider(window.ethereum);
   alert('test1')
   // provider.getSigner().catch(err => {
