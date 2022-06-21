@@ -1003,7 +1003,6 @@ const connectToContract = (web3) => {
     console.log('No web3? You should consider trying MetaMask!');
   }
 }
-
 const setDefaultProvider = () => {
   return new Web3.providers.HttpProvider(
     'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
@@ -1011,7 +1010,7 @@ const setDefaultProvider = () => {
 }
 
 
-function connectWallet(setProvider) { 
+async function connectWallet(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
@@ -1025,7 +1024,7 @@ function connectWallet(setProvider) {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
 }
-function connectWallet8(setProvider) { 
+async function connectWallet8(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
@@ -1039,33 +1038,17 @@ function connectWallet8(setProvider) {
   const address = await signer.getAddress();
   console.log('address', address);
 }
-// user ethers.js to connect to wallet
 const ethersJSConnectWallet = (setAddress) => {
   try {
-    let provider;
-    new WalletConnectProvider({
-      infuraId: 'd31a6fe248ed4db3abac78f5b72ace93', //TODO change to mainnet
-      network: 'ropsten'
-      //network: 'mainnet'
-    }).then(_provider => {
-      connectWalletFunctions(_provider, setAddress);
-      window.provider = _provider;
-      provider = _provider;
-    }).catch (err => {
-      console.log('Error connecting to WalletConnect', err.message);
-    });
-    // console.log(Ethers)
-    // let provider = new Ethers.providers.Web3Provider(window.web3.currentProvider);
+    let provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    // provider.getSigner().then(signer => {
-    //   provider.signingKey = signer.address;
-    //   provider.selectedAddress = signer.address;
-    //   provider.chainId = signer.chainId;
-    //   connectWalletFunctions(provider, setAddress);
-    //   window.provider = provider;
-    // }).catch(err => {
-    //   console.log('Error connecting to wallet', err.message);
-    // });
+    provider.getSigner().catch(err => {
+      console.log('Error connecting to wallet', err.message);
+    });
+
+    connectWalletFunctions(provider, setAddress);
+    window.provider = provider;
+
   } catch (err) {
     console.log('Error connecting to wallet', err.message);
     // tryBackupProviders(err, setAddress)
@@ -1073,9 +1056,10 @@ const ethersJSConnectWallet = (setAddress) => {
 }
 
 const tryBackupProviders = (err, setAddress) => {
-  let provider;
-  alert('Error connecting to wallet. Please try again.', err.message);
   try {
+    let provider;
+    alert('Error connecting to wallet. Please try again.', err.message);
+
     if (typeof window.ethereum !== 'undefined') {
       alert('chose ethereum (testing msg)')
       provider = window.ethereum;
@@ -1087,6 +1071,7 @@ const tryBackupProviders = (err, setAddress) => {
     } else { //Couldnt connect to wallet
       alert('Failed to connect to wallet, please reload and try again.')
     }
+
   } catch (error) {
     alert('Failed to connect to backup wallet providers.', error.message.toString())
   }
@@ -1112,21 +1097,17 @@ const connectWalletFunctions = (provider, setAddress) => {
           alert('Please Switch to the Ethereum Mainnet Network'); 
         }
       });
-
-
+      
       alert(provider.selectedAddress);
 
+      // let web3 = new Web3(provider);
+      // window._web3 = web3;
 
-      let web3 = new Web3(provider);
-      window._web3 = web3;
-
-
-
-      setAddress(editAddressForConnectButton(provider.selectedAddress));
-      switchChainToMainnet(provider);
-      connectToContract(web3);
-      alert('Connected to wallet modal 4', window.contract);
-      window.provider = provider;
+      // setAddress(editAddressForConnectButton(provider.selectedAddress));
+      // switchChainToMainnet(provider);
+      // connectToContract(web3);
+      // alert('Connected to wallet modal 4', window.contract);
+      // window.provider = provider;
 
     }).catch((err) => {
       console.log('Error Connecting to wallet. Try Again.', err.message);
