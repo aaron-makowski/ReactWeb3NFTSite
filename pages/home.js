@@ -1010,7 +1010,7 @@ const setDefaultProvider = () => {
 }
 
 
-async function connectWallet(setProvider) { 
+function connectWalletgg(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
@@ -1024,19 +1024,14 @@ async function connectWallet(setProvider) {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
 }
-async function connectWallet8(setProvider) { 
-  web3Modal = new Web3Modal({
-    network: "ropsten", //TODO change to mainnet
-    cacheProvider: false,
-    providerOptions, // required
-    disableInjectedProvider: false,
-  });
-  let provider = await web3Modal.connect();
+function connectWallet(setProvider) { 
+  let provider = new ethers.providers.Web3Provider(window.ethereum);
+  alert('test1')
+  // const signer = web3prov.getSigner()
+  // alert('test2')
+  // const address = await signer.getAddress();
+  // alert('address', address);
   setProvider(provider)
-  let web3prov = new ethers.providers.Web3Provider(provider);
-  const signer = web3prov.getSigner()
-  const address = await signer.getAddress();
-  console.log('address', address);
 }
 const ethersJSConnectWallet = (setAddress) => {
   try {
@@ -1100,14 +1095,14 @@ const connectWalletFunctions = (provider, setAddress) => {
       
       alert(provider.selectedAddress);
 
-      // let web3 = new Web3(provider);
-      // window._web3 = web3;
+      let web3 = new Web3(provider);
+      window._web3 = web3;
 
-      // setAddress(editAddressForConnectButton(provider.selectedAddress));
-      // switchChainToMainnet(provider);
-      // connectToContract(web3);
-      // alert('Connected to wallet modal 4', window.contract);
-      // window.provider = provider;
+      setAddress(editAddressForConnectButton(provider.selectedAddress));
+      switchChainToMainnet(provider);
+      connectToContract(web3);
+      alert('Connected to wallet modal 4', window.contract);
+      window.provider = provider;
 
     }).catch((err) => {
       console.log('Error Connecting to wallet. Try Again.', err.message);
@@ -1182,7 +1177,6 @@ function ConnectButton() {
     if (provider) {
       alert('connecting walllet ( testing msg)', provider.toString())
       connectWalletFunctions(provider, setAddress);
-      // ethersJSConnectWallet(setAddress);
     }
   }, [provider]);
 
