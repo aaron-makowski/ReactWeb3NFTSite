@@ -1027,27 +1027,10 @@ function connectWalletgg(setProvider) {
 function connectWallet(setProvider) { 
   let provider = new ethers.providers.Web3Provider(window.ethereum);
   alert('test1')
-  // const signer = web3prov.getSigner()
-  // alert('test2')
-  // const address = await signer.getAddress();
-  // alert('address', address);
+  // provider.getSigner().catch(err => {
+  //   alert('Error connecting to wallet', err.message);
+  // });
   setProvider(provider)
-}
-const ethersJSConnectWallet = (setAddress) => {
-  try {
-    let provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    provider.getSigner().catch(err => {
-      console.log('Error connecting to wallet', err.message);
-    });
-
-    connectWalletFunctions(provider, setAddress);
-    window.provider = provider;
-
-  } catch (err) {
-    console.log('Error connecting to wallet', err.message);
-    // tryBackupProviders(err, setAddress)
-  }
 }
 
 const tryBackupProviders = (err, setAddress) => {
@@ -1175,7 +1158,7 @@ function ConnectButton() {
 
   useEffect(() => {
     if (provider) {
-      alert('connecting walllet ( testing msg)', provider.toString())
+      alert('connecting walllet (testing msg)', provider.toString())
       connectWalletFunctions(provider, setAddress);
     }
   }, [provider]);
