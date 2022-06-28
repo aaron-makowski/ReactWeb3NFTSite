@@ -904,8 +904,8 @@ let providerOptions = {
 // import { initializeConnector } from '@web3-react/core'
 function connectWallet(setProvider) {
 
-  async function callback_() {
-    alert('hi1')
+  // async function callback_() {
+    // alert('hi1')
     // if (error) {
     //   console.error(error);
     //   return;
@@ -917,14 +917,14 @@ function connectWallet(setProvider) {
     //   console.log(provider.wc._transport.uri);
     //   window.location.href = provider.wc._transport.uri;
     // });
-  }
+  // }
 
   let provider = new WalletConnectProvider({
     infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
     // chainId: 3,
     // bridge: "https://bridge.walletconnect.org",
     rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
-    connectCallbacks: [callback_]
+    // connectCallbacks: [callback_]
   });
 
   provider.onConnect(async () => {
@@ -932,10 +932,10 @@ function connectWallet(setProvider) {
   });
 
   provider.enable().then(() => {
+    alert(provider)
+    alert(provider.wc._transport.uri);
     setProvider(provider)
-    console.log(provider)
-    console.log(provider.wc._transport.uri);
-    window.location.href = provider.wc._transport.uri;
+    // window.location.href = provider.wc._transport.uri;
     alert('hi4')
   }).catch(error => {
     alert(error.toString());
