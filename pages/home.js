@@ -873,13 +873,9 @@ let abi = [
 ];
 
 let providerOptions = {
-  // injected: {
-  //   package: null,
-  //   display: { name: "Default", description: "Default Wallet Provider" }
-  // },
   walletconnect: {
     package: WalletConnectProvider,
-    display: { name: 'Mobile', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
+    display: { name: 'Mobile Connect', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
     options: {
         infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
     }
@@ -902,6 +898,87 @@ let providerOptions = {
   }
 };
 
+// import { useCallback } from 'react';
+// import { useWeb3React } from '@web3-react/core';
+// import { WalletConnect } from '@web3-react/walletconnect'
+// import { initializeConnector } from '@web3-react/core'
+function connectWallet(setProvider) {
+
+  async function callback_() {
+    alert('hi1')
+    // if (error) {
+    //   console.error(error);
+    //   return;
+    // }
+    // console.log('callback called')
+    // provider.enable().then(() => {
+    //   // s etProvider(provider)
+    //   console.log(provider)
+    //   console.log(provider.wc._transport.uri);
+    //   window.location.href = provider.wc._transport.uri;
+    // });
+  }
+
+  let provider = new WalletConnectProvider({
+    infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
+    // chainId: 3,
+    // bridge: "https://bridge.walletconnect.org",
+    rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
+    connectCallbacks: [callback_]
+  });
+
+  provider.onConnect(async () => {
+    alert('hi3')
+  });
+
+  provider.enable().then(() => {
+    // setProvider(provider)
+    // console.log(provider)
+    // console.log(provider.wc._transport.uri);
+    // window.location.href = provider.wc._transport.uri;
+    alert('hi4')
+  }).catch(error => {
+    alert(error.toString());
+  })
+
+
+
+  
+  // const res = initializeConnector<WalletConnect>(
+  //   (actions) =>
+  //     new WalletConnect({
+  //       actions,
+  //       options: {
+  //         rpc: 'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93',
+  //       },
+  //     })
+  // )
+  // console.log(res)
+  // const [walletConnect, hooks] = res
+  // const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks
+  
+  // walletConnect.connectEagerly().then(() => {
+  //   const accounts = useAccounts()
+  //   const provider = useProvider()
+  //   setProvider(provider)
+  //   console.log(accounts, provider)
+  // })
+  // .catch(() => {
+  //   console.debug('Failed to connect eagerly to walletconnect')
+  // })
+
+  // const { activate, library } = useWeb3React();
+
+  // const connector = new InjectedConnector({
+  //   supportedChainIds: [1, 3]
+  // });
+
+  // const connect = useCallback(() => {
+  //   activate(connector);
+  // }, [activate]);
+
+  // connect();
+}
 
 
 let addressChanged = 0;
@@ -975,6 +1052,154 @@ async function fetchDynamicData() {
 }
 
 
+
+function renderCollectionStats() {
+  //Example json response from fetchCollectionStats()
+  // "collection": {
+  //   "stats": {
+  //     "one_day_volume": 555.25666,
+  //     "one_day_change": -0.5331663093466509,
+  //     "one_day_sales": 12,
+  //     "one_day_average_price": 46.271388333333334,
+  //     "seven_day_volume": 20649.460760000016,
+  //     "seven_day_change": 2.8759572616219398,
+  //     "seven_day_sales": 281,
+  //     "seven_day_average_price": 73.4856254804271,
+  //     "thirty_day_volume": 30416.557760000058,
+  //     "thirty_day_change": 1.2935263029073212,
+  //     "thirty_day_sales": 519,
+  //     "thirty_day_average_price": 58.606084315992405,
+  //     "total_volume": 939506.9115032858,
+  //     "total_sales": 20768,
+  //     "total_supply": 9999,
+  //     "count": 9999,
+  //     "num_owners": 3525,
+  //     "average_price": 45.23819874341707,
+  //     "market_cap": 734782.7691787906,
+  //     "floor_price": 0
+  //   }
+  // }
+
+  const [collectionStats, setCollectionStats] = useState(null);
+  useEffect(() => {
+    fetchCollectionStats().then(data => {
+      setCollectionStats(data.collection.stats);
+    });
+  }
+  , [fetchCollectionStats]);
+
+  return (
+    <div>
+      <h2>Collection Stats</h2>
+      <p>{collectionStats ? 
+      <div className={styles.statsBoxContainer}>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>1D Vol</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.one_day_volume}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>1D Change</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.one_day_change}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>1D Sales</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.one_day_sales}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>1D Avg Price</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.one_day_average_price}</div>
+                    </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>7D Vol</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.seven_day_volume}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>7D Change</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.seven_day_change}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>7D Sales</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.seven_day_sales}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>7D Avg Price</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.seven_day_average_price}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>30D Vol</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.thirty_day_volume}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>30D Change</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.thirty_day_change}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>30D Sales</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.thirty_day_sales}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>30D Avg Price</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.thirty_day_average_price}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Total Vol</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.total_volume}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Total Sales</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.total_sales}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Total Supply</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.total_supply}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Count</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.count}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Num Owners</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.num_owners}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Avg Price</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.average_price}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Market Cap</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.market_cap}</div>
+          </div>
+          <div className={styles.statsBox}>
+            <div className={styles.statsBoxTitle}>Floor Price</div>
+            <div className={styles.statsBoxNumber}>{collectionStats.floor_price}</div>
+          </div>
+        </div>
+      : 'Loading...'}</p>
+
+    </div>
+  )
+}
+
+function fetchCollectionStats(){
+  return new Promise((resolve, reject) => {
+    let url = 'https://api.opensea.io/api/v1/asset/' + contractAddress + '/1/?include_orders=false';
+    fetch(url).then(response => response.json()).then(data => { resolve(data); }).catch(error => { reject(error); });
+  });
+}
+// function (){
+//   //function that
+// }
+// function (){
+//   //function that
+// }
+
+
+
+
+
+
+
+
 //Functions used via connect buttons
 const editAddressForConnectButton = (address) => {
   try {
@@ -1010,7 +1235,8 @@ const setDefaultProvider = () => {
 }
 
 
-function connectWalletgg(setProvider) { 
+//desktop
+function connectWallet_(setProvider) { 
   web3Modal = new Web3Modal({
     network: "ropsten", //TODO change to mainnet
     cacheProvider: false,
@@ -1018,20 +1244,10 @@ function connectWalletgg(setProvider) {
     disableInjectedProvider: false,
   });
   web3Modal.connect().then(provider => { 
-    alert('provider (testing msg)', provider.toString())
     setProvider(provider)
-  }).catch (err => {
+  }).catch(err => {
     console.log('Error connecting to Modal Wallet', err.code, err.message);
   });
-}
-function connectWallet(setProvider) { 
-  alert('test')
-  let provider = new ethers.providers.Web3Provider(window.ethereum);
-  alert('test1')
-  // provider.getSigner().catch(err => {
-  //   alert('Error connecting to wallet', err.message);
-  // });
-  setProvider(provider)
 }
 
 const tryBackupProviders = (err, setAddress) => {
@@ -1057,8 +1273,9 @@ const tryBackupProviders = (err, setAddress) => {
 }
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
+    
     alert('Enabling provider');
-    provider.request({method: 'eth_requestAccounts',}).then(() => { 
+    provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
       provider.on("accountsChanged", (accounts) => {
         addressChanged += 1;
         addressChanged2 += 1;
@@ -1085,9 +1302,9 @@ const connectWalletFunctions = (provider, setAddress) => {
       setAddress(editAddressForConnectButton(provider.selectedAddress));
       switchChainToMainnet(provider);
       connectToContract(web3);
-      alert('Connected to wallet modal 4', window.contract);
       window.provider = provider;
-
+      
+      alert('Connected to wallet modal 4', window.contract);
     }).catch((err) => {
       console.log('Error Connecting to wallet. Try Again.', err.message);
     });

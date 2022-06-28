@@ -17,6 +17,8 @@
     "@react-three/fiber": "^7.0.26",
     "@walletconnect/qrcode-modal": "^1.7.8",
     "@walletconnect/web3-provider": "^1.7.8",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/walletconnect": "*",
     "axios": "^0.27.2",
     "ethers": "^5.6.9",
     "fortmatic": "^2.2.1",
