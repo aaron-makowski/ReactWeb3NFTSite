@@ -923,7 +923,7 @@ function connectWallet(setProvider) {
     infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
     // chainId: 3,
     // bridge: "https://bridge.walletconnect.org",
-    rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
+    // rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
     // connectCallbacks: [callback_]
   });
 
