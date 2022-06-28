@@ -932,10 +932,10 @@ function connectWallet(setProvider) {
   });
 
   provider.enable().then(() => {
-    // setProvider(provider)
-    // console.log(provider)
-    // console.log(provider.wc._transport.uri);
-    // window.location.href = provider.wc._transport.uri;
+    setProvider(provider)
+    console.log(provider)
+    console.log(provider.wc._transport.uri);
+    window.location.href = provider.wc._transport.uri;
     alert('hi4')
   }).catch(error => {
     alert(error.toString());
