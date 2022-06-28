@@ -921,23 +921,25 @@ function connectWallet(setProvider) {
 
   let provider = new WalletConnectProvider({
     infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
-    // chainId: 3,
+    chainId: 3,
     // bridge: "https://bridge.walletconnect.org",
     rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
     // connectCallbacks: [callback_]
   });
 
-  provider.onConnect(async () => {
-    alert('hi3')
-  });
+  // provider.onConnect(async () => {
+  //   alert('hi3')
+  // });
 
-  provider.enable().then(() => {
-    alert(provider)
-    alert(provider.wc._transport.uri);
-    setProvider(provider)
+  provider.enable()
+  // .then(() => {
+    // alert(provider)
+    // alert(provider.wc._transport.uri);
+    // setProvider(provider)
     // window.location.href = provider.wc._transport.uri;
-    alert('hi4')
-  }).catch(error => {
+    // alert('hi4')
+  // })
+  .catch(error => {
     alert(error.toString());
   })
 
