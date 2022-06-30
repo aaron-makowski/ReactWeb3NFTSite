@@ -930,8 +930,7 @@ function connectWallet(setProvider) {
   // provider.onConnect(async () => {
   //   alert('hi3')
   // });
-
-  provider.enable()
+  provider.connector().enable()
   .then(() => {
     // alert(provider)
     // alert(provider.wc._transport.uri);
