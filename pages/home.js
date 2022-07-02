@@ -1159,40 +1159,32 @@ const setDefaultProvider = () => {
 // import { initializeConnector } from '@web3-react/core'
 function connectWallet(setProvider) {
 
-  async function callback_() {
-    alert('hi0')
-    if (error) {
-      console.error(error);
-      return;
-    }
-    console.log('callback called')
-    provider.enable().then(() => {
-      // s etProvider(provider)
-      console.log(provider)
-      alert('hi1')
-      // console.log(provider.wc._transport.uri);
-      // window.location.href = provider.wc._transport.uri;
-    });
-  }
+  // async function callback_() {
+  //   alert('hi0')
+  //   setProvider(provider)
+  //   providerChanged += 1;
+  // }
 
   let provider = new WalletConnectProvider({
     infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
     chainId: 3,
-    // bridge: "https://bridge.walletconnect.org",
-    // rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
-    connectCallbacks: [callback_]
-  });
-  console.log(provider)
-  provider.onConnect(async () => {
-    alert('hi3')
+    // connectCallbacks: [callback_]
   });
 
-  provider.enable().catch(error => {
-    return alert(error.message.toString());
-  })
-  alert('hi5')
-  // setProvider(provider)
-  // window.location.href = provider.wc._transport.uri;
+  provider.connector.connect().then(() => {
+    console.log(provider)
+    setProvider(provider)
+    providerChanged += 1;
+    window.open(provider.wc.uri.toString(), '_blank');
+  });
+
+  // provider.onConnect(async () => {
+  //   alert('hi3')
+  //   setProvider(provider)
+  //   providerChanged += 1;
+  // });
+
+  
   // switchChainToMainnet(provider)
 
 
@@ -1230,8 +1222,6 @@ function connectWallet(setProvider) {
   // }, [activate]);
 
   // connect();
-
-  providerChanged += 1;
 }
 //desktop
 function connectWallet_(setProvider) { 
@@ -1368,7 +1358,7 @@ function ConnectButton() {
   const [address, setAddress] = useState("Connect");
   const [provider, setProvider] = useState(null);
 
-  useMemo(() => {
+  useEffect(() => {
     if (provider?.selectedAddress) {
       setAddress(editAddressForConnectButton(provider.selectedAddress));
     } else {
@@ -1376,8 +1366,8 @@ function ConnectButton() {
     }
   }, [addressChanged]); //provider?.selectedAddress?.toString()
 
-  useMemo(() => {
-    if (provider?.selectedAddress) {
+  useEffect(() => {
+    if (provider) {
       alert('connecting walllet (testing msg) ' + provider.toString())
       connectWalletFunctions(provider, setAddress);
     }
