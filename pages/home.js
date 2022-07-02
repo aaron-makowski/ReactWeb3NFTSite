@@ -1190,7 +1190,7 @@ function connectWallet(setProvider) {
     return alert(error.message.toString());
   })
   alert('hi5')
-  setProvider(provider)
+  // setProvider(provider)
   // window.location.href = provider.wc._transport.uri;
   // switchChainToMainnet(provider)
 
