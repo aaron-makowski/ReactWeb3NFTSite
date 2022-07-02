@@ -1181,21 +1181,17 @@ function connectWallet(setProvider) {
     // rpcUrl: "https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
     // connectCallbacks: [callback_]
   });
-  alert(provider)
+  console.log(provider)
   // provider.onConnect(async () => {
   //   alert('hi3')
   // });
 
-  provider.enable().then(() => {
-    // alert(provider)
-    // alert(provider.wc._transport.uri);
-    alert('hi4')
-    setProvider(provider)
-    // window.location.href = provider.wc._transport.uri;
-  }).catch(error => {
+  provider.enable().catch(error => {
     return alert(error.message.toString());
   })
-
+  alert('hi4')
+  setProvider(provider)
+  // window.location.href = provider.wc._transport.uri;
   // switchChainToMainnet(provider)
 
 
