@@ -1164,19 +1164,25 @@ function connectWallet(setProvider) {
   //   setProvider(provider)
   //   providerChanged += 1;
   // }
-
   let provider = new WalletConnectProvider({
     infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
     chainId: 3,
     // connectCallbacks: [callback_]
   });
+  // console.log(provider)
+  window.open(provider.wc.uri.toString(), '_blank');
+  // provider.connector.connect().then(() => {
+  //   // alert('connectado')
+  //   // setProvider(provider)
+  //   // providerChanged += 1;
+  // })
+// const web3 = new Web3(provider);
+  // // console.log(web3)
+  // web3.eth.getAccounts()
+  //   .then(x => {
 
-  provider.connector.connect().then(() => {
-    console.log(provider)
-    setProvider(provider)
-    providerChanged += 1;
-    window.open(provider.wc.uri.toString(), '_blank');
-  });
+
+
 
   // provider.onConnect(async () => {
   //   alert('hi3')
