@@ -1172,7 +1172,7 @@ function connectWallet(setProvider) {
   });
   console.log(provider, provider.connector)
 
-  provider.connectEagerly()
+  provider.connector.connectEagerly()
 
 
   // provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
