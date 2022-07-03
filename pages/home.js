@@ -1170,12 +1170,12 @@ function connectWallet(setProvider) {
     // connectCallbacks: [callback_]
   });
   // console.log(provider)
-  window.open(provider.wc.uri.toString(), '_blank');
-  // provider.connector.connect().then(() => {
-  //   // alert('connectado')
-  //   // setProvider(provider)
-  //   // providerChanged += 1;
-  // })
+  // window.open(provider.wc.uri.toString(), '_blank');
+  provider.connector.connect().then(() => {
+    alert('connectado')
+    setProvider(provider)
+    providerChanged += 1;
+  })
 // const web3 = new Web3(provider);
   // // console.log(web3)
   // web3.eth.getAccounts()
