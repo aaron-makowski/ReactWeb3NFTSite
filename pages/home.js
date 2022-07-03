@@ -1172,7 +1172,7 @@ function connectWallet(setProvider) {
   });
   console.log(provider, provider.connector)
   provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
-    window.open('wc?uri=wc?uri='+provider.wc.uri.toString());
+    window.open('dapp://wc?uri='+provider.wc.uri.toString());
   //   console.log(provider)
   //   provider.on("accountsChanged", (accounts) => {
   //     addressChanged += 1;
@@ -1198,6 +1198,11 @@ function connectWallet(setProvider) {
   }).catch((err) => {
     alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
   });
+
+  provider.connector.approveSession({
+    chainId: 3,
+    accounts: ['0x4E994E0Ad30B2D0F1a946d1ECFaB0182b5A6259c']
+  })
 
   // provider.enable().then((addresses) => {
   //   console.log(addresses)
