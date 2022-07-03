@@ -1170,33 +1170,35 @@ function connectWallet(setProvider) {
     // chainId: 3,
     // connectCallbacks: [callback_]
   });
-
-
+  console.log(provider, provider.connector)
   provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
-    provider.on("accountsChanged", (accounts) => {
-      addressChanged += 1;
-      addressChanged2 += 1;
-      console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
-    });
-    provider.on("chainChanged", (chainId) => {
-      console.log('Chain changed to', chainId);
-      if (chainId != 1) {
-        alert('Please Switch to the Ethereum Mainnet Network'); 
-      }
-    });
-    provider.on("connect", (info) => {
-      console.log('Connected to Wallet:', info);
-      if (info.chainId != 1) {
-        alert('Please Switch to the Ethereum Mainnet Network'); 
-      }
-    });
+    window.open('wc?uri=wc?uri='+provider.wc.uri.toString());
+  //   console.log(provider)
+  //   provider.on("accountsChanged", (accounts) => {
+  //     addressChanged += 1;
+  //     addressChanged2 += 1;
+  //     console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
+  //   });
+  //   provider.on("chainChanged", (chainId) => {
+  //     console.log('Chain changed to', chainId);
+  //     if (chainId != 1) {
+  //       alert('Please Switch to the Ethereum Mainnet Network'); 
+  //     }
+  //   });
+  //   provider.on("connect", (info) => {
+  //     console.log('Connected to Wallet:', info);
+  //     if (info.chainId != 1) {
+  //       alert('Please Switch to the Ethereum Mainnet Network'); 
+  //     }
+  //   });
     setProvider(provider)
     providerChanged += 1;
+  //   window.open('metamask://wc?uri=wc?uri='+provider.wc.uri.toString());
+    
   }).catch((err) => {
     alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
   });
 
-  // window.open(provider.wc.uri.toString());
   // provider.enable().then((addresses) => {
   //   console.log(addresses)
   //   console.log ('selected addy: ' + addresses[0])
