@@ -1157,7 +1157,7 @@ const setDefaultProvider = () => {
 // import { useWeb3React } from '@web3-react/core';
 // import { WalletConnect } from '@web3-react/walletconnect'
 // import { initializeConnector } from '@web3-react/core'
-async function connectWallet(setProvider) {
+function connectWallet(setProvider) {
 
   // async function callback_() {
   //   alert('hi0')
@@ -1166,11 +1166,44 @@ async function connectWallet(setProvider) {
   // }
   let provider = new WalletConnectProvider({
     infuraId: "d31a6fe248ed4db3abac78f5b72ace93",
-    chainId: 3,
+    rpcUrl: "https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93",
+    // chainId: 3,
     // connectCallbacks: [callback_]
   });
-  // console.log(provider)
-  window.open(provider.wc.uri.toString());
+
+
+  provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
+    provider.on("accountsChanged", (accounts) => {
+      addressChanged += 1;
+      addressChanged2 += 1;
+      console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
+    });
+    provider.on("chainChanged", (chainId) => {
+      console.log('Chain changed to', chainId);
+      if (chainId != 1) {
+        alert('Please Switch to the Ethereum Mainnet Network'); 
+      }
+    });
+    provider.on("connect", (info) => {
+      console.log('Connected to Wallet:', info);
+      if (info.chainId != 1) {
+        alert('Please Switch to the Ethereum Mainnet Network'); 
+      }
+    });
+    setProvider(provider)
+    providerChanged += 1;
+  }).catch((err) => {
+    alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
+  });
+
+  // window.open(provider.wc.uri.toString());
+  // provider.enable().then((addresses) => {
+  //   console.log(addresses)
+  //   console.log ('selected addy: ' + addresses[0])
+  // }).catch((err) => {
+  //   console.log(err)
+  // })
+
   // setProvider(provider)
   // providerChanged += 1;
 
@@ -1183,9 +1216,6 @@ async function connectWallet(setProvider) {
   // // console.log(web3)
   // web3.eth.getAccounts()
   //   .then(x => {
-
-
-
 
   // provider.onConnect(async () => {
   //   alert('hi3')
@@ -1273,46 +1303,48 @@ const tryBackupProviders = (err, setAddress) => {
 const connectWalletFunctions = (provider, setAddress) => {
   if (provider) {
 
-    alert('Enabling provider');
-    provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
+    // alert('Enabling provider');
+    // provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
 
-      alert('accoutn son change');
-      provider.on("accountsChanged", (accounts) => {
-        addressChanged += 1;
-        addressChanged2 += 1;
-        console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
-      });
-      provider.on("chainChanged", (chainId) => {
-        console.log('Chain changed to', chainId);
-        if (chainId != 1) {
-          alert('Please Switch to the Ethereum Mainnet Network'); 
-        }
-      });
-      provider.on("connect", (info) => {
-        console.log('Connected to Wallet:', info);
-        if (info.chainId != 1) {
-          alert('Please Switch to the Ethereum Mainnet Network'); 
-        }
-      });
+    //   provider.on("accountsChanged", (accounts) => {
+    //     addressChanged += 1;
+    //     addressChanged2 += 1;
+    //     console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
+    //   });
+    //   provider.on("chainChanged", (chainId) => {
+    //     console.log('Chain changed to', chainId);
+    //     if (chainId != 1) {
+    //       alert('Please Switch to the Ethereum Mainnet Network'); 
+    //     }
+    //   });
+    //   provider.on("connect", (info) => {
+    //     console.log('Connected to Wallet:', info);
+    //     if (info.chainId != 1) {
+    //       alert('Please Switch to the Ethereum Mainnet Network'); 
+    //     }
+    //   });
+
+
+
+      alert('address ' + provider.accounts.toString());
+      setAddress(editAddressForConnectButton(provider.selectedAddress));
+
+      // alert('switching to mainnet');
+      // switchChainToMainnet(provider); 
 
       alert('gettin web3');
       let web3 = new Web3(provider);
       window._web3 = web3;
-
-      alert('address ' + provider.selectedAddress);
-      setAddress(editAddressForConnectButton(provider.selectedAddress));
-
-      alert('switching to mainnet');
-      switchChainToMainnet(provider); 
 
       alert('connecting to contract');
       connectToContract(web3); 
 
       window.provider = provider;
       alert('End of connect wallet funcs: contract: ' +  window.contract.toString())
-    }).catch((err) => {
-      alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
-    });
+
+  //   }).catch((err) => {
+  //     alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
+  //   });
   } else {
     alert('provider undefined/address undefined');
   }
@@ -1376,7 +1408,7 @@ function ConnectButton() {
   }, [addressChanged]); //provider?.selectedAddress?.toString()
 
   useEffect(() => {
-    if (typeof provider?.selectedAddress !== 'undefined') {
+    if (provider) {
       alert('connecting walllet (testing msg) ' + provider.toString())
       connectWalletFunctions(provider, setAddress);
     }
