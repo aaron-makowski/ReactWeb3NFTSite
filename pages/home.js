@@ -1171,38 +1171,42 @@ function connectWallet(setProvider) {
     // connectCallbacks: [callback_]
   });
   console.log(provider, provider.connector)
-  provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
-    window.open('dapp://wc?uri='+provider.wc.uri.toString());
-  //   console.log(provider)
-  //   provider.on("accountsChanged", (accounts) => {
-  //     addressChanged += 1;
-  //     addressChanged2 += 1;
-  //     console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
-  //   });
-  //   provider.on("chainChanged", (chainId) => {
-  //     console.log('Chain changed to', chainId);
-  //     if (chainId != 1) {
-  //       alert('Please Switch to the Ethereum Mainnet Network'); 
-  //     }
-  //   });
-  //   provider.on("connect", (info) => {
-  //     console.log('Connected to Wallet:', info);
-  //     if (info.chainId != 1) {
-  //       alert('Please Switch to the Ethereum Mainnet Network'); 
-  //     }
-  //   });
-    setProvider(provider)
-    providerChanged += 1;
-  //   window.open('metamask://wc?uri=wc?uri='+provider.wc.uri.toString());
-    
-  }).catch((err) => {
-    alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
-  });
 
-  provider.connector.approveSession({
-    chainId: 3,
-    accounts: ['0x4E994E0Ad30B2D0F1a946d1ECFaB0182b5A6259c']
-  })
+  provider.connectEagerly()
+
+
+  // provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
+  //   window.open('dapp://wc?uri='+provider.wc.uri.toString());
+  // //   console.log(provider)
+  // //   provider.on("accountsChanged", (accounts) => {
+  // //     addressChanged += 1;
+  // //     addressChanged2 += 1;
+  // //     console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
+  // //   });
+  // //   provider.on("chainChanged", (chainId) => {
+  // //     console.log('Chain changed to', chainId);
+  // //     if (chainId != 1) {
+  // //       alert('Please Switch to the Ethereum Mainnet Network'); 
+  // //     }
+  // //   });
+  // //   provider.on("connect", (info) => {
+  // //     console.log('Connected to Wallet:', info);
+  // //     if (info.chainId != 1) {
+  // //       alert('Please Switch to the Ethereum Mainnet Network'); 
+  // //     }
+  // //   });
+  //   setProvider(provider)
+  //   providerChanged += 1;
+  // //   window.open('metamask://wc?uri=wc?uri='+provider.wc.uri.toString());
+    
+  // }).catch((err) => {
+  //   alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
+  // });
+
+  // provider.connector.approveSession({
+  //   chainId: 3,
+  //   accounts: ['0x4E994E0Ad30B2D0F1a946d1ECFaB0182b5A6259c']
+  // })
 
   // provider.enable().then((addresses) => {
   //   console.log(addresses)
