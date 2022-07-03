@@ -1157,7 +1157,7 @@ const setDefaultProvider = () => {
 // import { useWeb3React } from '@web3-react/core';
 // import { WalletConnect } from '@web3-react/walletconnect'
 // import { initializeConnector } from '@web3-react/core'
-function connectWallet(setProvider) {
+async function connectWallet(setProvider) {
 
   // async function callback_() {
   //   alert('hi0')
@@ -1171,8 +1171,8 @@ function connectWallet(setProvider) {
   });
   // console.log(provider)
   window.open(provider.wc.uri.toString());
-  setProvider(provider)
-  providerChanged += 1;
+  // setProvider(provider)
+  // providerChanged += 1;
 
   // provider.enable().then(() => {
   //   alert('connectado')
@@ -1376,7 +1376,7 @@ function ConnectButton() {
   }, [addressChanged]); //provider?.selectedAddress?.toString()
 
   useEffect(() => {
-    if (provider) {
+    if (typeof provider?.selectedAddress !== 'undefined') {
       alert('connecting walllet (testing msg) ' + provider.toString())
       connectWalletFunctions(provider, setAddress);
     }
