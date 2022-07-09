@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css'
 
 import { useState, useEffect } from 'react'
 
-import { PDFViewer, RoadmapPage, MintModal, setDefaultProvider } from './home.js'
+import { PDFViewer, RoadmapPage, MintModal } from './home.js'
 
 export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
@@ -33,12 +33,7 @@ export default function Home() {
   }, [collectorsAgreementOpen]);
 
   return (
-    <div className={styles.container} onLoad={() => {
-      if (typeof window.provider === 'undefined' && 
-          typeof window.provider.selectedAddess === 'undefined') {
-        window.provider = setDefaultProvider(); 
-      }
-    }}>
+    <div className={styles.container}>
       <Head>
         <title>MENJi's World NFT Drop</title>
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
