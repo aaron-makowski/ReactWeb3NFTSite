@@ -13,13 +13,13 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.rinkeby, chain.ropsten],
+  [chain.mainnet, chain.ropsten],
   [alchemyProvider({ alchemyId: '-JjF8cTJGgfSfhKMVgqxKV48CsCIKfpn' }),
     publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "Menji's World NFT",
+  appName: "Menji's World NFTs",
   chains
 });
 

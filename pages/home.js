@@ -23,7 +23,7 @@ import axios from 'axios'; //for whitelist API call
 //Web3 sauces
 import Web3 from 'web3' //Classic web3 lib
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-
+import { useAccount, useProvider } from 'wagmi'
 
 // import { ethers } from 'ethers'
 
@@ -1075,8 +1075,15 @@ const setDefaultProvider = () => {
     'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
     //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
 }
-
+import {useMemo } from 'react';
 function ConnectButtonCustomized(props) {
+  const { provider } = useProvider()
+  const { _account } = useAccount()
+  
+  useMemo(() => {
+    console.log(provider, _account)
+  }, [provider, _account])
+
   return (<>
     <ConnectButton.Custom>
     {
@@ -1115,76 +1122,19 @@ function ConnectButtonCustomized(props) {
                 </>);
               }
 
-              console.log(provider, account)
-
               return (
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div>
                   <BrowserView>
-                    <button
-                      onClick={openChainModal}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                      type="button"
-                    >
-                      {chain.hasIcon && (
-                        <div
-                          style={{
-                            background: chain.iconBackground,
-                            width: 12, height: 12,
-                            borderRadius: 999,
-                            overflow: 'hidden',
-                            marginRight: 4,
-                          }}
-                        >
-                          {chain.iconUrl && (
-                            <Image
-                              alt={chain.name ?? 'Chain icon'}
-                              src={chain.iconUrl}
-                              width={12}
-                              height={12}
-                            />
-                          )}
-                        </div>
-                      )}
-                      {chain.name}
-                    </button>
-
-                    <button onClick={openAccountModal} type="button">
+                    <button onClick={openAccountModal} type="button"
+                            className={props.style}>
                       {account.displayName}
-                      {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                      {/* {account.displayBalance ? ` (${account.displayBalance})` : ''} */}
                     </button>
                   </BrowserView>
                   <MobileView>
-                    <button
-                      onClick={openChainModal}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                      type="button"
-                    >
-                      {chain.hasIcon && (
-                        <div
-                          style={{
-                            background: chain.iconBackground,
-                            width: 12, height: 12,
-                            borderRadius: 999,
-                            overflow: 'hidden',
-                            marginRight: 4,
-                          }}
-                        >
-                          {chain.iconUrl && (
-                            <Image
-                              alt={chain.name ?? 'Chain icon'}
-                              src={chain.iconUrl}
-                              width={12}
-                              height={12}
-                            />
-                          )}
-                        </div>
-                      )}
-                      {chain.name}
-                    </button>
-
                     <button onClick={openAccountModal} type="button">
                       {account.displayName}
-                      {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                      {/* {account.displayBalance ? ` (${account.displayBalance})` : ''} */}
                     </button>
                   </MobileView>
                 </div>
@@ -1224,8 +1174,11 @@ const connectWalletFunctions = () => {
     //   });
 
 
+      const { address } = useAccount()
+      alert('address ' + address);
 
-      // alert('address ' + provider.accounts.toString());
+      const { provider } = useProvider()
+      alert('provider ' + provider);
       // setAddress(editAddressForConnectButton(provider.selectedAddress));
 
       // alert('switching to mainnet');
@@ -1249,24 +1202,26 @@ const connectWalletFunctions = () => {
   // }
 }
 function ConnectButtonNavBar() {
-  // useEffect(() => {
-  //   // if (provider?.selectedAddress) {
-  //     // alert('connecting walllet (testing msg) ' + provider.toString())
-  //     connectWalletFunctions();
-  //   // }
-  // }, []);
+  const { provider } = useProvider();
+  useEffect(() => {
+    if (provider?.selectedAddress) {
+      alert('connecting walllet (testing msg) ' + provider.toString())
+      connectWalletFunctions();
+    }
+  }, [provider]);
 
   return (<>
     <ConnectButtonCustomized style={styles.navBarItem_ConnectButton}/>
   </>)
 }
 function MintConnectButton() {
-  // useEffect(() => {
-  //   if (provider?.selectedAddress) {
-  //     alert('connecting walllet (testing msg) ' + provider.toString())
-  //     connectWalletFunctions();
-  //   }
-  // }, []);
+  const { provider } = useProvider();
+  useEffect(() => {
+    if (provider?.selectedAddress) {
+      alert('connecting walllet (testing msg) ' + provider.toString())
+      connectWalletFunctions();
+    }
+  }, [provider]);
 
   return (<>
     <ConnectButtonCustomized style={styles.mintPopup_ConnectButton}/>
@@ -2061,11 +2016,10 @@ export { PDFViewer, MintModal, RoadmapPage };
 
 
 
-export default function Home(props) {
+export default function Home() {
   const [mintModalOpen, setMintModalOpen] = useState(false);
   const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
   
-  console.log(props)
   //Mint Modal Popup
   const closeMintModal = () => {
     setMintModalOpen(false);
