@@ -21,77 +21,16 @@ import { BrowserView, MobileView } from "react-device-detect";
 import axios from 'axios'; //for whitelist API call
 
 //Web3 sauces
-import Web3 from 'web3' //Classic web3 lib
+import { ethers } from 'ethers';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useProvider } from 'wagmi'
-
-// import { ethers } from 'ethers'
-
-// import Web3Modal from "web3modal"; //Nice Web3 Popup with multiple connections
-// //Web3Modal Multiple Providers
-// import WalletConnectProvider from "@walletconnect/web3-provider";
-// import Fortmatic from "fortmatic";
-// import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-
-//Web3Modal Options
-// let web3Modal;
-
-// import WalletConnectCard from '../components/connectorCards/WalletConnectCard'
-// import ProviderExample from '../components/ProviderExample'
-
-// export default function Home() {
-//   return (
-//     <>
-//       <ProviderExample />
-//       <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
-//         <WalletConnectCard />
-//       </div>
-//     </>
-//   )
-// }
-
-// import { useWeb3React } from '@web3-react/core';
-
-// import { WalletConnect } from '@web3-react/walletconnect'
-// const walletConnect = new WalletConnect({
-//   supportedChainIds: [1, 3],
-// })
-
-// function ConnectButton() {
-//   const { active, account, library, 
-//           connector, activate, deactivate } = useWeb3React()
-  
-//   async function connect() {
-//     try {
-//       await activate(walletConnect)
-//     } catch (ex) {
-//       console.log(ex)
-//     }
-//   }
-//   async function disconnect() {
-//     try {
-//       deactivate()
-//     } catch (ex) {
-//       console.log(ex)
-//     }
-//   }
-
-//   return (
-//     <div className="flex flex-col items-center justify-center">
-//       <button onClick={connect} className="py-2 mt-20 mb-4 text-lg font-bold text-white rounded-lg w-56 bg-blue-600 hover:bg-blue-800">Connect to MetaMask</button>
-//       {active ? <span>Connected with <b>{account}</b></span> : <span>Not connected</span>}
-//       <button onClick={disconnect} className="py-2 mt-20 mb-4 text-lg font-bold text-white rounded-lg w-56 bg-blue-600 hover:bg-blue-800">Disconnect</button>
-//     </div>
-//   )
-// }
-
+import { useAccount, useProvider, useContractWrite, 
+         useContractReads, useWaitForTransaction } from 'wagmi'
 
 
 // TODO put Menji solidity contract address and ABI here
 // Contract Details
-
-let contractAddress = '0xb585da9872d092498f020a938d65091fd96abbaf';
-let abi = [
+const contractAddress = '0xb585da9872d092498f020a938d65091fd96abbaf';
+const abi = [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -926,42 +865,8 @@ let abi = [
 	}
 ];
 
-// let providerOptions = {
-//   walletconnect: {
-//     package: WalletConnectProvider,
-//     display: { name: 'Mobile Connect', description: 'Trust Wallet/MetaMask, etc' }, //Visible Label, changeable
-//     options: {
-//         infuraId: "d31a6fe248ed4db3abac78f5b72ace93" //infura project id
-//     }
-//   },
-//   fortmatic: {
-//       package: Fortmatic,
-//       options: {
-//           key: "pk_live_8DFF4684EB75C648" //formatic api key
-//    }
-//   },
-//   coinbasewallet: {
-//     package: CoinbaseWalletSDK, // Required
-//     options: {
-//       appName: "Menji's World NFT Mint", // Required
-//       infuraId: "d31a6fe248ed4db3abac78f5b72ace93", // Required
-//       rpc: "", // Optional if `infuraId` is provided; otherwise it's required
-//       chainId: 1, // Optional. It defaults to 1 if not provided
-//       darkMode: false // Optional. Use dark theme, defaults to false
-//     }
-//   }
-// };
 
-
-// let addressChanged = 0;
-// let addressChanged2 = 0;
-// let providerChanged = 0;
-
-
-
-
-
-let innerWidth = 700;
+let innerWidth = 700; 
 let innerHeight = 800;
 //get window width
 const useWidth = () => {
@@ -984,7 +889,6 @@ const useHeight = () => {
 }
 
 
-
 //TODO replace with actual CHEF API Call
 async function fetchWhitelistData() {
   // const response = await axios.post('https://APIURL/presale', 
@@ -993,96 +897,9 @@ async function fetchWhitelistData() {
   console.log('Whitelist API Response:', response);
   return response
 }
-// Fetch ETH contract data
-async function fetchStaticData() {
-  const totalSupply = await window.contract.methods.MAX_SUPPLY().call();
-  const publicPrice = await window._web3.utils.fromWei(await window.contract.methods.PUBLIC_PRICE().call(), 'ether');
-  const presalePrice = await window._web3.utils.fromWei(await window.contract.methods.PRESALE_PRICE().call(), 'ether');
-  const publicWalletMax = await window.contract.methods.publicWalletLimit().call();
-  //unused data currently:
-  const publicSupply = await window.contract.methods.PUBLIC_SUPPLY().call();
-  const provenanceHash = await window.contract.methods.PROVENANCE_HASH().call();
-
-  const staticData = {
-    'totalSupply': totalSupply,
-    'publicPrice': publicPrice,
-    'presalePrice': presalePrice,
-    'publicWalletMax': publicWalletMax,
-    'publicSupply': publicSupply,
-    'provenanceHash': provenanceHash,
-  }
-  return staticData;
-}
-async function fetchDynamicData() {
-  const isPresale = await window.contract.methods.isPresale().call();
-  const totalMinted = await window.contract.methods.nextTokenId().call();
-  const publicWalletLimit = await window.contract.methods.PUBLIC_MINT_LIMIT().call();
-  //unused data currently
-  const isRevealed = await window.contract.methods.isRevealed().call();
-
-  const dynamicData = {
-    'isPresale': isPresale,
-    'totalMinted': totalMinted,
-    'publicWalletLimit': publicWalletLimit,
-    'isRevealed': isRevealed
-  }
-  return dynamicData;
-}
 
 
-
-
-
-
-
-
-
-
-
-
-//Functions used via connect buttons
-//todo  remove this
-const editAddressForConnectButton = (address) => {
-  try {
-    if (typeof address !== 'undefined' && address.length > 12) {
-        return address.substr(0, 4) + '....' + address.substr(address.length - 4, 4);
-    }
-  } catch (error) {
-    console.log('Error setting connect button text', error.message);
-  }
-  return "Connect";
-}
-const switchChainToMainnet = (provider) => {
-  if (provider && provider.chainId && provider.chainId !== '0x3') {
-    provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: "0x3" }],
-    }).catch(err => {
-      alert('Please switch to the ETH Mainnet', err.message)
-    });
-  }
-}
-
-const connectToContract = (web3) => {
-  if (web3) {
-    window.contract = new web3.eth.Contract(abi, contractAddress);
-  } else {
-    console.log('Error getting wallet connection.');
-  }
-}
-const setDefaultProvider = () => {
-  return new Web3.providers.HttpProvider(
-    'https://ropsten.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93');
-    //'https://mainnet.infura.io/v3/d31a6fe248ed4db3abac78f5b72ace93'); //TODO
-}
-import {useMemo } from 'react';
 function ConnectButtonCustomized(props) {
-  const { provider } = useProvider()
-  const { _account } = useAccount()
-  
-  useMemo(() => {
-    console.log(provider, _account)
-  }, [provider, _account])
 
   return (<>
     <ConnectButton.Custom>
@@ -1094,13 +911,12 @@ function ConnectButtonCustomized(props) {
               'aria-hidden': true,
               'style': { opacity: 0, pointerEvents: 'none', userSelect: 'none' },
             })}
-          >{
-            (() => {
+          >{(() => {
               if (!mounted || !account || !chain) {
                 return (
                   <button className={props.style} 
                           onClick={openConnectModal} type="button">
-                    Connect Wallet
+                    Connect
                   </button>
                 );
               }
@@ -1123,24 +939,13 @@ function ConnectButtonCustomized(props) {
               }
 
               return (
-                <div>
-                  <BrowserView>
-                    <button onClick={openAccountModal} type="button"
-                            className={props.style}>
-                      {account.displayName}
-                      {/* {account.displayBalance ? ` (${account.displayBalance})` : ''} */}
-                    </button>
-                  </BrowserView>
-                  <MobileView>
-                    <button onClick={openAccountModal} type="button">
-                      {account.displayName}
-                      {/* {account.displayBalance ? ` (${account.displayBalance})` : ''} */}
-                    </button>
-                  </MobileView>
-                </div>
+                  <button onClick={openAccountModal} type="button"
+                          className={props.style}>
+                    {account.displayName}
+                    {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                  </button>
               );
-            })()
-           }
+            })() }
           </div>
         );
       }
@@ -1148,89 +953,21 @@ function ConnectButtonCustomized(props) {
     </ConnectButton.Custom>
   </>)
 }
-
-
-const connectWalletFunctions = () => {
-  // if (provider?.selectedAddress) {
-    // alert('Enabling provider');
-    // provider.enable().then(() => { //request({method: 'eth_requestAccounts',})
-
-    //   provider.on("accountsChanged", (accounts) => {
-    //     addressChanged += 1;
-    //     addressChanged2 += 1;
-    //     console.log('Newly Selected Address:', provider.selectedAddress, accounts[0])
-    //   });
-    //   provider.on("chainChanged", (chainId) => {
-    //     console.log('Chain changed to', chainId);
-    //     if (chainId != 1) {
-    //       alert('Please Switch to the Ethereum Mainnet Network'); 
-    //     }
-    //   });
-    //   provider.on("connect", (info) => {
-    //     console.log('Connected to Wallet:', info);
-    //     if (info.chainId != 1) {
-    //       alert('Please Switch to the Ethereum Mainnet Network'); 
-    //     }
-    //   });
-
-
-      const { address } = useAccount()
-      alert('address ' + address);
-
-      const { provider } = useProvider()
-      alert('provider ' + provider);
-      // setAddress(editAddressForConnectButton(provider.selectedAddress));
-
-      // alert('switching to mainnet');
-      // switchChainToMainnet(provider); 
-
-      alert('gettin web3');
-      let web3 = new Web3(provider);
-      window._web3 = web3;
-
-      alert('connecting to contract');
-      connectToContract(web3);
-
-      window.provider = provider;
-      alert('End of connect wallet funcs: contract: ' +  window.contract.toString())
-
-    // }).catch((err) => {
-    //   alert('Error Connecting to wallet. Try Again. ' + err.message.toString())
-    // });
-  // } else {
-  //   alert('provider undefined/address undefined');
-  // }
-}
 function ConnectButtonNavBar() {
-  const { provider } = useProvider();
-  useEffect(() => {
-    if (provider?.selectedAddress) {
-      alert('connecting walllet (testing msg) ' + provider.toString())
-      connectWalletFunctions();
-    }
-  }, [provider]);
-
   return (<>
     <ConnectButtonCustomized style={styles.navBarItem_ConnectButton}/>
   </>)
 }
 function MintConnectButton() {
-  const { provider } = useProvider();
-  useEffect(() => {
-    if (provider?.selectedAddress) {
-      alert('connecting walllet (testing msg) ' + provider.toString())
-      connectWalletFunctions();
-    }
-  }, [provider]);
-
   return (<>
     <ConnectButtonCustomized style={styles.mintPopup_ConnectButton}/>
   </>)
 }
 
+
 //UI Components
 function NavBar() {
-  innerWidth = useWidth();
+  // innerWidth = useWidth();
 
   return (
     <nav className={styles.navBarContainer}>
@@ -1240,34 +977,35 @@ function NavBar() {
                   alt="Menji's World Logo" />
       </nav>
 
-      {innerWidth <= 815 && 
+      {/* {innerWidth <= 815 &&  */}
+        <nav className={styles.navBarRight}>
+          {/* <DiscordIcon /> */}
+          <ConnectButtonNavBar />
+          {/* <TwitterIcon /> */}
+        </nav>
+      {/* } */}
+      {/* {innerWidth > 815 && 
         <nav className={styles.navBarRight}>
           <DiscordIcon />
-          <ConnectButtonNavBar />
-          <TwitterIcon />
-        </nav>
-      }
-      {innerWidth > 815 && 
-        <nav className={styles.navBarRight}>
-          <DiscordIcon />
           <TwitterIcon />
           <ConnectButtonNavBar />
         </nav>
-      }
+      } */}
     </nav>
   )
 }
-function DiscordIcon() {
+
+function DiscordIconSmall() {
   return (
-    <a className={styles.socialButton_discord} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-discord" size='3x'/>
+    <a className={styles.socialButton_discord_2x} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-discord" size='xl'/>
     </a>
   )
 }
-function TwitterIcon() {
+function TwitterIconSmall() {
   return (
-    <a className={styles.socialButton_twitter} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-twitter" size='3x' />
+    <a className={styles.socialButton_twitter_2x} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-twitter" size='xl' />
     </a>
   )
 }
@@ -1328,6 +1066,7 @@ function SampleNFTimage() {
     </div>
   )
 }
+
 function MintPopupButton(props) {
   return (
     <a className={styles.mintButton} 
@@ -1347,16 +1086,22 @@ function Page2Button() {
     </Link> 
   )
 }
+
+//TODO remove popup PDF and just open link in new tab to pdf?
 function CopyRightFooter(props) {
   return (<>
     {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
     <div className={styles.copyright}>
       <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-      <a className={styles.pdfPopupLink}
-        onClick={() => {
-          props.setCollectorsAgreementOpen(true);
-        }}
-      >Collectors Agreement</a>
+      <div className={styles.copyright_subcontainer}>
+        <DiscordIconSmall /> 
+        <a className={styles.pdfPopupLink}
+          onClick={() => {
+            props.setCollectorsAgreementOpen(true);
+          }}
+        >Collectors Agreement</a>
+        <TwitterIconSmall />
+      </div>
     </div>
   </>)
 }
@@ -1403,232 +1148,296 @@ function MintModal(props) {
   const [titleText, setTitleText] = useState("Presale Mint");
   const [mintButtonText, setMintButtonText] = useState("Mint");
 
-  const [presaleData, setPresaleData] = useState(null);
-  const [isPresale, setIsPresale] = useState(null); 
-
+  const [totalMintPrice, setTotalMintPrice] = useState(null);
+  const [totalMintAmount, setTotalMintAmount] = useState(null);
   const [mintAmount, setMintAmount] = useState(1);
-  const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(10);
 
-  const [pricePerNFT, setPricePerNFT] = useState(0.01);
-  const [totalMintPrice, setTotalMintPrice] = useState(0);
-  const [totalMintAmount, setTotalMintAmount] = useState(0);
-  const [amountMintedAlready, setAmountMintedAlready] = useState(0);
-  const [publicWalletLimit, setPublicWalletLimit] = useState(0);  
+  const [isPresale, setIsPresale] = useState(null);
+  const [presaleData, setPresaleData] = useState(null);
+  const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(null);
+  const [pricePerNFT, setPricePerNFT] = useState(null);
+  const [amountMintedAlready, setAmountMintedAlready] = useState(null);
+  const [publicWalletLimit, setPublicWalletLimit] = useState(null);
+
+  const [allContractDataPresent, setAllContractDataPresent] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const [mintLoading, setMintLoading] = useState(false);
-  const [mintButtonDisabled, setMintButtonDisabled] = useState(false);
+  const [mintButtonDisabled, setMintButtonDisabled] = useState(true);
+
   const [mintError, setMintError] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
   const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [mintSuccessMessage, setMintSuccessMessage] = useState("");
 
-  const [isClosing, setIsClosing] = useState(false);
 
+  const { address } = useAccount()
+  const { provider } = useProvider()
 
-  //Fetch Contract Data & Call Whitelist API
-  const fetchAndSetRemoteData = (firstTry = true) => {
+  const contractInfo = {
+    addressOrName: contractAddress,
+    contractInterface: abi,
+    chainId: 3,//TODO change to 1
+  }
 
-    fetchStaticData().then(data => {
+  //Fetch contract data
+  useContractReads({
+    contracts: [
+      {
+        ...contractInfo,
+        functionName: 'MAX_SUPPLY',
+      },
+      {
+        ...contractInfo,
+        functionName: 'PUBLIC_PRICE',
+      },
+      {
+        ...contractInfo,
+        functionName: 'PRESALE_PRICE',
+      },
+      {
+        ...contractInfo,
+        functionName: 'publicWalletLimit',
+      },      
+      {
+        ...contractInfo,
+        functionName: 'PUBLIC_SUPPLY', //unused currently
+      },      
+      {
+        ...contractInfo,
+        functionName: 'PROVENANCE_HASH', //unused currently
+      },
+      {
+        ...contractInfo,
+        functionName: 'isPresale',
+      },
+      {
+        ...contractInfo,
+        functionName: 'nextTokenId',
+      },
+      {
+        ...contractInfo,
+        functionName: 'PUBLIC_MINT_LIMIT',
+      },
+      {
+        ...contractInfo,
+        functionName: 'isRevealed', //unused currently
+      },
+    ],
+    onSuccess(data) {
+      //example response
+      //max supply 0: BigNumber {_hex: '0x1388', _isBigNumber: true}
+      //pub price 1: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
+      //presale price  2: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
+      //pub lim engaged 3: true
+      //pub supply 4: BigNumber {_hex: '0x1324', _isBigNumber: true}
+      //prov hash 5: ""
+      //isPre 6: true
+      //NexttokenID 7: BigNumber {_hex: '0x08', _isBigNumber: true}
+      //pub wallet lim 8: BigNumber {_hex: '0x0b', _isBigNumber: true}
+      //isrevealed 9: false
 
-      setTotalMintAmount(data.totalSupply);
+      console.log(data);
 
-      //total minted + check if presale
-      fetchDynamicData().then(_data => {
+      // if public sale
+      if (data[6] === false) {
+        setIsPresale(data[6])
+        setTotalMintAmount(data[0]);
+        setAmountMintedAlready(data[7]); 
+        setPublicWalletLimit(data[3]);
 
-        setIsPresale(_data.isPresale);
-        setAmountMintedAlready(_data.totalMinted); 
-        setPublicWalletLimit(_data.publicWalletLimit);
+        setTitleText('Public Mint'); 
+        let price = ethers.utils.formatEther(data[1].toString())
+        setTotalCostBoxValue(price); 
+        setPricePerNFT(price); 
 
-        // if presale or public sale then set Mint window text + NFT Price 
-        if (_data.isPresale === false) {
-          setPresaleData(null); 
-          setTitleText('Public Mint'); 
-          setPricePerNFT(data.publicPrice); 
-          setMintPriceBoxValue(data.publicPrice);
-          setMaxMintForCurrentWallet(data.publicWalletMax);
-        } else { //is public sale
-          setTitleText('Presale Mint');
-          setPricePerNFT(data.presalePrice);
-          setMintPriceBoxValue(data.presalePrice);
+        setPresaleData(null); 
+        setMaxMintForCurrentWallet(data[8]);
 
-          //fetch presale allocation API data for wallet
-          if (window.provider.selectedAddress) {
-            fetchWhitelistData().then(__data => {
-              setPresaleData(__data);
-              setMaxMintForCurrentWallet(__data.data.allocation);
-            }).catch(err => {
-              setMaxMintForCurrentWallet(data.publicWalletMax);
-              console.log('Error fetching whitelist data, defaulting to public max ' + err.message);
-            });
-          } else {
-            setMaxMintForCurrentWallet(data.publicWalletMax);
-          }
+      } else if (data[6] === true) {
+        setIsPresale(data[6]);
+        setTotalMintAmount(data[0]);
+        setAmountMintedAlready(data[7]); 
+        setPublicWalletLimit(data[3]);
+
+        setTitleText('Presale Mint');
+        let price = ethers.utils.formatEther(data[2].toString())
+        setTotalCostBoxValue(price); 
+        setPricePerNFT(price); 
+
+        if (address) { //fetch presale allocation API data for wallet
+          fetchWhitelistData().then(_data => {
+            setPresaleData(_data);
+            setMaxMintForCurrentWallet(_data.data.allocation);
+          }).catch(err => {
+            setMaxMintForCurrentWallet(data[8]);
+            console.log('Error fetching whitelist data, defaulting to public max ' + err.message);
+          });
+        } else {
+          setMaxMintForCurrentWallet(data[8]);
         }
-
-      }).catch(err => {
-        console.log('Error fetching Dynamic contract data ' + err.message);
-      });
-
-    }).catch(err => {
-
-      if (!firstTry) return alert('Please Reload the page. Error connecting to contract. ' + err.message)
-      
-      console.log('Error fetching static contract data ' + err.message)
-      switchChainToMainnet(window.provider);
-      connectToContract(window._web3);
-      fetchAndSetRemoteData(false);
-
-    });
-  }
-
-  //called from mint button
-  const mint = () => {
-    setMintButtonText("Minting"); 
-    setMintButtonDisabled(true);
-
-    //abort if we dont have a proper wallet connection
-    if (typeof window.provider === 'undefined' ||
-        typeof window.provider.selectedAddress === 'undefined' ||
-        typeof window._web3 === 'undefined') {
-      return alert('Please connect to a wallet');
+      }
+    },
+    onError(error) {
+      alert(error.message)
+      setAllContractDataPresent(false);
+      setMaxMintForCurrentWallet(null);
+      setPricePerNFT(null);
+      setAmountMintedAlready(null);
+      setMaxMintForCurrentWallet(null);
+      setIsPresale(null);
     }
+  })
 
-    //get contract instance
-    connectToContract(window._web3)
 
-    if (typeof window.contract === 'undefined') {
+  //Set default write functions aka mint funcs
+  const { data: testMintData, write: testMint } = useContractWrite({ 
+    ...contractInfo, 
+    functionName: 'mint', 
+    onSuccess(data) {
+      console.log(data);
+      setMintSuccess(true); //todo switch ropsten to nothing and add opensea link
+      setMintSuccessMessage('Mint Success: https://ropsten.etherscan.io/tx/' + data.transactionHash);
+      // const collectionLink = 'https://opensea.io/assets/' + contractAddress
+      afterMintUIChanges();
+    },
+    onError(error) {
+      console.log(error)
       setMintError(true);
-      return setMintErrorMessage('Please Wait for Contract Data to load');
+      setMintErrorMessage('Error minting tokens: ' + error);
+      afterMintUIChanges();
+    }
+  })
+  const { data: publicMintData, write: publicPurchase } = useContractWrite({ 
+    ...contractInfo, 
+    functionName: 'purchase',
+    onSuccess(data) {
+      console.log(data);
+      setMintSuccess(true);
+      setMintSuccessMessage('Minted ' + data.events.Purchase.returnValues.length + ' tokens!');
+      afterMintUIChanges();
+    },
+    onError(error) {
+      setMintError(true);
+      setMintErrorMessage('Error minting tokens: ' + error.message);
+      afterMintUIChanges();
+    }
+  })
+  const { data: presaleMintData, write: presalePurchase } = useContractWrite({ 
+    ...contractInfo, 
+    functionName: 'presalePurchase', 
+    onSuccess(data) {
+      console.log(data);
+      setMintSuccess(true);
+      setMintSuccessMessage('Minted ' + data.events.PresalePurchase.returnValues.length + ' tokens!');
+      afterMintUIChanges();
+    },
+    onError(error) {
+      console.log(error.message)
+      setMintError(true);
+      setMintErrorMessage('Error minting tokens: ' + error.message);
+      afterMintUIChanges();
+    }
+  })
+
+  //wait for write to finish
+  const { isSuccess: txSuccessTest, error: txErrorTest } = useWaitForTransaction({
+    hash: testMintData?.hash });
+
+  const { isSuccess: txSuccessPublic, error: txErrorPublic } = useWaitForTransaction({
+    hash: publicMintData?.hash });
+
+  const { isSuccess: txSuccessPresale, error: txErrorPresale } = useWaitForTransaction({
+    hash: presaleMintData?.hash });
+
+  //reset UI on write attempts
+  useEffect(() => {
+    console.log(txSuccessTest, txSuccessPublic, txSuccessPresale)
+    if (txSuccessTest || txSuccessPublic || txSuccessPresale ||
+        txErrorTest   || txErrorPublic   || txErrorPresale   ){
+          afterMintUIChanges() }
+  }, [txSuccessTest, txSuccessPublic, txSuccessPresale]);
+
+
+
+  const passGuardClauses = () => {
+    //guard clauses to make sure we can mint successfully
+    if (!provider || !address) {
+      alert('Please connect to a wallet')
+      return false
     }
 
-    //grab contract data
-    fetchAndSetRemoteData();
-
-    //check contract data is loaded
-    if (typeof pricePerNFT === 'undefined' || 
-               pricePerNFT === null || 
-               pricePerNFT <= 0.01
-    ) return alert('Please wait for contract data to load and try again.')
-
-    setMintLoading(true); //bring up loading spinner
-
-    //TODO next comment this out and see if it stops the mint without breaking the dApp
-    makePurchase();
-  }
-  
-  //purchase NFT for presale and public sales via mint button
-  const makePurchase = () => { 
-
-    function publicPurchase() {
-      window.contract.methods.purchase(mintAmount).send({
-        from: window.provider.selectedAddress, 
-        value: window._web3.utils.toWei(totalMintPrice, 'ether')
-      }).then(function(receipt) {
-          console.log(receipt);
-          setMintSuccess(true);
-          setMintSuccessMessage('Minted ' + receipt.events.Purchase.returnValues.length + ' tokens!');
-          afterMintUIChanges();
-      }).catch(err => {
-        setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err.message);
-        afterMintUIChanges();
-      });
+    if (!allContractDataPresent) {
+      setMintError(true);
+      setMintErrorMessage('Please Wait for Contract Data to load');
+      return false
     }
 
-    function presalePurchase() {
-      // Solidity .sol contract presale function
-      // function presalePurchase(
-      //   uint256 _quantity, uint256 _tier, bytes32 _hash, bytes memory _signature)
-      window.contract.presalePurchase(
-        mintAmount, 
-        presaleData.data.teir, 
-        presaleData.data.hash, 
-        presaleData.data.signature
-      ).send({from: window.provider.selectedAddress, 
-              value: window._web3.utils.toWei(totalMintPrice, 'ether')
-      }).then(function(receipt) {
-          console.log(receipt);
-          setMintSuccess(true);
-          setMintSuccessMessage('Minted ' + receipt.events.PresalePurchase.returnValues.length + ' tokens!');
-          afterMintUIChanges();
-      }).catch(err => {
-        setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err.message);
-        afterMintUIChanges();
-      });
-
-    }
-
-    function testMint() {
-      window.contract.methods.mint(mintAmount).send({
-        from: window.provider.selectedAddress//,
-        // value: window._web3.utils.toWei(totalMintPrice.toString(), 'ether')
-      }).then(function(receipt) {
-          console.log(receipt);
-          setMintSuccess(true); //todo switch ropsten to nothing and add opensea link
-          setMintSuccessMessage('Mint Success: https://ropsten.etherscan.io/tx/' + receipt.transactionHash);
-          afterMintUIChanges();
-      }).catch(err => {
-        console.log(err.message)
-        setMintError(true);
-        setMintErrorMessage('Error minting tokens: ' + err.message);
-        afterMintUIChanges();
-      });
-    }
-
-    //guard clauses
     if (mintAmount <= 0 || totalMintPrice <= 0) {
       setMintError(true);
-      return setMintErrorMessage('Zero Mint Error: Please Reload the page and try again.');
+      setMintErrorMessage('Zero Mint Error: Please Reload the page and try again.');
+      return false
     }
+
     if (isPresale !== true && isPresale !== false) {
       setMintError(true)
-      return setMintErrorMessage('Sale not live yet. Please try again later.')
-    } 
-
-    //Mint NFT
-    if (isPresale === false) {
-      console.log('Public sale is live. Minting Public.')
-      return testMint(); //publicPurchase(); //todo reinmstate this actual method
+      setMintErrorMessage('Sale not live yet. Please try again later.')
+      return false
     } 
 
     if (isPresale === true) {
       try {
-
-        if ( //return if we dont have the data we need for presale allocation
-          typeof presaleData === 'undefined' || 
-                 presaleData === null        ||
-                 presaleData === {}          || 
-
-          typeof presaleData?.data === 'undefined' ||
-                 presaleData?.data === {}          ||
-
-          typeof presaleData?.data.allocation === 'undefined' ||
-                 presaleData?.data.allocation <= 0            ||
-
-          typeof presaleData?.data.teir      === 'undefined'  ||
-          typeof presaleData?.data.hash      === 'undefined'  ||
-          typeof presaleData?.data.signature === 'undefined'
-          // then we dont have the data we need for presale allocation
-        ) return alert('Wallet not whitelisted for presale or API Down ' + presaleData?.data?.toString());   
-
-        // check that whitelist max mint is not exceeded
-        if (mintAmount > presaleData.data.allocation) {
-          setMintErrorMessage('Error: You can only mint up to ' + presaleData.data.allocation + ' tokens in the presale')
+        if (presaleData?.data.teir && presaleData?.data.hash && 
+            presaleData?.data.signature && presaleData?.data.allocation) {
+          if (mintAmount > presaleData.data.allocation) {
+            setMintErrorMessage('Error: You can only mint up to ' + presaleData.data.allocation + ' tokens in the presale')
+            setMintError(true)
+            return false
+          } else {
+            return true
+          }
+        } else {
           setMintError(true)
-          return afterMintUIChanges()
+          setMintErrorMessage('Presale Data Fetching Error.')
+          return false
         }
-
-        return testMint(); // presalePurchase(); //todo reinmstate this actual method
-
       } catch (err) {
-        alert('Wallet not white listed for presale or presale API down ' + err.message.toString());
+        setMintError(true)
+        setMintErrorMessage('Presale Data Fetching Error.')
+        return false
       }
     }
+    return true
+  }
+  //called from mint button
+  const mint = () => {
+    setMintButtonDisabled(true);
+    setMintButtonText("Minting"); 
+
+    //make sure we have all necessary data to mint
+    if (!passGuardClauses()) return afterMintUIChanges();
+
+    //bring up loading spinner
+    setMintLoading(true); 
+
+    //Pass in amoutn to mint, total price & presale data into the Write function
+    let _args = [mintAmount] //amount of nfts to mint
+    if (isPresale === true) _args.push(presaleData.data.teir,
+                                       presaleData.data.hash,
+                                       presaleData.data.signature)
+    const _overrides = { from: account, 
+                         value: ethers.utils.parseEther( totalMintPrice.toString() )}
+
+    const testMode = true
+    if (testMode  === true )  return testMint        ({ args: _args, overrides: _overrides })
+    if (isPresale === false)  return publicPurchase  ({ args: _args, overrides: _overrides })
+    if (isPresale === true )  return presalePurchase ({ args: _args, overrides: _overrides })
+    console.error('Unknown Minting Error.')
   }
 
   // Plus and Minus NFT amount buttons
   const incrementMintAmountNumberBox = (maxMint) => {
+    //called onclick
     const num = parseInt(window.document.getElementById('mintAmountBox').value);
     if (num < maxMint) {
       setMintAmount(num + 1); 
@@ -1637,6 +1446,7 @@ function MintModal(props) {
     }
   }
   const decrementMintAmountNumberBox = () => {
+    //called onclick
     const num = parseInt(window.document.getElementById('mintAmountBox').value);
     if (num > 1) {
       setMintAmount(num - 1); 
@@ -1644,7 +1454,9 @@ function MintModal(props) {
         Math.round((num - 1) * pricePerNFT * 100) / 100);
     }
   }
-  const setMintPriceBoxValue = (price) => {
+
+  const setTotalCostBoxValue = (price) => {
+    //same as increment and decrement but callable
     if (window.document.getElementById('mintAmountBox') !== null) {
       const num = parseInt(window.document.getElementById('mintAmountBox').value);
       setTotalMintPrice(Math.round(num * price * 100) / 100);
@@ -1664,14 +1476,23 @@ function MintModal(props) {
     setMintSuccessMessage("");
   }
 
+  useEffect(() => { //TODO maybe useMemo
+    if (isClosing) return setAllContractDataPresent(false);
+    if (maxMintForCurrentWallet && 
+        pricePerNFT && 
+        amountMintedAlready && 
+        isPresale !== null) {
+      console.log('All contract data present')
+      setAllContractDataPresent(true)
+      setMintButtonDisabled(false)
+    } else {
+      console.log('All contract data NOT present')
+      setMintButtonDisabled(true); 
+      setAllContractDataPresent(false);
+    }
+  }, [maxMintForCurrentWallet, isPresale, pricePerNFT, provider, // vars we want this to re-run on
+      amountMintedAlready, presaleData, publicWalletLimit, address]);
 
-
-  useEffect(() => {
-    if (isClosing) return
-    if (typeof window.contract === 'undefined' && window._web3) connectToContract(window._web3) 
-    fetchAndSetRemoteData()
-  }, []);
-  
   return (
     <div>
       {/* conditionally rendered popups */}
@@ -1704,19 +1525,17 @@ function MintModal(props) {
               <div className={styles.mintModalInputContainer2}>
                 <div className={styles.mintModalSection_left}>
                   <h3>This Wallet's Max
-                    <div>
-                      <h3 id='maxMint'>
-                        {isPresale || publicWalletLimit
-                                    ? maxMintForCurrentWallet.toString()
-                                    : 'No Max'}
-                      </h3>
-                    </div>
+                    <div><h3 id='maxMint'>
+                      {(isPresale === false && publicWalletLimit === false) ? '∞' 
+                      : maxMintForCurrentWallet ? maxMintForCurrentWallet?.toString() 
+                      : '...'}
+                    </h3></div>
                   </h3>
                 </div>
                 <div className={styles.mintModalSection_right}>
                   <h3>Total Minted
                     <div>
-                      <h3>{amountMintedAlready.toString()}/{totalMintAmount.toString()}</h3>
+                      <h3>{amountMintedAlready ? amountMintedAlready.toString() : '...'}/{totalMintAmount ? totalMintAmount.toString() : '...'}</h3>
                     </div>
                   </h3>
                 </div>
@@ -1729,10 +1548,12 @@ function MintModal(props) {
             <div className={styles.mintNumberBoxWithButtons}>
               <div id='minusButton' 
                    className={styles.minusSign}
-                   onClick={decrementMintAmountNumberBox}
+                   onClick={() => decrementMintAmountNumberBox()}
               >-</div>
+
               <input id='mintAmountBox' className={styles.inputNumber} 
                     value={mintAmount} type="number" disabled />
+
               <div id='plusButton' 
                    className={styles.plusSign}
                    onClick={() => {incrementMintAmountNumberBox(maxMintForCurrentWallet);}}
@@ -1746,20 +1567,21 @@ function MintModal(props) {
               <p>Price Per NFT</p>
             </div>
             <div className={styles.mintModalSection_right}> 
-              <input className={styles.inputNumber2} type="text" value={totalMintPrice.toString() + ' ETH'} disabled/>
-              <input className={styles.inputNumber2} type="text" value={pricePerNFT.toString() + ' ETH'} disabled/>
+              <input className={styles.inputNumber2} type="text" value={totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'} disabled/>
+              <input className={styles.inputNumber2} type="text" value={pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'} disabled/>
             </div>
           </div>
 
           <div className={styles.mintModalInputContainer}>
             <button id='mintButtonOnPopup' className={styles.mintModalButton} 
-                    onClick={mint} disabled={mintButtonDisabled}>{mintButtonText}</button>
+                    onClick={() => { mint()}} disabled={mintButtonDisabled}>{mintButtonText}</button>
           </div>
         </div>
       </div> 
     </div> 
   )
 }
+
 function TEAMSection() {
   //might have to use useEffect to add and remove efvent listeners from commented code below
   const [team1checked, setTeam1Checked] = useState(false);

@@ -270,6 +270,19 @@
   align-items: center;
   justify-content: center;
 }
+.copyright_subcontainer {
+  background-color: rgb(255, 171, 0);
+  font-size: 1.15em;
+  font-family: 'Fredoka One', cursive;
+  font-variant : small-caps;
+  color: #202020;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 .pdfPopupLink{
   background-color: rgb(255, 171, 0);
   font-size: 1em;
@@ -516,6 +529,33 @@
   cursor: pointer;
   color: #242424;
   transition: all .2s,box-shadow .08s ease-in;
+
+}
+.socialButton_discord_2x {
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  transform: translateZ(0);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  color: #242424;
+  transition: all .2s,box-shadow .08s ease-in;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.socialButton_twitter_2x {
+  margin-right: 0.6rem;
+  margin-left: 0.5rem;
+  transform: translateZ(0);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  color: #242424;
+  transition: all .2s,box-shadow .08s ease-in;
+  padding-left: 1rem;
+  padding-right: 1rem;
 
 }
 @media (max-width: 815px) {
