@@ -29,6 +29,7 @@ import {    useAccount   ,   useContractWrite, // read/write eth contracts
 
 // Possible Upgrades:
 // - websocketprovider + watch dynamic eth data
+//          https://github.com/rainbow-me/rainbowkit/blob/main/examples/with-next-mint-nft/pages/index.tsx
 // - 
 
 
@@ -1180,6 +1181,7 @@ function MintModal(props) {
   const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [mintSuccessMessage, setMintSuccessMessage] = useState("");
 
+
   ///////      ///////
   const testMode = true
   ///////      ///////
@@ -1315,7 +1317,7 @@ function MintModal(props) {
       setMintSuccess(true);
       setMintSuccessMessage(
         'Pending Transaction: https://ropsten.etherscan.io/tx/' 
-        + data.hash + '\r\nWait here for success message.');
+        + data.hash + '\r\n\r\nWait here for success message.');
     },
     onError(error) {
       setMintError(true);
@@ -1332,7 +1334,7 @@ function MintModal(props) {
       // console.log(data);
       setMintSuccess(true); 
       setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' 
-                           + data.hash + '\r\nWait here for success message.');
+                           + data.hash + '\r\n\r\nWait here for success message.');
     },
     onError(error) {
       setMintError(true);
@@ -1348,7 +1350,7 @@ function MintModal(props) {
     onSuccess(data) {
       setMintSuccess(true); 
       setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' 
-                           + data.hash + '\r\nWait here for success message.');
+                           + data.hash + '\r\n\r\nWait here for success message.');
     },
     onError(error) {
       setMintError(true);
