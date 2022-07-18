@@ -122,6 +122,7 @@ export default function Index() {
         <title>MENJi NFT Drop</title>
         <meta name="description" content="MENJi NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:image" content="/favicon.ico" />
       </Head>
       <a href="/home">
             <Canvas style={{ width: '100%', height: '100%' }}
