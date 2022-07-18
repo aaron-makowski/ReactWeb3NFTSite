@@ -1581,7 +1581,7 @@ function MintModal(props) {
             <div className={styles.mintModalHeader}>
               <div className={styles.mintModalInputContainer2}>
                 <div className={styles.mintModalSection_left}>
-                  <h3>This Wallet's Max
+                  <h3>Wallet Max
                     <div><h3 id='maxMint'>
                       {(isPresale === false && publicWalletLimit === false) ? '∞' 
                       : maxMintForCurrentWallet ? maxMintForCurrentWallet?.toString() 
@@ -1590,11 +1590,9 @@ function MintModal(props) {
                   </h3>
                 </div>
                 <div className={styles.mintModalSection_right}>
-                  <h3>Total Minted
-                    <div>
-                      <h3>{amountMintedAlready ? amountMintedAlready.toString() : '...'}/{totalMintAmount ? totalMintAmount.toString() : '...'}</h3>
-                    </div>
-                  </h3>
+                  <h3>Total Minted<div><h3>
+                    {amountMintedAlready ? amountMintedAlready.toString() : '...'}/{totalMintAmount ? totalMintAmount.toString() : '...'}</h3>
+                  </div></h3>
                 </div>
               </div>
             </div>
@@ -1619,13 +1617,19 @@ function MintModal(props) {
           </div>
 
           <div className={styles.mintModalInputContainer2}>
-            <div className={styles.mintModalSection_left}> 
+            <div className={styles.mintModalSection_left_2}> 
               <p>Total Price</p>
               <p>Price Per NFT</p>
             </div>
             <div className={styles.mintModalSection_right}> 
-              <input className={styles.inputNumber2} type="text" value={totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'} disabled/>
-              <input className={styles.inputNumber2} type="text" value={pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'} disabled/>
+              <input className={styles.inputNumber2} 
+                     type="text" 
+                     value={totalMintPrice ? totalMintPrice.toString() + ' ETH' 
+                                           : '...'} disabled/>
+              <input className={styles.inputNumber2} 
+                     type="text" 
+                     value={pricePerNFT ? pricePerNFT.toString() + ' ETH' 
+                                        : '...'} disabled/>
             </div>
           </div>
 
