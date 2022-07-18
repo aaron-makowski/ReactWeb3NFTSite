@@ -1581,7 +1581,7 @@ function MintModal(props) {
             <div className={styles.mintModalHeader}>
               <div className={styles.mintModalInputContainer2}>
                 <div className={styles.mintModalSection_left}>
-                  <h3>Wallet Max
+                  <h3>Your Max Mint
                     <div><h3 id='maxMint'>
                       {(isPresale === false && publicWalletLimit === false) ? '∞' 
                       : maxMintForCurrentWallet ? maxMintForCurrentWallet?.toString() 
@@ -1598,7 +1598,7 @@ function MintModal(props) {
             </div>
           </div>
 
-          <div className={styles.mintModalInputContainer}>
+          <div className={styles.mintModalInputContainer3}>
             <p>Amount to Mint</p>
             <div className={styles.mintNumberBoxWithButtons}>
               <div id='minusButton' 
