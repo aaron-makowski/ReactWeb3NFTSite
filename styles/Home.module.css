@@ -3,6 +3,7 @@
 }
 .main {
   padding: 0rem 0;
+  white-space: pre-line;
 }
 .worldContainer {
   padding: 0 0rem;

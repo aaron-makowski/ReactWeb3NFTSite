@@ -11,20 +11,25 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fab)
 
-//PDF viewer
+//PDF Viewer Popup
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-//useful
+// General Useful
 import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
 import axios from 'axios'; //for whitelist API call
 
 //Web3 sauces
-import { ethers } from 'ethers';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useProvider, useContractWrite, 
-         useContractReads, useWaitForTransaction } from 'wagmi'
+import { ethers } from 'ethers'; //general web3
+import { ConnectButton } from '@rainbow-me/rainbowkit'; //wallet popup
+import {    useAccount   ,   useContractWrite, // read/write eth contracts
+         useContractReads, useWaitForTransaction } from 'wagmi' 
+
+
+// Possible Upgrades:
+// - websocketprovider + watch dynamic eth data
+// - 
 
 
 // TODO put Menji solidity contract address and ABI here
@@ -942,7 +947,7 @@ function ConnectButtonCustomized(props) {
                   <button onClick={openAccountModal} type="button"
                           className={props.style}>
                     {account.displayName}
-                    {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                    {/* {account.displayBalance ? ` (${account.displayBalance})` : ''} */}
                   </button>
               );
             })() }
@@ -1148,36 +1153,45 @@ function MintModal(props) {
   const [titleText, setTitleText] = useState("Presale Mint");
   const [mintButtonText, setMintButtonText] = useState("Mint");
 
+  //Total Cost for X NFTs
   const [totalMintPrice, setTotalMintPrice] = useState(null);
   const [totalMintAmount, setTotalMintAmount] = useState(null);
   const [mintAmount, setMintAmount] = useState(1);
 
+  //Contract Data
   const [isPresale, setIsPresale] = useState(null);
   const [presaleData, setPresaleData] = useState(null);
   const [maxMintForCurrentWallet, setMaxMintForCurrentWallet] = useState(null);
   const [pricePerNFT, setPricePerNFT] = useState(null);
   const [amountMintedAlready, setAmountMintedAlready] = useState(null);
   const [publicWalletLimit, setPublicWalletLimit] = useState(null);
-
+  
+  //Checks if all data needed to mint is present
   const [allContractDataPresent, setAllContractDataPresent] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+  const [isClosing, setIsClosing] = useState(false); //if popup closing
 
+  //Loading Spinner
   const [mintLoading, setMintLoading] = useState(false);
   const [mintButtonDisabled, setMintButtonDisabled] = useState(true);
 
+  //Minting Success/Error Popups
   const [mintError, setMintError] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
   const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [mintSuccessMessage, setMintSuccessMessage] = useState("");
 
+  ///////      ///////
+  const testMode = true
+  ///////      ///////
 
+  // Needed to interact with contract
   const contractInfo = {
     addressOrName: contractAddress,
     contractInterface: abi,
     chainId: 3,//TODO change to 1
   }
 
-  //Fetch / Read contract data
+  //Fetch / Read Contract Data
   useContractReads({
     contracts: [
       {
@@ -1286,27 +1300,30 @@ function MintModal(props) {
     }
   })
 
+
       //////////////////////////////
      // Contract Write Functions //
     //////////////////////////////
    //
-  //Test Mint Function
+  // Test Mint Function
   const { data: testMintData, 
           write: testMint } = useContractWrite({ 
     ...contractInfo, 
     functionName: 'mint', 
-    onSuccess(data) { //on successful execution, not completion
+    onSuccess(data) {
       // console.log(data);
       setMintSuccess(true);
-      setMintSuccessMessage('Pending Transaction: https://ropsten.etherscan.io/tx/' + data.hash + '\nWait here for success message.');
+      setMintSuccessMessage(
+        'Pending Transaction: https://ropsten.etherscan.io/tx/' 
+        + data.hash + '\nWait here for success message.');
     },
     onError(error) {
-      console.log(error)
       setMintError(true);
-      setMintErrorMessage('Error minting tokens: ' + error);
+      afterMintUIChanges();
+      setMintErrorMessage('Error minting tokens: ' + error.message);
     }
   })
-  //Public Sale Mint Func
+  // Public Sale Mint Func
   const { data: publicMintData, 
           write: publicPurchase  } = useContractWrite({ 
     ...contractInfo, 
@@ -1317,9 +1334,9 @@ function MintModal(props) {
       setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' + data.hash + '\nWait here for success message.');
     },
     onError(error) {
-      console.log(error)
       setMintError(true);
-      setMintErrorMessage('Error minting tokens: ' + error);
+      afterMintUIChanges();
+      setMintErrorMessage('Error minting tokens: ' + error.message);
     }
   })
   // Presale Mint Func
@@ -1328,98 +1345,58 @@ function MintModal(props) {
     ...contractInfo, 
     functionName: 'presalePurchase', 
     onSuccess(data) {
-      // console.log(data);
       setMintSuccess(true); 
       setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' + data.hash + '\nWait here for success message.');
     },
     onError(error) {
-      console.log(error)
       setMintError(true);
-      setMintErrorMessage('Error minting tokens: ' + error);
+      afterMintUIChanges();
+      setMintErrorMessage('Error minting tokens: ' + error.message);
     }
   })
 
-    // ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ //
-   // Wait for transaction to be mined ///
-  ///// and get transaction receipt /////
-  const { data: testData,
-          isError: testError,
-          isLoading: testLoading,
-          isSuccess: txSuccessTest,
-          error: txErrorTest } = useWaitForTransaction({
-    wait: testMintData?.wait
-  });
+  let _mintData = testMode  ?  testMintData   ?? null
+                : isPresale ? presaleMintData ?? null
+                            : publicMintData  ?? null
 
-  const { data: pubData,
-          isError: pubError,
-          isLoading: pubLoading,
-          isSuccess: txSuccessPublic,
-          error: txErrorPublic } = useWaitForTransaction({
-    wait: publicMintData?.wait
-  });
+   //  Wait for 1 confirmation  //
+  // + get transaction receipt //
+  const {   data    : mintData,
+           isError  : mintIsError,
+          isSuccess : mintIsSuccess,
+            error   : mintErrorObj } = useWaitForTransaction({
+    hash: _mintData?.hash,
+  })
 
-  const { data: preData,
-          isError: preError,
-          isLoading: preLoading,
-          isSuccess: txSuccessPresale,
-          error: txErrorPresale } = useWaitForTransaction({
-    wait: presaleMintData?.wait
-  });
-
-  // Reset UI after Mint (+ close loading spinner)
-  // + Success/Error Popup
+    //   Reset UI after Mint   //
+   // + Close Loading Spinner //
+  //   + Success/Error Popup //
   useEffect(() => {
-    // console.log(testData, testError, testLoading, txSuccessTest   , txErrorTest,
-    //             pubData , pubError , pubLoading , txSuccessPublic , txErrorPublic,
-    //             preData , preError , preLoading , txSuccessPresale, txErrorPresale)
-    if (txSuccessTest || txSuccessPublic || txSuccessPresale) {
-      setMintSuccess(true); 
-
-      if (txSuccessTest) {
+    if (mintData) {
+      if (mintIsSuccess) {
+        setMintSuccess(true);
+        afterMintUIChanges();
         setMintSuccessMessage(
-          'NFT Minting Success:\n' +
-          'https://etherscan.io/tx/' + testData?.hash);
+              'NFT Minting Success:' +
+              '\r\n\r\nhttps://etherscan.io/tx/' + mintData.transactionHash);
       }
-      else if (txSuccessPublic) {
-        setMintSuccessMessage(
-          'NFT Minting Success:\n' +
-          'https://etherscan.io/tx/' + pubData?.hash);
+      else if (mintIsError) {
+        console.log(mintErrorObj)
+        setMintError(true);
+        afterMintUIChanges();
+        setMintErrorMessage(
+              'Error Minting: ' + mintErrorObj.toString() + 
+              '\r\n\r\nhttps://etherscan.io/tx/' + mintData.transactionHash);
       }
-      else if (txSuccessPresale) {
-        setMintSuccessMessage(
-          'NFT Minting Success:\n' +
-          'https://etherscan.io/tx/' + preData?.hash);
-      }
-      afterMintUIChanges();
     }
-    else if (testError || pubError || preError) {
-      setMintError(true);
-      
-      if (testError) {
-        setMintErrorMessage(
-          'Error Minting: ' + txErrorTest + 
-          '\nhttps://etherscan.io/tx/' + testData?.hash);
-      }
-      else if (pubError) {
-        setMintErrorMessage(
-          'Error Minting: ' + txErrorPublic + 
-          '\nhttps://etherscan.io/tx/' + pubData?.hash);
-      }
-      else if (preError) {
-        setMintErrorMessage(
-          'Error Minting: ' + txErrorPresale + 
-          '\nhttps://etherscan.io/tx/' + preData?.hash);
-      }
-      afterMintUIChanges();
-    }
-  }, [txSuccessTest, txSuccessPublic, txSuccessPresale,
-        testError  ,     pubError   ,    preError   ]);
+  }, [mintData, mintIsError, mintIsSuccess]);
 
 
 
+  // Current Active Address
   const { address } = useAccount()
-  // const { provider } = useProvider()
-
+  
+  // Check if we can Mint //
   const passGuardClauses = () => {
     //guard clauses to make sure we can mint successfully
     if (!address) { //!provider ||
@@ -1470,35 +1447,45 @@ function MintModal(props) {
     }
     return true
   }
-  //called from mint button
+
+  // Called on Mint Button click
   const mint = () => {
     setMintButtonDisabled(true);
     setMintButtonText("Minting"); 
 
-    //make sure we have all necessary data to mint
+    // Make sure we have all necessary/valid data to mint
     if (!passGuardClauses()) return afterMintUIChanges();
 
-    //bring up loading spinner
-    setMintLoading(true); 
+    // Bring up loading spinner
+    setMintLoading(true);
 
-    ///////       ///////
-    const testMode = true
-    ///////       ///////
+     // Pass in amounnt to mint, total price 
+    // & presale data into the Write function
+    let _args = [mintAmount] 
+    if (isPresale === true && !testMode) {
+      _args.push(presaleData.data.teir,
+                 presaleData.data.hash,
+                 presaleData.data.signature)
+    }
+    const _overrides = { 
+      from: address, 
+      value: ethers.utils.parseEther( totalMintPrice.toString() )
+    }
 
-    //Pass in amoutn to mint, total price & presale data into the Write function
-    let _args = [mintAmount] //amount of nfts to mint
-    if (isPresale === true && !testMode) _args.push(presaleData.data.teir,
-                                       presaleData.data.hash,
-                                       presaleData.data.signature)
-    const _overrides = { from: address, 
-                         value: ethers.utils.parseEther( totalMintPrice.toString() )}
-
-    if (testMode  === true )  return testMint        ({ args: _args, overrides: _overrides })
-    if (isPresale === false)  return publicPurchase  ({ args: _args, overrides: _overrides })
-    if (isPresale === true )  return presalePurchase ({ args: _args, overrides: _overrides })
+    // Call appropriate Mint function 
+    if (testMode  === true ) {
+      return    testMint     ({ args: _args, overrides: _overrides })}
+    if (isPresale === false) { 
+      return publicPurchase  ({ args: _args, overrides: _overrides })}
+    if (isPresale === true ) {
+      return presalePurchase ({ args: _args, overrides: _overrides })}
+    
+    // This should never print
     console.error('Unknown Minting Error.')
   }
 
+
+  // UI Funcs //
   // Plus and Minus NFT amount buttons
   const incrementMintAmountNumberBox = (maxMint) => {
     //called onclick
@@ -1518,21 +1505,20 @@ function MintModal(props) {
         Math.round((num - 1) * pricePerNFT * 100) / 100);
     }
   }
-
+  // Same as increment and decrement but callable
   const setTotalCostBoxValue = (price) => {
-    //same as increment and decrement but callable
     if (window.document.getElementById('mintAmountBox') !== null) {
       const num = parseInt(window.document.getElementById('mintAmountBox').value);
       setTotalMintPrice(Math.round(num * price * 100) / 100);
     }
   }
-
-  //reset mint modal button, etc.
+  // UI: Enable Mint Button + Close Loading Spinner
   const afterMintUIChanges = () => {
     setMintButtonDisabled(false);
     setMintButtonText("Mint");
     setMintLoading(false);
   }
+  // Reset UI Vars when a popup is closed
   const closeAlertPopup = () => {
     setMintError(false);
     setMintErrorMessage("");
@@ -1540,6 +1526,9 @@ function MintModal(props) {
     setMintSuccessMessage("");
   }
 
+
+   // Check if all needed data is present to mint
+  // Enable or disable the mint button based on this
   useEffect(() => { //TODO maybe useMemo
     if (isClosing) return setAllContractDataPresent(false);
     if (maxMintForCurrentWallet && 
@@ -1554,7 +1543,7 @@ function MintModal(props) {
       setMintButtonDisabled(true); 
       setAllContractDataPresent(false);
     }
-  }, [maxMintForCurrentWallet, isPresale, pricePerNFT,  //provider, // vars we want this to re-run on
+  }, [maxMintForCurrentWallet, isPresale, pricePerNFT,
       amountMintedAlready, presaleData, publicWalletLimit, address]);
 
   return (

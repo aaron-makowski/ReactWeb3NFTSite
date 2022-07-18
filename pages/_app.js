@@ -1,16 +1,19 @@
 import '../styles/globals.css'
 
+//For the discord and twitter icons
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 
-
+//For the wallet connection popup
 import '@rainbow-me/rainbowkit/styles.css';
-
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+
+// Wagmi is a library that allows you to do everything web3
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
+
 
 const { chains, provider } = configureChains(
   [chain.ropsten], //chain.mainnet,
@@ -38,20 +41,5 @@ function MyApp({ Component, pageProps }) {
     </WagmiConfig>
   )
 }
-
-// import { Web3ReactProvider } from '@web3-react/core'
-// import Web3 from 'web3'
-
-// function getLibrary(provider) {
-//   return new Web3(provider)
-// }
-
-// function MyApp({ Component, pageProps }) {
-//   return (
-//     <Web3ReactProvider getLibrary={getLibrary}>
-//       <Component {...pageProps} />
-//     </Web3ReactProvider>
-//   )
-// }
 
 export default MyApp
