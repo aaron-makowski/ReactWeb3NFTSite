@@ -1157,6 +1157,10 @@
   touch-action: manipulation;
   margin-top: 0rem;
   margin-bottom: 0rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
 }
 .mintPopup_ConnectButton:disabled {
   cursor: default;
