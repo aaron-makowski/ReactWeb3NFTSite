@@ -7,7 +7,8 @@ config.autoAddCss = false
 
 //For the wallet connection popup
 import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, RainbowKitProvider,
+         connectorsForWallets, wallet } from '@rainbow-me/rainbowkit';
 
 // Wagmi is a library that allows you to do everything web3
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
@@ -19,12 +20,30 @@ const { chains, provider } = configureChains(
   [chain.ropsten], //chain.mainnet,
   [alchemyProvider({ alchemyId: '-JjF8cTJGgfSfhKMVgqxKV48CsCIKfpn' }),
     publicProvider()]
-);
+)
 
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
   appName: "Menji's World NFTs",
   chains
-});
+})
+
+const appInfo = {
+  appName: "Menji's World NFT Drop",
+}
+
+const connectors = connectorsForWallets([
+  ...wallets,
+  {
+    groupName: 'More',
+    wallets: [
+      wallet.injected({ chains }),
+      wallet.trust({ chains }),
+      wallet.argent({ chains }),
+      wallet.imToken({ chains }),
+      wallet.steak({ chains }),
+    ],
+  },
+])
 
 const wagmiClient = createClient({
   autoConnect: true,
@@ -35,7 +54,7 @@ const wagmiClient = createClient({
 function MyApp({ Component, pageProps }) {
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
+      <RainbowKitProvider appInfo={appInfo} chains={chains}>
         <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>
