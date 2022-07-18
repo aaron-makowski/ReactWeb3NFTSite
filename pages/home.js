@@ -1248,7 +1248,7 @@ function MintModal(props) {
       //pub wallet lim 8: BigNumber {_hex: '0x0b', _isBigNumber: true}
       //isrevealed 9: false
 
-      console.log(data);
+      // console.log(data);
 
       // if public sale
       if (data[6] === false) {
@@ -1290,7 +1290,7 @@ function MintModal(props) {
       }
     },
     onError(error) {
-      alert(error.message)
+      console.log(error)
       setAllContractDataPresent(false);
       setMaxMintForCurrentWallet(null);
       setPricePerNFT(null);
@@ -1315,7 +1315,7 @@ function MintModal(props) {
       setMintSuccess(true);
       setMintSuccessMessage(
         'Pending Transaction: https://ropsten.etherscan.io/tx/' 
-        + data.hash + '\nWait here for success message.');
+        + data.hash + '\r\nWait here for success message.');
     },
     onError(error) {
       setMintError(true);
@@ -1331,7 +1331,8 @@ function MintModal(props) {
     onSuccess(data) {
       // console.log(data);
       setMintSuccess(true); 
-      setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' + data.hash + '\nWait here for success message.');
+      setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' 
+                           + data.hash + '\r\nWait here for success message.');
     },
     onError(error) {
       setMintError(true);
@@ -1346,7 +1347,8 @@ function MintModal(props) {
     functionName: 'presalePurchase', 
     onSuccess(data) {
       setMintSuccess(true); 
-      setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' + data.hash + '\nWait here for success message.');
+      setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' 
+                           + data.hash + '\r\nWait here for success message.');
     },
     onError(error) {
       setMintError(true);
@@ -1389,7 +1391,7 @@ function MintModal(props) {
               '\r\n\r\nhttps://etherscan.io/tx/' + mintData.transactionHash);
       }
     }
-  }, [mintData, mintIsError, mintIsSuccess]);
+  }, [mintData, mintIsSuccess, mintIsError]);
 
 
 
