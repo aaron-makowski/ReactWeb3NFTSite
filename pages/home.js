@@ -1929,6 +1929,7 @@ export default function Home() {
         <title>MENJi's World NFT Drop</title>
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:image" content="/favicon.ico" />
       </Head>
 
       {/* Popups */}
