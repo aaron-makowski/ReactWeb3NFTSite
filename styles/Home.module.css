@@ -87,11 +87,11 @@
     padding: 0em 35px;
   }
   .aboutContent_2 {
-    margin-left: 1.75rem;
+    margin-left: 0.75rem;
     width: 90%;
   }
   .mintButton {
-    margin-left: 1.75rem;
+    margin-left: 0.75rem;
     min-width: 90%;
     width: 90%;
   }
@@ -821,7 +821,7 @@
   background-color: #ffc636;
   border-width: 0px;
   border-radius: 10px;
-
+  background-color: rgb(255, 214, 29);
   box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
   color: #2e2e2e;
