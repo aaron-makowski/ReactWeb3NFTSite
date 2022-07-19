@@ -18,7 +18,6 @@
   border-bottom: 1px solid #000000;
 }
 .mainContentRoadmap {
-  border-bottom: 1px solid #000000;
   transition: all .2s,box-shadow .08s ease-in;
 }
 .aboutContentBG {
@@ -56,30 +55,15 @@
 
 }
 .mainContent_2 {
-  padding: 0.5rem 0.5rem;
+  padding-top: 1.5rem;
   flex: 1; 
   display: flex; 
+  flex-direction: column;
   background-color: rgb(255, 171, 0);
   border-top: 2px solid #000000;
   align-items: center;
 }
-.mainContent_2_left {
-  max-width: 40%;
-  margin-right: 1.5rem;
-  margin-top: 1.5rem;
-  margin-left: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-.mainContent_2_right {
-  /* width: 45%; */
-  margin: 1rem;
-  margin-left: 0rem;
-  flex: 1; 
-  display: flex; 
-  flex-direction: column; 
-  justify-content: right; 
-  flex-wrap: wrap;
-}
+
 .aboutContent_2 {
   background: rgba(255, 208, 108, 0.95);
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
@@ -95,168 +79,26 @@
   padding: 1.75rem 1.75rem;
   color: #202020;
   transition: all .2s,box-shadow .08s ease-in;
+  width: 60%;
+}
 
-}
-.sampleNFT {
-  border-radius: 0.5rem;
-}
-@media (max-width: 860px) {
+@media (max-width: 815px) {
   .navBarItem_ConnectButton {
     padding: 0em 35px;
   }
-}
-@media (max-width: 768px) {
-  .mainContent_2 {
-    flex-direction: column; 
-  }
-  .aboutContent {
-    margin-left: 1.25rem;
-    margin-right: 1.25rem;
-    padding: 1.5rem;
-  }
   .aboutContent_2 {
     margin-left: 1.75rem;
+    width: 90%;
   }
   .mintButton {
     margin-left: 1.75rem;
-  }
-  .mainContent_2_right {
-    margin-bottom: 2rem;
-  }
-  .mainContent_2_left {
-    max-width: 100%;
-    margin-top: 2.5rem;
-    margin-left: 2rem;
-    margin-bottom: 2rem;
-  }
-}
-
-
-
-/* /roadmap */
-.FAQContainer {
-  padding-top: 0.1rem;
-  padding-bottom: 1.5rem;
-  background-color: rgb(255, 171, 0);
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-}
-.FAQItemMobile {
-  width: 90%; 
-  background-color: rgb(255, 232, 185);
-  margin-top: 22px;
-  margin-bottom: 0px;
-  border-radius: 10px;
-  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
-  transition: all .2s,box-shadow .08s ease-in;
-}
-.FAQItem {
-  width: 60%; 
-  background-color: rgb(255, 232, 185);
-  margin-top: 22px;
-  margin-bottom: 0px;
-  border-radius: 10px;
-  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
-  transition: all .2s,box-shadow .08s ease-in;
-}
-@media (max-width: 1300px) {
-  .FAQItem {
-    width: 80%;
-  }
-}
-@media (max-width: 860px) {
-  .FAQItem {
+    min-width: 90%;
     width: 90%;
   }
+
 }
-.FAQItem li a {
-  text-decoration : none; 
-  color : #2d2f31;
-  font-family: 'Fredoka One', cursive;
-  font-weight: 100;
-  
-}
-.FAQItem span {
-  padding-top: 14px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 17px;
-  background-color: rgb(255, 209, 117);
-  color: rgb(0, 0, 0);
-  font-size: 1.2em;
-  padding-right: 1.5rem;
-  font-weight: 100;
-  font-family: 'Fredoka One', cursive;
-  font-variant : small-caps;
-  cursor: pointer;
-  display: block;
-  border-radius: 10px;
-}
-.FAQItem span::after {
-  float: right;
-  right: 10%;
-  content: "▽"; 
-  font-weight: 500;
-}
-.pdfBG {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 242, 194, 0.5);
-  z-index: 99998;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  font-family: 'Fredoka One', cursive;
-}
-.pdfViewBox {
-  background-color: rgb(255, 212, 55);
-  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
-  box-sizing: border-box;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  font-family: 'Fredoka One', cursive;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  height: 90%;
-  overflow: auto;
-  margin-top: 1rem;
-  max-width: fit-content;
-}
-.pdfHeader {
-  display: flex;
-  background-color: rgba(255, 212, 55, 0.722);
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  font-family: 'Fredoka One', cursive;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  height: 3.25rem;
-  margin-top: 1rem;
-  padding: 1rem;
-  padding-left: 2rem;
-  max-width: fit-content;
-}
-.pdfHeader span::after {
-  float: right;
-  right: 10%;
-  cursor: pointer;
-}
-.pdfHeader a {
-  font-variant: small-caps;
-  font-size: 1.25rem;
-  margin-right: 14rem;
-  text-decoration: underline;
-  word-wrap: none;
-}
+
+
 .copyright {
   background-color: rgb(255, 171, 0);
   font-size: 1em;
@@ -282,128 +124,9 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-}
-
-.pdfPopupLink{
-  background-color: rgb(255, 171, 0);
-  font-size: 1em;
-  font-family: 'Fredoka One', cursive;
-  font-variant : small-caps;
-  color: #202020;
-  text-align: center;
-  text-decoration: underline;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  cursor: pointer;
-}
-
-.slide {
-  clear: both;
-  width: 100%;
-  height: 100%;
-  padding-bottom: 0.25rem;
-  padding-right: 2rem;
-  display: block;
-  overflow: hidden;
-  text-align: left;
-  transition: height .4s ease;
-}
-.roadmapButtons {
-  padding-top: 1rem;
-  padding-bottom: 1.15rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgb(255, 171, 0);
-  border-bottom: 2px solid #000000;
-  border-top: 1px solid #000000;
-}
-
-.roadmapTextBG {
-  flex: 1; 
-  display: flex; 
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center;
-  background-color: rgb(255, 171, 0);
-  border-top: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-  padding-bottom: 0.5rem;
-}
-.roadmapTitle1 {
-  font-family: 'Fredoka One', cursive;
-  font-size: 3.5rem;
-  font-weight: 300;
-  color: #202020;
-  margin-top: 2rem;
+  margin-top: 0.75rem;
   margin-bottom: 1rem;
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-  font-variant : small-caps;
-  text-align: center;
 }
-.roadmapTitle {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: #202020;
-  width: 30%;
-  word-wrap: break-word; 
-  font-variant: small-caps;
-}
-.roadmapTitleMobile {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1rem;
-  font-weight: 300;
-  color: #202020;
-  width: 30%;
-  word-wrap: break-word; 
-  font-variant: small-caps;
-}
-.roadmapText {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1rem;
-  color: #202020;
-  text-align: center;
-  width: 60%;
-  margin-left: 1rem;
-  padding-left: 1rem;
-  border-left: 2px solid #000000;
-}
-.roadmapTextBox {
-  background: rgba(255, 208, 108, 0.95);
-  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.9);
-  border-radius: 10px;
-  font-family: 'Fredoka One', cursive;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-  color: #202020;
-  margin: 1.25rem 2.25rem;
-  margin-bottom: 1.25rem;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-  /* padding-left: 1.25rem; */
-  padding-right: 1.25rem; 
-  text-align: center;
-  width: 60%;
-  transition: all .2s,box-shadow .08s ease-in;
-
-}
-@media (max-width: 1300px) {
-  .roadmapTextBox {
-    width: 80%;
-  }
-}
-@media (max-width: 860px) {
-  .roadmapTextBox {
-    width: 90%;
-  }
-}
-
 
 
 
@@ -446,6 +169,16 @@
   transition: all .2s,box-shadow .08s ease-in;
 
 }
+.teamMemberName_Mobile {
+  margin-top: 0.8rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #141414;
+  font-family: 'Fredoka One', cursive;
+  cursor: pointer;
+  transition: all .2s,box-shadow .08s ease-in;
+}
 .teamMemberText {
   min-width: 100%;
   max-width: 100%;
@@ -454,10 +187,16 @@
   color: #151515;
   font-family: 'Fredoka One', cursive;
   transition: all .2s,box-shadow .08s ease-in;
-
 }
-
-
+.teamMemberText_Mobile {
+  min-width: 100%;
+  max-width: 100%;
+  word-wrap: break-word; 
+  font-size: 0.8rem;
+  color: #151515;
+  font-family: 'Fredoka One', cursive;
+  transition: all .2s,box-shadow .08s ease-in;
+}
 
 
 .navBarContainer {
@@ -497,6 +236,7 @@
   align-items: right;
   flex-grow: 1;
   flex-wrap: wrap;
+  margin-right: 1rem;
 }
 @media (max-width: 815px) {
   .navBarLeft {
@@ -505,33 +245,15 @@
     margin-right: 1.5rem;
     margin-left: 1.5rem;
   }
+  .navBarRight {
+    margin: 0rem;
+    margin-left: 1.25rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
 }
-.socialButton_discord {
-  margin-top: 1rem;
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
-  transform: translateZ(0);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  cursor: pointer;
-  color: #242424;
-  transition: all .2s,box-shadow .08s ease-in;
 
-}
-.socialButton_twitter {
-  margin-top: 1rem;
-  margin-right: 0.6rem;
-  margin-left: 0.5rem;
-  transform: translateZ(0);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  cursor: pointer;
-  color: #242424;
-  transition: all .2s,box-shadow .08s ease-in;
-
-}
 .socialButton_discord_2x {
   margin-right: 0.5rem;
   margin-left: 0.5rem;
@@ -559,14 +281,6 @@
   padding-right: 1rem;
 
 }
-@media (max-width: 815px) {
-  .socialButton_discord {
-    margin-right: 0.7rem;
-  }
-  .socialButton_twitter {
-    margin-left: 0.5rem;
-  }
-}
 .navBarItem_ConnectButton {
   appearance: button;
   backface-visibility: hidden;
@@ -576,19 +290,20 @@
   box-sizing: border-box;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
   cursor: pointer;
-  /* font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif; */
   font-family: 'Fredoka One', cursive;
   font-size: 1.7rem;
   font-weight: 100;
   height: 54px;
   line-height: 1.15;
+
   margin-right: 0.7rem;
   margin-left: 0.5rem;
   margin-top: 0.8rem;
   margin-bottom: 1rem;
+  padding: 0.7rem 35px;
+
   outline: none;
   overflow: hidden;
-  padding: 0.7rem 35px;
   position: right;
   text-align: center;
   text-transform: none;
@@ -600,14 +315,9 @@
   color: #2e2e2e;
   
 }
-.navBarItem_ConnectButton:disabled {
-  cursor: default;
-}
 .navBarItem_ConnectButton:focus {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
 }
-
-
 
 
 .mintButton {
@@ -624,7 +334,7 @@
   font-size: 1.7rem;
   font-weight: 100;
   height: 54px;
-  /* width: 400px; */
+  width: 60%;
   line-height: 1.15;
   margin-right: 0.7rem;
   outline: none;
@@ -639,58 +349,9 @@
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-.mintButton2 {
-  appearance: button;
-  backface-visibility: hidden;
-  background-color: #ffc636;
-  border-radius: 10px;
-  border-width: 0px;
-  box-shadow: 0 0.2rem 0.74rem rgba(0, 0, 0, 0.9);
-  box-sizing: border-box;
-  color: #2e2e2e;
-  cursor: pointer;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.7rem;
-  font-weight: 100;
-  height: 54px;
-  line-height: 1.15;
-  margin: 0.3rem;
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
-  outline: none;
-  overflow: hidden;
-  padding: 0.7rem 35px;
-  position: center;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: 30%;
-}
-@media (max-width: 1300px) {
-  .mintButton2 {
-    width: 40%;
-  }
-}
-@media (max-width: 860px) {
-  .mintButton2 {
-    width: 45%;
-  }
-}
-.mintButton:disabled {
-  cursor: default;
-}
 .mintButton:focus {
   box-shadow: 0 0.5rem 0.74rem rgba(0, 0, 0, 0.9);
 }
-.mintButton2:focus {
-  box-shadow: 0 0.5rem 0.74rem rgba(0, 0, 0, 0.9);
-}
-
-
 
 
 .alertPopup {
@@ -1189,12 +850,10 @@
   padding-left: 1.5em;
   padding-right: 1.5em;
 }
-.mintPopup_ConnectButton:disabled {
-  cursor: default;
-}
 .mintPopup_ConnectButton:focus {
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.9);
 }
+
 .mintModalLoading {
   position: fixed;
   width: 100%;
@@ -1226,92 +885,4 @@
   max-width: 550px;
   min-height: 750px;
   padding-bottom: 2rem;
-}
-
-
-
-
-
-
-
-
-
-.mintModalError {
-  background-color: rgba(255, 212, 55, 0.444);
-  border-radius: 20px;
-  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
-  box-sizing: border-box;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  font-family: 'Fredoka One', cursive;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 90%;
-  width: 90%;
-  max-width: 550px;
-  min-height: 750px;
-  padding-bottom: 2rem;
-
-}
-.mintModalError:hover {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalError:active {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalError:focus {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalErrorText {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.7rem;
-  font-weight: 100;
-  line-height: 1.15;
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-}
-
-.mintModalSuccess {
-  background-color: rgb(255, 214, 29);
-  border-radius: 10px;
-  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
-  box-sizing: border-box;
-  color: #2e2e2e;
-  cursor: pointer;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.2rem;
-  font-weight: 100;
-  line-height: 1.15;
-  margin: 0.3rem;
-  /* margin-left: 2rem;
-  margin-right: 2rem; */
-  width: 100%;
-  height: 100%;
-  outline: none;
-  overflow: scroll;
-  padding: 0.7rem 35px;
-  position: center;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  z-index: 99999;
-}
-.mintModalSuccess:hover {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalSuccess:active {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
-}
-.mintModalSuccess:focus {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.9);
 }

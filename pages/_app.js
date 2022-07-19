@@ -30,14 +30,15 @@ const { wallets } = getDefaultWallets({
 const appInfo = {
   appName: "Menji's World NFT Drop",
 }
-
+// console.log(wallets)
 const connectors = connectorsForWallets([
-  ...wallets,
+  // ...wallets,
   {
-    groupName: 'More',
+    groupName: 'Scroll for More',
     wallets: [
       wallet.injected({ chains }),
       wallet.trust({ chains }),
+      ...wallets[0].wallets,
       wallet.argent({ chains }),
       wallet.imToken({ chains }),
       wallet.steak({ chains }),

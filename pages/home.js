@@ -22,12 +22,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'; //wallet popup
 import {    useAccount   ,   useContractWrite, // read/write eth contracts
          useContractReads, useWaitForTransaction } from 'wagmi' 
 
-
-// Possible Upgrades:
-// - websocketprovider + watch dynamic eth data
-//          https://github.com/rainbow-me/rainbowkit/blob/main/examples/with-next-mint-nft/pages/index.tsx
-// - 
-
+		 
 
 // TODO put Menji solidity contract address and ABI here
 // Contract Details
@@ -1535,23 +1530,47 @@ function TEAMSection() {
     <div className={styles.teamContainer}>
       <div className={styles.teamMember}>
         <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} onClick={check3}/>
-        <p id='p3' className={styles.teamMemberName} onClick={check3}>Menji <a>+</a></p>
-        { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
+        <BrowserView>
+          <p id='p3' className={styles.teamMemberName} onClick={check3}>Menji <a>+</a></p>
+          { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
+        </BrowserView>
+        <MobileView>
+          <p id='p3' className={styles.teamMemberName_Mobile} onClick={check3}>Menji <a>+</a></p>
+          { team3checked && <p className={styles.teamMemberText_Mobile}>SF based artist with a passion for uplifting those around him. </p> }
+        </MobileView>
       </div>
       <div className={styles.teamMember}>
         <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} onClick={check2} />
-        <p id='p2' className={styles.teamMemberName} onClick={check2}>Jay <a>+</a></p>
-        { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
+        <BrowserView>
+          <p id='p2' className={styles.teamMemberName} onClick={check2}>Jay <a>+</a></p>
+          { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
+        </BrowserView>
+        <MobileView>
+          <p id='p2' className={styles.teamMemberName_Mobile} onClick={check2}>Jay <a>+</a></p>
+          { team2checked && <p className={styles.teamMemberText_Mobile}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
+        </MobileView>
       </div>   
       <div className={styles.teamMember}>
         <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} onClick={check4} />
-        <p id='p4' className={styles.teamMemberName} onClick={check4}>Doc <a>+</a></p>
-        { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
+        <BrowserView> 
+          <p id='p4' className={styles.teamMemberName} onClick={check4}>Doc <a>+</a></p>
+          { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
+        </BrowserView>
+        <MobileView>
+          <p id='p4' className={styles.teamMemberName_Mobile} onClick={check4}>Doc <a>+</a></p>
+          { team4checked && <p className={styles.teamMemberText_Mobile}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
+        </MobileView>
       </div>         
       <div className={styles.teamMember}>
         <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} onClick={check1} />
-        <p id='p1' className={styles.teamMemberName} onClick={check1}>Sticky <a>+</a></p>
-        { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
+        <BrowserView>
+          <p id='p1' className={styles.teamMemberName} onClick={check1}>Sticky <a>+</a></p>
+          { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
+        </BrowserView>
+        <MobileView>
+          <p id='p1' className={styles.teamMemberName_Mobile} onClick={check1}>Sticky <a>+</a></p>
+          { team1checked && <p className={styles.teamMemberText_Mobile}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
+        </MobileView>
       </div>
     </div>
   )
@@ -1616,10 +1635,8 @@ export default function Home() {
       <MainImage />
       <main> {/* Useful tag for SEO */}
         <div className={styles.mainContent_2}>
-          <div className={styles.mainContent_2_right}>
-            <MintPopupButton setMintModalOpen={setMintModalOpen}/>
-            <AboutSection2 />
-          </div>
+          <MintPopupButton setMintModalOpen={setMintModalOpen}/>
+          <AboutSection2 />
         </div>
       </main>
       <TEAMSection />
