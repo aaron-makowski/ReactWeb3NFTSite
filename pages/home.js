@@ -11,10 +11,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 library.add(fab)
 
-//PDF Viewer Popup
-import { Document, Page, pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
 // General Useful
 import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
@@ -904,7 +900,6 @@ async function fetchWhitelistData() {
   return response
 }
 
-
 function ConnectButtonCustomized(props) {
 
   return (<>
@@ -959,22 +954,9 @@ function ConnectButtonCustomized(props) {
     </ConnectButton.Custom>
   </>)
 }
-function ConnectButtonNavBar() {
-  return (<>
-    <ConnectButtonCustomized style={styles.navBarItem_ConnectButton}/>
-  </>)
-}
-function MintConnectButton() {
-  return (<>
-    <ConnectButtonCustomized style={styles.mintPopup_ConnectButton}/>
-  </>)
-}
-
 
 //UI Components
 function NavBar() {
-  // innerWidth = useWidth();
-
   return (
     <nav className={styles.navBarContainer}>
       <nav className={styles.navBarLeft}>
@@ -982,37 +964,10 @@ function NavBar() {
                   width={1350} height={299} 
                   alt="Menji's World Logo" />
       </nav>
-
-      {/* {innerWidth <= 815 &&  */}
-        <nav className={styles.navBarRight}>
-          {/* <DiscordIcon /> */}
-          <ConnectButtonNavBar />
-          {/* <TwitterIcon /> */}
-        </nav>
-      {/* } */}
-      {/* {innerWidth > 815 && 
-        <nav className={styles.navBarRight}>
-          <DiscordIcon />
-          <TwitterIcon />
-          <ConnectButtonNavBar />
-        </nav>
-      } */}
+      <nav className={styles.navBarRight}>
+        <ConnectButtonCustomized style={styles.navBarItem_ConnectButton} />
+      </nav>
     </nav>
-  )
-}
-
-function DiscordIconSmall() {
-  return (
-    <a className={styles.socialButton_discord_2x} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-discord" size='xl'/>
-    </a>
-  )
-}
-function TwitterIconSmall() {
-  return (
-    <a className={styles.socialButton_twitter_2x} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-twitter" size='xl' />
-    </a>
   )
 }
 
@@ -1034,21 +989,6 @@ function MainImage() {
     </div>
   )
 }
-function AboutMenjiSection() {
-  return (
-    <div className={styles.aboutContentBG}>
-      <div className={styles.aboutContent}>
-          Menji
-          <br/><br/>
-          Menji is an American Digital artist and painter from California with a goal to build a world that lives beyond his physical and digital work.
-          <br/><br/>
-          Menji's world was created with a sole focus to create unique experiences, bend the limitations of fashion, and be an example that anyone can create a world that is unique to themselves and inclusive to those who care to explore it.
-          <br/><br/>
-          Welcome to Menji's World.
-      </div>
-    </div>
-  )
-}
 function AboutSection2() {
   return (
     <p className={styles.aboutContent_2}> 
@@ -1062,16 +1002,6 @@ function AboutSection2() {
     </p>
   )
 }
-function SampleNFTimage() {
-  return (
-    <div className={styles.mainContent_2_left}>
-      <Image src={"/sample_nft_sm.jpg"} 
-             width={1054} height={854} 
-             alt="Menji's World Sample Art"
-            />
-    </div>
-  )
-}
 
 function MintPopupButton(props) {
   return (
@@ -1082,59 +1012,6 @@ function MintPopupButton(props) {
        }}
     >Mint</a>
   )
-}
-function Page2Button() {
-  return (
-    <Link href="/roadmap">
-      <a className={styles.mintButton} 
-         id='page2Button'
-        >FAQ / Roadmap</a>
-    </Link> 
-  )
-}
-
-//TODO remove popup PDF and just open link in new tab to pdf?
-function CopyRightFooter(props) {
-  return (<>
-    {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
-    <div className={styles.copyright}>
-      <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-      <div className={styles.copyright_subcontainer}>
-        <DiscordIconSmall /> 
-        <a className={styles.pdfPopupLink}
-          onClick={() => {
-            props.setCollectorsAgreementOpen(true);
-          }}
-        >Collectors Agreement</a>
-        <TwitterIconSmall />
-      </div>
-    </div>
-  </>)
-}
-function PDFViewer() {
-  function onDocumentLoadSuccess({ numPages: nextNumPages }) { console.log('PDF Loaded') }
-
-  return (
-    <div className={styles.pdfBG} id='pdfBG'>
-      <div className={styles.pdfHeader}>
-        <a href='https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement' target='_blank'
-        >Open Document</a>
-        <span id='closePDFButton'>X</span>
-      </div>
-
-      <Document className={styles.pdfViewBox}
-                file="/Menjis_World_Collector_Agreement.pdf"
-                onLoadSuccess={onDocumentLoadSuccess}>
-        <Page
-          key={`page_1`}
-          pageNumber={1}
-          renderAnnotationLayer={false}
-          renderTextLayer={false}
-        />
-      </Document>
-      </div>
-      
-  );
 }
 function MintModalLoading() {
   return (
@@ -1574,8 +1451,7 @@ function MintModal(props) {
 
           <div className={styles.mintModalHeader2}>
             <div className={styles.mintModalInputContainer}>
-              <MintConnectButton /> {/* setIsClosing={setIsClosing} 
-                                        setMintModalOpen={props.setMintModalOpen}*/}                  
+              <ConnectButtonCustomized style={styles.navBarItem_ConnectButton} /> 
             </div>
 
             <div className={styles.mintModalHeader}>
@@ -1680,230 +1556,41 @@ function TEAMSection() {
     </div>
   )
 }
-function FAQSection() {
-  const [faq1checked, setFaq1Checked] = useState(false);
-  const [faq2checked, setFaq2Checked] = useState(false);
-  const [faq3checked, setFaq3Checked] = useState(false);
-  // const [faq4checked, setFaq4Checked] = useState(false);
 
-  return (<div>
-    <BrowserView>
-      <div className={styles.FAQContainer}>
-        <nav className={styles.FAQItem}>
-          <div className={styles.touch} onClick={() => {setFaq1Checked(!faq1checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>What is the mint date?</span>
-            { faq1checked && <ul className={styles.slide}>
-            <li><a>Menji’s World mint date is still to be determined based on current market conditions. We want our holders to be rewarded from the start so waiting for the most optimal time to drop our collection is imperative to long-term success.</a></li> 
-            </ul> }
-          </div>
-        </nav>
-
-        <nav className={styles.FAQItem}>
-          <div className={styles.touch} onClick={() => {setFaq2Checked(!faq2checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>How many NFTs will be available?</span>               
-            { faq2checked && <ul className={styles.slide}>
-              <li><a> Total NFTs available will be finalized as we get closer to mint date!</a></li> 
-            </ul> }
-          </div>
-        </nav>
-
-        <nav className={styles.FAQItem}>
-          <div className={styles.touch} onClick={() => {setFaq3Checked(!faq3checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>How much will each NFT cost?</span>              
-            { faq3checked && <ul className={styles.slide}>
-              <li><a>Likewise, mint cost will be made available as we get closer to mint date.</a></li> 
-            </ul> }
-          </div>
-        </nav>
-
-        {/* <nav className={styles.FAQItem}>
-          <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>Who is Painted Labs?</span>
-            { faq4checked && <ul className={styles.slide}>
-              <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
-            </ul> }
-          </div>
-        </nav> */}
-      </div>
-    </BrowserView>
-
-    <MobileView>
-      <div className={styles.FAQContainer}>
-        <nav className={styles.FAQItemMobile}>
-          <div className={styles.touch} onClick={() => {setFaq1Checked(!faq1checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>What is the mint date?</span>
-            { faq1checked && <ul className={styles.slide}>
-            <li><a>Menji’s World mint date is still to be determined based on current market conditions. We want our holders to be rewarded from the start so waiting for the most optimal time to drop our collection is imperative to long-term success.</a></li> 
-            </ul> }
-          </div>
-        </nav>
-
-        <nav className={styles.FAQItemMobile}>
-          <div className={styles.touch} onClick={() => {setFaq2Checked(!faq2checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>How many NFTs will be available?</span>               
-            { faq2checked && <ul className={styles.slide}>
-              <li><a> Total NFTs available will be finalized as we get closer to mint date!</a></li> 
-            </ul> }
-          </div>
-        </nav>
-
-        <nav className={styles.FAQItemMobile}>
-          <div className={styles.touch} onClick={() => {setFaq3Checked(!faq3checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>How much will each NFT cost?</span>              
-            { faq3checked && <ul className={styles.slide}>
-              <li><a>Likewise, mint cost will be made available as we get closer to mint date.</a></li> 
-            </ul> }
-          </div>
-        </nav>
-
-        {/* <nav className={styles.FAQItemMobile}>
-          <div className={styles.touch} onClick={() => {setFaq4Checked(!faq4checked); window.scrollTo(0,document.body.scrollHeight);}}>
-            <span>Who is Painted Labs?</span>
-            { faq4checked && <ul className={styles.slide}>
-              <li><a>The Paint Room is a group of 100 of NFTs Greatest Talents, Alphas, Innovators, Marketers, and Influencers. The Paint Room Structure acts as an Engine for MoshiMochi Innovation and Holder Development. The Mochis will add the fuel...</a></li> 
-            </ul> }
-          </div>
-        </nav> */}
-      </div>
-    </MobileView>
-  </div>)
+function DiscordIconSmall() {
+  return (
+    <a className={styles.socialButton_discord_2x} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-discord" size='xl'/>
+    </a>
+  )
 }
-function RoadmapTextBoxStack() {
+function TwitterIconSmall() {
+  return (
+    <a className={styles.socialButton_twitter_2x} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+      <FontAwesomeIcon icon="fa-brands fa-twitter" size='xl' />
+    </a>
+  )
+}
+function CopyRightFooter() {
   return (<>
-    <BrowserView>
-      <div className={styles.roadmapTextBG}>
-        <div className={styles.roadmapTitle1}>Utility Roadmap</div>
-
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Free T-Shirt</div>
-          <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Physical Prints</div>
-          <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Menji's World Trailer</div>
-          <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Menji's World X Team Trees</div>
-          <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>High Quality Merch</div>
-          <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Collectibles</div>
-          <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Farmers Market Event</div>
-          <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitle}>Meditation App</div>
-          <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
-        </div>
+    {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
+    <div className={styles.copyright}>
+      <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+      <div className={styles.copyright_subcontainer}>
+        <DiscordIconSmall /> 
+        <a className={styles.pdfPopupLink}
+          onClick={() => {
+            window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
+        >Collectors Agreement</a>
+        <TwitterIconSmall />
       </div>
-    </BrowserView>
-    <MobileView>
-      <div className={styles.roadmapTextBG}>
-        <div className={styles.roadmapTitle1}>Utility Roadmap</div>
-
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Free T-Shirt</div>
-          <div className={styles.roadmapText}>Menji's World holders will have access to a complimentary T-shirt shortly after the reveal.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Physical Prints</div>
-          <div className={styles.roadmapText}>Unique and high quality prints designed by Menji will be available for purchase.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Menji's World Trailer</div>
-          <div className={styles.roadmapText}>Opening scene to the Menji's World animated series.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Menji's World X Team Trees</div>
-          <div className={styles.roadmapText}>Menji’s World will make be dedicating resources to Plant Trees all over the world in representation of the community with the help of Team Trees.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>High Quality Merch</div>
-          <div className={styles.roadmapText}>High Quality Merch designed by Menji using one of the most established suppliers in the NFT ecosystem.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Collectibles</div>
-          <div className={styles.roadmapText}>IRL collectables of characters within Menji’s World that will serve as a physical bridge into the virtual world we all know and live.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Farmers Market Event</div>
-          <div className={styles.roadmapText}>Members will have the chance to attend a live event hosted by Menji’s World. Music, good food, and good vibes.</div>
-        </div>
-        <div className={styles.roadmapTextBox}>
-          <div className={styles.roadmapTitleMobile}>Meditation App</div>
-          <div className={styles.roadmapText}>Your mind's best friend. A partnership with one of the largest meditation apps that will include community discounted subscriptions and Menjified experiences.</div>
-        </div>
-      </div>
-    </MobileView>
+    </div>
   </>)
 }
-function RoadmapPage(props) {
-  innerWidth = useWidth();
-  innerHeight = useHeight();
-
-  return (<div>
-    <NavBar />
-
-    <div className={styles.mainContentRoadmap}>
-      {/* link to view roadmap.jpg in a new tab */}
-      <a href='/roadmap.jpg' target="_blank">
-        <Image className={styles.roadmapImage} 
-              src={"/roadmap.jpg"} 
-              width={innerWidth} height={innerHeight/2}
-              alt="Click to open Roadmap Image" 
-              layout='responsive'
-              objectFit="cover"/>
-      </a>
-
-    </div>
-
-    <RoadmapTextBoxStack />
-
-    <div className={styles.roadmapButtons}>
-      <button className={styles.mintButton2} id='mintButton2' 
-              onClick={() => {props.setMintModalOpen(true);}}>
-                                  <BrowserView>Mint Now</BrowserView>
-                                  <MobileView>Mint</MobileView>
-      </button>
-      
-      { innerWidth >= 515 && 
-        <Link href="/home">
-          <a className={styles.mintButton2}><BrowserView>Home Page</BrowserView>
-                                            <MobileView>Home</MobileView> </a> 
-        </Link> }
-
-      { innerWidth < 515 && 
-        <Link href="/home">
-          <a className={styles.mintButton2}>Home</a> 
-        </Link> }
-    </div>
-
-    <FAQSection />
-    <CopyRightFooter setCollectorsAgreementOpen={props.setCollectorsAgreementOpen}/>  {/* + User Agreement */}
-
-  </div>)
-}
-//roadmap.js needs these functions exported to be able to render
-export { PDFViewer, MintModal, RoadmapPage };
-
-
 
 export default function Home() {
-  const [mintModalOpen, setMintModalOpen] = useState(false);
-  const [collectorsAgreementOpen, setCollectorsAgreementOpen] = useState(false);
-  
   //Mint Modal Popup
+  const [mintModalOpen, setMintModalOpen] = useState(false);
   const closeMintModal = () => {
     setMintModalOpen(false);
   }
@@ -1911,23 +1598,8 @@ export default function Home() {
     if (mintModalOpen === true) {
       window.document.onclick = function(event) {
         if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
-      // window.document.getElementById('closeModalButton').addEventListener('click', closeMintModal);
     }
   }, [mintModalOpen]);
-
-
-  //PDF Popup
-  const closePDFModal = () => {
-    setCollectorsAgreementOpen(false);
-  }
-  useEffect(() => {
-    if (collectorsAgreementOpen === true) {
-      window.document.onclick = function(event) {
-        if (event.target === window.document.getElementById('pdfBG')) {closePDFModal();}}
-      window.document.getElementById('closePDFButton').addEventListener('click', closePDFModal);
-    }
-  }, [collectorsAgreementOpen]);
-
 
   return (
     <div className={styles.container}>
@@ -1938,25 +1610,20 @@ export default function Home() {
         <meta property="og:image" content="/favicon.ico" />
       </Head>
 
-      {/* Popups */}
-      { collectorsAgreementOpen && <PDFViewer /> }
       { mintModalOpen && <MintModal setMintModalOpen={setMintModalOpen}/> }
 
       <NavBar />  {/* At top of both pages: Logo + Connect button + Social Buttons*/}
       <MainImage />
       <main> {/* Useful tag for SEO */}
-        <AboutMenjiSection />
         <div className={styles.mainContent_2}>
-          <SampleNFTimage />
           <div className={styles.mainContent_2_right}>
             <MintPopupButton setMintModalOpen={setMintModalOpen}/>
             <AboutSection2 />
-            <Page2Button />      
           </div>
         </div>
       </main>
       <TEAMSection />
-      <CopyRightFooter setCollectorsAgreementOpen={setCollectorsAgreementOpen}/>  {/* + User Agreement */}
+      <CopyRightFooter />  {/* + User Agreement */}
     </div>
   )
 }
