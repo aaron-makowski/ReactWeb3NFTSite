@@ -118,7 +118,7 @@
   font-size: 1.15em;
   font-family: 'Fredoka One', cursive;
   font-variant : small-caps;
-  color: #202020;
+  color: #000c1f;
   text-align: center;
   display: flex;
   flex-direction: row;
@@ -126,6 +126,7 @@
   justify-content: center;
   margin-top: 0.75rem;
   margin-bottom: 1rem;
+  text-decoration: underline;  
 }
 
 
@@ -247,7 +248,7 @@
   }
   .navBarRight {
     margin: 0rem;
-    margin-left: 1.25rem;
+    
     margin-bottom: 1rem;
     align-items: center;
     justify-content: center;
@@ -296,7 +297,7 @@
   height: 3.25rem;
   line-height: 1.15;
 
-  margin-right: 0.7rem;
+  margin-right: 0.5rem;
   margin-left: 0.5rem;
   margin-top: 0.8rem;
   margin-bottom: 1rem;
@@ -347,6 +348,7 @@
   transition: all .2s,box-shadow .08s ease-in;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-appearance: none;
   touch-action: manipulation;
 }
 .mintButton:focus {

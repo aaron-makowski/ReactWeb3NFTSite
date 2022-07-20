@@ -3,7 +3,6 @@ import styles from '../styles/Home.module.css' //Applies to roadmap elements too
 
 import Head from 'next/head'
 import Image from 'next/image'
-import Link from 'next/link'
 
 //Import Social Icons & Icon Component
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,7 +21,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'; //wallet popup
 import {    useAccount   ,   useContractWrite, // read/write eth contracts
          useContractReads, useWaitForTransaction } from 'wagmi' 
 
-		 
+
 
 // TODO put Menji solidity contract address and ABI here
 // Contract Details
@@ -1478,7 +1477,7 @@ function MintModal(props) {
               >-</div>
 
               <input id='mintAmountBox' className={styles.inputNumber} 
-                    value={mintAmount} type="number" disabled />
+                    value={mintAmount} type="number" readonly/>
 
               <div id='plusButton' 
                    className={styles.plusSign}
@@ -1496,11 +1495,11 @@ function MintModal(props) {
               <input className={styles.inputNumber2} 
                      type="text" 
                      value={totalMintPrice ? totalMintPrice.toString() + ' ETH' 
-                                           : '...'} disabled/>
+                                           : '...'} readonly/>
               <input className={styles.inputNumber2} 
                      type="text" 
                      value={pricePerNFT ? pricePerNFT.toString() + ' ETH' 
-                                        : '...'} disabled/>
+                                        : '...'} readonly/>
             </div>
           </div>
 
