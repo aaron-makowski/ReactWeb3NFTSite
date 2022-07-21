@@ -1445,7 +1445,7 @@ function MintModal(props) {
 
           <div className={styles.mintModalHeader2}>
             <div className={styles.mintModalInputContainer}>
-              <ConnectButtonCustomized style={styles.navBarItem_ConnectButton} /> 
+              <ConnectButtonCustomized style={styles.mintPopup_ConnectButton} /> 
             </div>
 
             <div className={styles.mintModalHeader}>
