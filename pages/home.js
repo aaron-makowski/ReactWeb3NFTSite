@@ -1298,7 +1298,7 @@ function MintModal(props) {
       return false
     } 
 
-    if (isPresale === true) {
+    if (isPresale === true && !testMode) {
       try {
         if (presaleData?.data.teir && presaleData?.data.hash && 
             presaleData?.data.signature && presaleData?.data.allocation) {
