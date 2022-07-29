@@ -673,8 +673,8 @@
   margin: 1.2rem;
 }
 .mintModalSection_right {
-  width: 45%;
-  padding-right : 1rem;
+  width: 50%;
+  padding-right: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
