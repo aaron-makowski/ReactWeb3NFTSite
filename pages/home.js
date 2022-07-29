@@ -1298,7 +1298,7 @@ function MintModal(props) {
       return false
     } 
 
-    if (isPresale === true && !testMode) {
+    if (isPresale === true && testMode == false) {
       try {
         if (presaleData?.data.teir && presaleData?.data.hash && 
             presaleData?.data.signature && presaleData?.data.allocation) {
@@ -1451,7 +1451,7 @@ function MintModal(props) {
             <div className={styles.mintModalHeader}>
               <div className={styles.mintModalInputContainer2}>
                 <div className={styles.mintModalSection_left}>
-                  <h3>Your Max Mint
+                  <h3>Max Mint
                     <div><h3 id='maxMint'>
                       {(isPresale === false && publicWalletLimit === false) ? '∞' 
                       : maxMintForCurrentWallet ? maxMintForCurrentWallet?.toString() 
@@ -1488,8 +1488,8 @@ function MintModal(props) {
 
           <div className={styles.mintModalInputContainer2}>
             <div className={styles.mintModalSection_left_2}> 
-              <p>Total Price</p>
-              <p>Price Per NFT</p>
+              <p>Total Cost</p>
+              <p>Price Each</p>
             </div>
             <div className={styles.mintModalSection_right}> 
               <input className={styles.inputNumber2} 

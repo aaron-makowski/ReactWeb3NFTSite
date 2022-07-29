@@ -428,6 +428,7 @@
   font-size: 1.7rem;
   font-family: 'Fredoka One', cursive;
   background-color: rgb(255, 227, 102);
+  margin-bottom: 0.25rem;
 }
 .inputNumber2 {
   border-radius: 10px;
@@ -443,7 +444,7 @@
   height: 54px;
   outline: none;
   overflow: hidden;
-  /* padding: 0.7rem 35px; */
+  padding: 0.7rem;
   position: center;
   text-align: center;
   text-transform: none;
@@ -452,12 +453,12 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  width: 80%;
+  width: 100%;
   font-size: 1.7rem;
   font-family: 'Fredoka One', cursive;
   background-color: rgb(255, 227, 102);
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.49rem;
 }
 
 .mintModal {
@@ -599,8 +600,6 @@
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
   width: 80%;
-  /* margin-bottom: 1rem; */
-  margin-bottom: 0rem;
 }
 .mintModalInputContainer2 {
   background-color: rgb(255, 212, 55);
@@ -613,8 +612,7 @@
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
-  width: 90%;
-  /* padding-bottom: 1rem; */
+  width: 89%;
 }
 .mintModalInputContainer2 p {
   background-color: rgb(255, 212, 55);
@@ -649,7 +647,6 @@
   margin-bottom: 0.5rem;
 }
 .mintModalSection_left {
-  padding-left: 1.1rem;
   width: 40%;
   display: flex;
   flex-direction: column;
@@ -661,7 +658,6 @@
   transition: all .2s,box-shadow .08s ease-in;
 }
 .mintModalSection_left_2 {
-  padding-left: 1.1rem;
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -672,8 +668,13 @@
   transform: translateZ(0);
   transition: all .2s,box-shadow .08s ease-in;
 }
+.mintModalSection_left_2 p {
+  padding: 0rem;
+  margin: 1.2rem;
+}
 .mintModalSection_right {
-  width: 50%;
+  width: 45%;
+  padding-right : 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -791,6 +792,7 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   padding-top: 0.1rem;
+  margin-bottom: 0.25rem;
   padding-right: 1.5rem;
 }
 .minusSign {
@@ -815,6 +817,8 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   padding-left: 0.75rem;
+  margin-bottom: 0.25rem;
+
 }
 
 .mintPopup_ConnectButton {
