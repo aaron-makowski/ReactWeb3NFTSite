@@ -1333,10 +1333,10 @@ function MintModal(props) {
     setMintButtonText("Minting"); 
 
     // Make sure we have all necessary/valid data to mint
-    //if (!passGuardClauses()) return afterMintUIChanges();
+    if (!passGuardClauses()) return afterMintUIChanges();
 
     // Bring up loading spinner
-    //setMintLoading(true);
+    setMintLoading(true);
 
      // Pass in amounnt to mint, total price 
     // & presale data into the Write function
