@@ -1193,7 +1193,11 @@ function MintModal(props) {
     onError(error) {
       setMintError(true);
       afterMintUIChanges();
-      setMintErrorMessage('Error minting tokens: ' + error.message);
+	  if (error.message.includes('-32000')) {
+		setMintErrorMessage('Error: Insufficient Funds');
+	  } else {
+      	setMintErrorMessage('Error minting tokens: ' + error.message);
+	  }
     }
   })
   // Public Sale Mint Func
@@ -1230,7 +1234,7 @@ function MintModal(props) {
     }
   })
 
-  let _mintData = testMode  ?  testMintData   ?? null
+  let _mintData = testMode  ? testMintData    ?? null
                 : isPresale ? presaleMintData ?? null
                             : publicMintData  ?? null
 
@@ -1286,7 +1290,7 @@ function MintModal(props) {
       return false
     }
 
-    if (mintAmount <= 0 || totalMintPrice <= 0) {
+    if (mintAmount <= 0 || totalMintPrice <= 0 || !totalMintPrice || !mintAmount) {
       setMintError(true);
       setMintErrorMessage('Zero Mint Error: Please Reload the page and try again.');
       return false
@@ -1329,10 +1333,10 @@ function MintModal(props) {
     setMintButtonText("Minting"); 
 
     // Make sure we have all necessary/valid data to mint
-    if (!passGuardClauses()) return afterMintUIChanges();
+    //if (!passGuardClauses()) return afterMintUIChanges();
 
     // Bring up loading spinner
-    setMintLoading(true);
+    //setMintLoading(true);
 
      // Pass in amounnt to mint, total price 
     // & presale data into the Write function
@@ -1364,7 +1368,7 @@ function MintModal(props) {
   // Plus and Minus NFT amount buttons
   const incrementMintAmountNumberBox = (maxMint) => {
     //called onclick
-    const num = parseInt(window.document.getElementById('mintAmountBox').value);
+    const num = mintAmount //parseInt(window.document.getElementById('mintAmountBox').innerHTML);
     if (num < maxMint) {
       setMintAmount(num + 1); 
       setTotalMintPrice(
@@ -1373,7 +1377,7 @@ function MintModal(props) {
   }
   const decrementMintAmountNumberBox = () => {
     //called onclick
-    const num = parseInt(window.document.getElementById('mintAmountBox').value);
+    const num = mintAmount //parseInt(window.document.getElementById('mintAmountBox').innerHTML);
     if (num > 1) {
       setMintAmount(num - 1); 
       setTotalMintPrice(
@@ -1383,7 +1387,7 @@ function MintModal(props) {
   // Same as increment and decrement but callable
   const setTotalCostBoxValue = (price) => {
     if (window.document.getElementById('mintAmountBox') !== null) {
-      const num = parseInt(window.document.getElementById('mintAmountBox').value);
+      const num = mintAmount //parseInt(window.document.getElementById('mintAmountBox').innerHTML);
       setTotalMintPrice(Math.round(num * price * 100) / 100);
     }
   }
@@ -1476,8 +1480,10 @@ function MintModal(props) {
                    onClick={() => decrementMintAmountNumberBox()}
               >-</div>
 
-              <input id='mintAmountBox' className={styles.inputNumber} 
-                    value={mintAmount} type="number" readonly/>
+              {/* <input id='mintAmountBox' className={styles.inputNumber} 
+                    value={mintAmount} type="number"/> */}
+			  
+		      <h3 id='mintAmountBox' className={styles.inputNumber}>{mintAmount ? mintAmount.toString() : '...'}</h3>
 
               <div id='plusButton' 
                    className={styles.plusSign}
@@ -1492,14 +1498,12 @@ function MintModal(props) {
               <p>Price Each</p>
             </div>
             <div className={styles.mintModalSection_right}> 
-              <input className={styles.inputNumber2} 
-                     type="text" 
-                     value={totalMintPrice ? totalMintPrice.toString() + ' ETH' 
-                                           : '...'} readonly/>
-              <input className={styles.inputNumber2} 
-                     type="text" 
-                     value={pricePerNFT ? pricePerNFT.toString() + ' ETH' 
-                                        : '...'} readonly/>
+				<h3 className={styles.inputNumber2}>{totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'}</h3>
+				<h3 className={styles.inputNumber2}>{pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'}</h3>
+			{/* <input className={styles.inputNumber2} type="text" 
+					value={totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'} readonly/>
+			<input className={styles.inputNumber2} type="text" 
+					value={pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'} readonly/> */}
             </div>
           </div>
 

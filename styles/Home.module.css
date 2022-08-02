@@ -404,7 +404,6 @@
 
 
 .inputNumber {
-  /* border-radius: 10px; */
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -428,7 +427,8 @@
   font-size: 1.7rem;
   font-family: 'Fredoka One', cursive;
   background-color: rgb(255, 227, 102);
-  margin-bottom: 0.25rem;
+  margin-bottom: 1.9rem;
+  padding-top: 0.35em;
 }
 .inputNumber2 {
   border-radius: 10px;
@@ -494,37 +494,6 @@
 .mintModalHeader h2 {
   font-variant: small-caps;
 }
-.mintModalHeader2 {
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-wrap: nowrap;
-  text-align: center;
-  align-items: center;
-  border-radius: 20px;
-  flex-direction: column;
-  justify-content: center;
-  transform: translateZ(0);
-  background-color: rgb(255, 212, 55);
-  transition: all .2s,box-shadow .08s ease-in;
-}
-.mintModalBody {
-  background-color: rgb(255, 212, 55);
-  border-radius: 20px;
-  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
-  box-sizing: border-box;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  font-family: 'Fredoka One', cursive;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 550px;
-  width: 90%;
-  padding-bottom: 2rem;
-}
-
 .mintModalHeader h2 { 
   background-color: rgb(255, 212, 55);
   color: rgb(0, 0, 0);
@@ -588,6 +557,40 @@
   font-size: 1.25rem;
 }
 
+
+.mintModalHeader2 {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  text-align: center;
+  align-items: center;
+  border-radius: 20px;
+  flex-direction: column;
+  justify-content: center;
+  transform: translateZ(0);
+  background-color: rgb(255, 212, 55);
+  transition: all .2s,box-shadow .08s ease-in;
+}
+
+.mintModalBody {
+  background-color: rgb(255, 212, 55);
+  border-radius: 20px;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
+  font-family: 'Fredoka One', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 550px;
+  width: 90%;
+  padding-bottom: 2rem;
+}
+
+
 .mintModalInputContainer {
   background-color: rgb(255, 212, 55);
   display: flex;
@@ -635,6 +638,7 @@
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
   width: 80%;
+  margin-bottom: -1rem;
 }
 .mintModalInputContainer3 p {
   background-color: rgb(255, 212, 55);
@@ -644,7 +648,7 @@
   font-family: 'Fredoka One', cursive;
   display: block;
   border: #000000;
-  margin-bottom: 0.5rem;
+  margin-bottom: -0.75rem;
 }
 .mintModalSection_left {
   width: 40%;
@@ -700,7 +704,7 @@
   height: 50px;
   line-height: 1.15;
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   outline: none;
   overflow: hidden;
   position: center;
@@ -768,7 +772,6 @@
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
   width: 100%;
-  margin-bottom: 0.25rem;
 }
 .plusSign {
   background-color: rgb(255, 227, 102);
