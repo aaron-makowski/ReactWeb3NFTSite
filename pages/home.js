@@ -1603,8 +1603,8 @@ export default function Home() {
                 <Image className={styles.teamMemberImage} src={'/docTeamRound.png'} width={200} height={200} />
                 <div className={styles.teamMemberInfo2}>
                   <Image src={'/docTeamInfo.png'} 
-                        width={'100%'} 
-                        height={'100%'} />
+                        width={'150%'} 
+                        height={'150%'} />
                 </div>            
             </div>   
             <div className={styles.teamMember}>
@@ -1619,8 +1619,8 @@ export default function Home() {
                 <Image className={styles.teamMemberImage} src={'/jayTeamRound.png'} width={200} height={200}  />
                 <div className={styles.teamMemberInfo4}>
                   <Image src={'/jayTeamInfo.png'} 
-                        width={'100%'} 
-                        height={'100%'}/>
+                        width={'80%'} 
+                        height={'80%'}/>
                 </div>            
             </div>
           </div>

@@ -36,6 +36,7 @@
   transition: all .2s,box-shadow .08s ease-in;
 }
 .menjiOnWorld {
+  padding-top: -5rem;
   transition: all .2s,box-shadow .08s ease-in;
 }
 .writeup {
@@ -81,11 +82,6 @@
   cursor: pointer;
 }
 
-/* images overlap when in this div*/
-.overlappingDiv {
-  position: relative; 
-}
-
 
 
 .teamContainer {
@@ -96,7 +92,6 @@
   align-items: top; 
   padding-top: 0.74rem;
 }
-
 .teamMember {
   /* min-width: 23%;
   max-width: 23%; */
@@ -113,20 +108,16 @@
   border-bottom-left-radius: 50% 50%;
 }
 .teamMemberInfo1 {
-  margin-left: 0rem;
-  margin-right: 0rem;
+  margin-top: -1rem;
 }
 .teamMemberInfo2 {
-  margin-left: 0rem;
-  margin-right: 0rem;
+  margin-top: -2.4rem;
 }
 .teamMemberInfo3 {
-  margin-left: 0rem;
-  margin-right: 0rem;
+  margin-top: -1.4rem;
 }
 .teamMemberInfo4 {
-  margin-left: 0rem;
-  margin-right: 0rem;
+  margin-top: -0.65rem;
 }
 
 
