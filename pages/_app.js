@@ -1,14 +1,9 @@
 import '../styles/globals.css'
 
-//For the discord and twitter icons
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-config.autoAddCss = false
-
 //For the wallet connection popup
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider,
-         connectorsForWallets, wallet } from '@rainbow-me/rainbowkit';
+         connectorsForWallets, wallet, darkTheme } from '@rainbow-me/rainbowkit';
 
 // Wagmi is a library that allows you to do everything web3
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
@@ -55,7 +50,7 @@ const wagmiClient = createClient({
 function MyApp({ Component, pageProps }) {
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider appInfo={appInfo} chains={chains}>
+      <RainbowKitProvider theme={darkTheme()} appInfo={appInfo} chains={chains}>
         <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>

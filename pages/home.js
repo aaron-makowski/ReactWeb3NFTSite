@@ -4,12 +4,6 @@ import styles from '../styles/Home.module.css' //Applies to roadmap elements too
 import Head from 'next/head'
 import Image from 'next/image'
 
-//Import Social Icons & Icon Component
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-library.add(fab)
-
 // General Useful
 import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
@@ -27,838 +21,838 @@ import {    useAccount   ,   useContractWrite, // read/write eth contracts
 // Contract Details
 const contractAddress = '0xb585da9872d092498f020a938d65091fd96abbaf';
 const abi = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "approved",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "Approval",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "operator",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "approved",
-				"type": "bool"
-			}
-		],
-		"name": "ApprovalForAll",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint16",
-				"name": "_srcChainId",
-				"type": "uint16"
-			},
-			{
-				"indexed": false,
-				"internalType": "bytes",
-				"name": "_srcAddress",
-				"type": "bytes"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint64",
-				"name": "_nonce",
-				"type": "uint64"
-			},
-			{
-				"indexed": false,
-				"internalType": "bytes",
-				"name": "_payload",
-				"type": "bytes"
-			}
-		],
-		"name": "MessageFailed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "Transfer",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "MAX_MINT_ETHEREUM",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "MAX_SUPPLY",
-		"outputs": [
-			{
-				"internalType": "uint128",
-				"name": "",
-				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "PRESALE_PRICE",
-		"outputs": [
-			{
-				"internalType": "uint128",
-				"name": "",
-				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "PROVENANCE_HASH",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "PUBLIC_MINT_LIMIT",
-		"outputs": [
-			{
-				"internalType": "uint128",
-				"name": "",
-				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "PUBLIC_PRICE",
-		"outputs": [
-			{
-				"internalType": "uint128",
-				"name": "",
-				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "PUBLIC_SUPPLY",
-		"outputs": [
-			{
-				"internalType": "uint128",
-				"name": "",
-				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "_owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "approve",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			}
-		],
-		"name": "balanceOf",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "contractURI",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "donate",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "",
-				"type": "uint16"
-			},
-			{
-				"internalType": "bytes",
-				"name": "",
-				"type": "bytes"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "failedMessages",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "payloadLength",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "payloadHash",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "getApproved",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "operator",
-				"type": "address"
-			}
-		],
-		"name": "isApprovedForAll",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "isPresale",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "isRevealed",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "_srcChainId",
-				"type": "uint16"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_srcAddress",
-				"type": "bytes"
-			},
-			{
-				"internalType": "uint64",
-				"name": "_nonce",
-				"type": "uint64"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_payload",
-				"type": "bytes"
-			}
-		],
-		"name": "lzReceive",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint8",
-				"name": "numTokens",
-				"type": "uint8"
-			}
-		],
-		"name": "mint",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "name",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "nextTokenId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "_srcChainId",
-				"type": "uint16"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_srcAddress",
-				"type": "bytes"
-			},
-			{
-				"internalType": "uint64",
-				"name": "_nonce",
-				"type": "uint64"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_payload",
-				"type": "bytes"
-			}
-		],
-		"name": "onLzReceive",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "ownerOf",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "publicWalletLimit",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "_srcChainId",
-				"type": "uint16"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_srcAddress",
-				"type": "bytes"
-			},
-			{
-				"internalType": "uint64",
-				"name": "_nonce",
-				"type": "uint64"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_payload",
-				"type": "bytes"
-			}
-		],
-		"name": "retryMessage",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "safeTransferFrom",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_data",
-				"type": "bytes"
-			}
-		],
-		"name": "safeTransferFrom",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "operator",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "approved",
-				"type": "bool"
-			}
-		],
-		"name": "setApprovalForAll",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "URI",
-				"type": "string"
-			}
-		],
-		"name": "setBaseURI",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "URI",
-				"type": "string"
-			}
-		],
-		"name": "setContractURI",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "newVal",
-				"type": "uint256"
-			}
-		],
-		"name": "setGasForDestinationLzReceive",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "_chainId",
-				"type": "uint16"
-			},
-			{
-				"internalType": "bytes",
-				"name": "_trustedRemote",
-				"type": "bytes"
-			}
-		],
-		"name": "setTrustedRemote",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes4",
-				"name": "interfaceId",
-				"type": "bytes4"
-			}
-		],
-		"name": "supportsInterface",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "symbol",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "tokenURI",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "transferFrom",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "_chainId",
-				"type": "uint16"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "traverseChains",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "",
-				"type": "uint16"
-			}
-		],
-		"name": "trustedRemoteLookup",
-		"outputs": [
-			{
-				"internalType": "bytes",
-				"name": "",
-				"type": "bytes"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amt",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "approved",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "Approval",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "approved",
+                "type": "bool"
+            }
+        ],
+        "name": "ApprovalForAll",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint16",
+                "name": "_srcChainId",
+                "type": "uint16"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes",
+                "name": "_srcAddress",
+                "type": "bytes"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "_nonce",
+                "type": "uint64"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes",
+                "name": "_payload",
+                "type": "bytes"
+            }
+        ],
+        "name": "MessageFailed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "Transfer",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_MINT_ETHEREUM",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_SUPPLY",
+        "outputs": [
+            {
+                "internalType": "uint128",
+                "name": "",
+                "type": "uint128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PRESALE_PRICE",
+        "outputs": [
+            {
+                "internalType": "uint128",
+                "name": "",
+                "type": "uint128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PROVENANCE_HASH",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PUBLIC_MINT_LIMIT",
+        "outputs": [
+            {
+                "internalType": "uint128",
+                "name": "",
+                "type": "uint128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PUBLIC_PRICE",
+        "outputs": [
+            {
+                "internalType": "uint128",
+                "name": "",
+                "type": "uint128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PUBLIC_SUPPLY",
+        "outputs": [
+            {
+                "internalType": "uint128",
+                "name": "",
+                "type": "uint128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "_owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "contractURI",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "donate",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "failedMessages",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "payloadLength",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "payloadHash",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getApproved",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            }
+        ],
+        "name": "isApprovedForAll",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "isPresale",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "isRevealed",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "_srcChainId",
+                "type": "uint16"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_srcAddress",
+                "type": "bytes"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_nonce",
+                "type": "uint64"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_payload",
+                "type": "bytes"
+            }
+        ],
+        "name": "lzReceive",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "numTokens",
+                "type": "uint8"
+            }
+        ],
+        "name": "mint",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "name",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "nextTokenId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "_srcChainId",
+                "type": "uint16"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_srcAddress",
+                "type": "bytes"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_nonce",
+                "type": "uint64"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_payload",
+                "type": "bytes"
+            }
+        ],
+        "name": "onLzReceive",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "ownerOf",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "publicWalletLimit",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "_srcChainId",
+                "type": "uint16"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_srcAddress",
+                "type": "bytes"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_nonce",
+                "type": "uint64"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_payload",
+                "type": "bytes"
+            }
+        ],
+        "name": "retryMessage",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "safeTransferFrom",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_data",
+                "type": "bytes"
+            }
+        ],
+        "name": "safeTransferFrom",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "operator",
+                "type": "address"
+            },
+            {
+                "internalType": "bool",
+                "name": "approved",
+                "type": "bool"
+            }
+        ],
+        "name": "setApprovalForAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "URI",
+                "type": "string"
+            }
+        ],
+        "name": "setBaseURI",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "URI",
+                "type": "string"
+            }
+        ],
+        "name": "setContractURI",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "newVal",
+                "type": "uint256"
+            }
+        ],
+        "name": "setGasForDestinationLzReceive",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "_chainId",
+                "type": "uint16"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_trustedRemote",
+                "type": "bytes"
+            }
+        ],
+        "name": "setTrustedRemote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes4",
+                "name": "interfaceId",
+                "type": "bytes4"
+            }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "tokenURI",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "transferFrom",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "_chainId",
+                "type": "uint16"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "traverseChains",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "name": "trustedRemoteLookup",
+        "outputs": [
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amt",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
 ];
 
 
@@ -894,6 +888,7 @@ async function fetchWhitelistData() {
   return response
 }
 
+//UI Components
 function ConnectButtonCustomized(props) {
 
   return (<>
@@ -949,64 +944,6 @@ function ConnectButtonCustomized(props) {
   </>)
 }
 
-//UI Components
-function NavBar() {
-  return (
-    <nav className={styles.navBarContainer}>
-      <nav className={styles.navBarLeft}>
-            <Image src={"/logo.png"} 
-                  width={1350} height={299} 
-                  alt="Menji's World Logo" />
-      </nav>
-      <nav className={styles.navBarRight}>
-        <ConnectButtonCustomized style={styles.navBarItem_ConnectButton} />
-      </nav>
-    </nav>
-  )
-}
-
-function MainImage() {
-  innerWidth = useWidth();
-  innerHeight = useHeight();
-  
-  return (
-    // className={styles.mainContentRoadmap}
-    <div className={styles.mainContentRoadmap}>
-      <Image className={styles.roadmapImage} 
-             src={"/_mainart.jpg"} 
-             width={innerWidth} 
-             height={innerHeight/2}
-             alt="Menji's World Main Art" 
-             layout='responsive'
-             objectFit="cover"
-            />
-    </div>
-  )
-}
-function AboutSection2() {
-  return (
-    <p className={styles.aboutContent_2}> 
-      Menji's World
-      <br/><br/>
-        Menji is an American Digital artist and painter from California with a goal to build a world that lives beyond his physical and digital work.
-        <br/><br/>
-        Menji's world was created with a sole focus to create unique experiences, bend the limitations of fashion, and be an example that anyone can create a world that is unique to themselves and inclusive to those who care to explore it.
-        <br/><br/>
-        Welcome to Menji's World.
-    </p>
-  )
-}
-
-function MintPopupButton(props) {
-  return (
-    <a className={styles.mintButton} 
-       id='mintButton' 
-       onClick={() => {
-        props.setMintModalOpen(true);
-       }}
-    >Mint</a>
-  )
-}
 function MintModalLoading() {
   return (
     <div className={styles.mintModalLoading} 
@@ -1193,11 +1130,11 @@ function MintModal(props) {
     onError(error) {
       setMintError(true);
       afterMintUIChanges();
-	  if (error.message.includes('-32000')) {
-		setMintErrorMessage('Error: Insufficient Funds');
-	  } else {
-      	setMintErrorMessage('Error minting tokens: ' + error.message);
-	  }
+      if (error.message.includes('-32000')) {
+        setMintErrorMessage('Error: Insufficient Funds');
+      } else {
+          setMintErrorMessage('Error minting tokens: ' + error.message);
+      }
     }
   })
   // Public Sale Mint Func
@@ -1482,8 +1419,8 @@ function MintModal(props) {
 
               {/* <input id='mintAmountBox' className={styles.inputNumber} 
                     value={mintAmount} type="number"/> */}
-			  
-		      <h3 id='mintAmountBox' className={styles.inputNumber}>{mintAmount ? mintAmount.toString() : '...'}</h3>
+              
+              <h3 id='mintAmountBox' className={styles.inputNumber}>{mintAmount ? mintAmount.toString() : '...'}</h3>
 
               <div id='plusButton' 
                    className={styles.plusSign}
@@ -1498,12 +1435,12 @@ function MintModal(props) {
               <p>Price Each</p>
             </div>
             <div className={styles.mintModalSection_right}> 
-				<h3 className={styles.inputNumber2}>{totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'}</h3>
-				<h3 className={styles.inputNumber2}>{pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'}</h3>
-			{/* <input className={styles.inputNumber2} type="text" 
-					value={totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'} readonly/>
-			<input className={styles.inputNumber2} type="text" 
-					value={pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'} readonly/> */}
+                <h3 className={styles.inputNumber2}>{totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'}</h3>
+                <h3 className={styles.inputNumber2}>{pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'}</h3>
+            {/* <input className={styles.inputNumber2} type="text" 
+                    value={totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'} readonly/>
+            <input className={styles.inputNumber2} type="text" 
+                    value={pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'} readonly/> */}
             </div>
           </div>
 
@@ -1517,111 +1454,29 @@ function MintModal(props) {
   )
 }
 
-function TEAMSection() {
-  //might have to use useEffect to add and remove efvent listeners from commented code below
-  const [team1checked, setTeam1Checked] = useState(false);
-  const [team2checked, setTeam2Checked] = useState(false);
-  const [team3checked, setTeam3Checked] = useState(false);
-  const [team4checked, setTeam4Checked] = useState(false);
 
-  const check1 = () => { setTeam1Checked(!team1checked); window.scrollTo(0,document.body.scrollHeight); }
-  const check2 = () => { setTeam2Checked(!team2checked); window.scrollTo(0,document.body.scrollHeight); }
-  const check3 = () => { setTeam3Checked(!team3checked); window.scrollTo(0,document.body.scrollHeight); }
-  const check4 = () => { setTeam4Checked(!team4checked); window.scrollTo(0,document.body.scrollHeight); }
-  
-  return (
-    <div className={styles.teamContainer}>
-      <div className={styles.teamMember}>
-        <Image id='i3' className={styles.teamMemberImage} src={'/team3.jpeg'} width={200} height={200} onClick={check3}/>
-        <BrowserView>
-          <p id='p3' className={styles.teamMemberName} onClick={check3}>Menji <a>+</a></p>
-          { team3checked && <p className={styles.teamMemberText}>SF based artist with a passion for uplifting those around him. </p> }
-        </BrowserView>
-        <MobileView>
-          <p id='p3' className={styles.teamMemberName_Mobile} onClick={check3}>Menji <a>+</a></p>
-          { team3checked && <p className={styles.teamMemberText_Mobile}>SF based artist with a passion for uplifting those around him. </p> }
-        </MobileView>
-      </div>
-      <div className={styles.teamMember}>
-        <Image id='i2' className={styles.teamMemberImage} src={'/team2.jpeg'} width={200} height={200} onClick={check2} />
-        <BrowserView>
-          <p id='p2' className={styles.teamMemberName} onClick={check2}>Jay <a>+</a></p>
-          { team2checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
-        </BrowserView>
-        <MobileView>
-          <p id='p2' className={styles.teamMemberName_Mobile} onClick={check2}>Jay <a>+</a></p>
-          { team2checked && <p className={styles.teamMemberText_Mobile}>Cofounder of Painted Labs. Big Tech Director turned NFT degen. Alpha addict.</p> }
-        </MobileView>
-      </div>   
-      <div className={styles.teamMember}>
-        <Image id='i4' className={styles.teamMemberImage} src={'/team4.jpeg'} width={200} height={200} onClick={check4} />
-        <BrowserView> 
-          <p id='p4' className={styles.teamMemberName} onClick={check4}>Doc <a>+</a></p>
-          { team4checked && <p className={styles.teamMemberText}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
-        </BrowserView>
-        <MobileView>
-          <p id='p4' className={styles.teamMemberName_Mobile} onClick={check4}>Doc <a>+</a></p>
-          { team4checked && <p className={styles.teamMemberText_Mobile}>Cofounder of Painted Labs. Community Operations - Eternal Optimist. No idea is too crazy</p> }
-        </MobileView>
-      </div>         
-      <div className={styles.teamMember}>
-        <Image id='i1' className={styles.teamMemberImage} src={'/team1.jpeg'} width={200} height={200} onClick={check1} />
-        <BrowserView>
-          <p id='p1' className={styles.teamMemberName} onClick={check1}>Sticky <a>+</a></p>
-          { team1checked && <p className={styles.teamMemberText}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
-        </BrowserView>
-        <MobileView>
-          <p id='p1' className={styles.teamMemberName_Mobile} onClick={check1}>Sticky <a>+</a></p>
-          { team1checked && <p className={styles.teamMemberText_Mobile}>Crypto-Native savant now doubling as COO of Painted Labs. TA impeccable. </p> }
-        </MobileView>
-      </div>
-    </div>
-  )
-}
+// todo
+// make mint button sticky
+// make all images not fuck up on devices
 
-function DiscordIconSmall() {
-  return (
-    <a className={styles.socialButton_discord_2x} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-discord" size='xl'/>
-    </a>
-  )
-}
-function TwitterIconSmall() {
-  return (
-    <a className={styles.socialButton_twitter_2x} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-      <FontAwesomeIcon icon="fa-brands fa-twitter" size='xl' />
-    </a>
-  )
-}
-function CopyRightFooter() {
-  return (<>
-    {/* link to meji's world colelctor agreement and copyright 2022 paintedlabs */}
-    <div className={styles.copyright}>
-      <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-      <div className={styles.copyright_subcontainer}>
-        <DiscordIconSmall /> 
-        <a className={styles.pdfPopupLink}
-          onClick={() => {
-            window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
-        >Collectors Agreement</a>
-        <TwitterIconSmall />
-      </div>
-    </div>
-  </>)
-}
+// og image test
+// new favicon pack test
+// make amount minted show below mint button
 
 export default function Home() {
-  //Mint Modal Popup
+
+  //Mint Modal Popup open close handling
   const [mintModalOpen, setMintModalOpen] = useState(false);
-  const closeMintModal = () => {
-    setMintModalOpen(false);
-  }
   useEffect(() => {
     if (mintModalOpen === true) {
       window.document.onclick = function(event) {
-        if (event.target === window.document.getElementById('mintModal')) {closeMintModal();}}
+        if (event.target === window.document.getElementById('mintModal')) {setMintModalOpen(false);}}
     }
   }, [mintModalOpen]);
+
+
+  innerWidth = useWidth();
+  innerHeight = useHeight();
 
   return (
     <div className={styles.container}>
@@ -1629,21 +1484,174 @@ export default function Home() {
         <title>MENJi's World NFT Drop</title>
         <meta name="description" content="MENJi's NFT Site by Kodiak" />
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:image" content="/favicon.ico" />
+        <meta property="og:image" content="/menjiOnWorld.png" />
       </Head>
 
-      { mintModalOpen && <MintModal setMintModalOpen={setMintModalOpen}/> }
+      { mintModalOpen && 
+        <MintModal setMintModalOpen={setMintModalOpen}/> }
 
-      <NavBar />  {/* At top of both pages: Logo + Connect button + Social Buttons*/}
-      <MainImage />
-      <main> {/* Useful tag for SEO */}
-        <div className={styles.mainContent_2}>
-          <MintPopupButton setMintModalOpen={setMintModalOpen}/>
-          <AboutSection2 />
+        <nav className={styles.navBarContainer}>
+
+          <nav className={styles.navBarLeft}>
+              <Image className={styles.navBarLogo} 
+                  src={'/headLogo.png'}
+                  height={'70%'}
+                  width={'70%'} />
+          </nav>
+          <nav className={styles.navBarRight}>
+            <a className={styles.socialButton} href="https://opensea.io/collection/ethereum/0xe336e2503f2a6e3831468d0f16750efdf6a92951" target="_blank" rel="noopener noreferrer">
+              <Image src={'/opensea.png'} width={50} height={50} />
+            </a>
+            <a className={styles.socialButton} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+              <Image src={'/twitter.png'} width={50} height={50} />
+            </a>
+            <a className={styles.socialButton} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+              <Image src={'/discord.png'} width={50} height={50} />
+            </a>
+            <a className={styles.socialButton} href="https://ropsten.etherscan.io/address/0xb585da9872d092498f020a938d65091fd96abbaf" target="_blank" rel="noopener noreferrer">
+              <Image src={'/etherscan.png'} width={50} height={50} />
+            </a>
+          </nav>
+        </nav>
+
+
+      <div className={styles.main}>
+
+        <div className={styles.mintButtonContainer}>
+          <a className={styles.mintButton} 
+            id='mintButton' 
+            onClick={() => {
+              setMintModalOpen(true);
+            }}
+          >Mint Now</a>      
         </div>
-      </main>
-      <TEAMSection />
-      <CopyRightFooter />  {/* + User Agreement */}
+        
+        {/* <div className={styles.overlappingDiv}> */}
+          {/* 100% w and h, in the background for the whole site */}
+          {/* <div className={styles.backgroundImageStars2} /> */}
+          {/* <Image className={styles.backgroundImageStars1}
+            src={'/starsBG.png'}
+            layout={'responsive'}
+            objectFit="cover"
+            quality={100}
+            height={'50%'}
+            width={'100%'}
+          />       */}
+          {/* <div className={styles.backgroundImageStars2} /> */}
+          {/* <Image className={styles.backgroundImageStars2}
+            src={'/starsBG2.png'}
+            layout={'responsive'}
+            objectFit="cover"
+            quality={100}
+            height={'50%'}
+            width={'100%'}
+          /> */}
+        {/* </div> */}
+          {/* <Image className={styles.backgroundImage}
+            src={'/background.png'}
+            layout={'fill'}
+            objectFit="cover"
+            quality={100}
+          /> */}
+        <div className={styles.mainContent}>
+          <Image src={'/menjisWorld.png'}	 
+              width={'100%'} 
+              height={'100%'}
+              alt="Menji's World Main Title" 
+              layout='responsive'
+              objectFit="contain"
+          />
+          <Image src={"/menjiOnWorld.png"} 
+              width={'100%'} 
+              height={'100%'}
+              alt="Menji's World Main Art" 
+              layout='responsive'
+              objectFit="contain"
+          />
+          <Image src={"/writeupTitle.png"} 
+              width={'100%'} 
+              height={'100%'}
+              alt="Menji's World Writeup" 
+              layout='responsive'
+              objectFit="contain"
+          />
+          <Image src={"/writeup.png"} 
+              width={'100%'} 
+              height={'100%'}
+              alt="Menji's World Writeup" 
+              layout='responsive'
+              objectFit="contain"
+          />
+          <Image src={"/meetTheTeam.png"} 
+              width={'100%'} 
+              height={'100%'}
+              alt="Menji's World Writeup" 
+              layout='responsive'
+              objectFit="contain"
+          />
+          <div className={styles.teamContainer}>
+
+            <div className={styles.teamMember}>
+                <Image className={styles.teamMemberImage} src={'/menjiTeamRound.png'} width={200} height={200} />
+                <div className={styles.teamMemberInfo1}>
+                    <Image src={'/menjiTeamInfo.png'} 
+                          width={'100%'} 
+                          height={'100%'}/>
+                  </div>            
+            </div>
+            <div className={styles.teamMember}>
+                <Image className={styles.teamMemberImage} src={'/docTeamRound.png'} width={200} height={200} />
+                <div className={styles.teamMemberInfo2}>
+                  <Image src={'/docTeamInfo.png'} 
+                        width={'100%'} 
+                        height={'100%'} />
+                </div>            
+            </div>   
+            <div className={styles.teamMember}>
+                <Image className={styles.teamMemberImage} src={'/stickyTeamRound.png'} width={200} height={200}  />
+                <div className={styles.teamMemberInfo3}>
+                  <Image src={'/stickyTeamInfo.png'} 
+                        width={'100%'} 
+                        height={'100%'} />
+                </div>            
+            </div>         
+            <div className={styles.teamMember}>
+                <Image className={styles.teamMemberImage} src={'/jayTeamRound.png'} width={200} height={200}  />
+                <div className={styles.teamMemberInfo4}>
+                  <Image src={'/jayTeamInfo.png'} 
+                        width={'100%'} 
+                        height={'100%'}/>
+                </div>            
+            </div>
+          </div>
+
+
+          
+
+          <div className={styles.bottomGraphic}>
+            <Image
+                  src={'/bottomGraphic.png'} 
+                  width={'100%'} 
+                  height={'100%'}
+                  alt="bottom graphic" 
+                  layout='responsive'
+                  objectFit="contain"
+              />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.copyright}>
+        <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+        <div className={styles.copyright_subcontainer}>
+          <a className={styles.pdfPopupLink}
+            onClick={() => {
+                window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
+          >Collectors Agreement</a>
+        </div>
+      </div>
+        
+      
     </div>
   )
 }
