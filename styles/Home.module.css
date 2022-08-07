@@ -10,11 +10,11 @@
 }
 
 .main {
-  background: url(/background.png) repeat top center;
+  background: url(/_background.png) no-repeat top center;
   background-color: rgba(0, 0, 0, 0.95);
-  background-size: contain;
+  background-size: cover;
   position: relative;
-  padding-top: 130px;
+  padding-top: 80px;
   left: 0;
   width: 100%;
   height: 100%;
@@ -25,16 +25,27 @@
   padding: 0;
 } 
 
-.title {
-  transition: all .2s,box-shadow .08s ease-in;
+.menjisWorldTitle {
+  margin-top: -1rem;
+  margin-bottom: -2rem;
 }
 .menjiOnWorld {
-  transition: all .2s,box-shadow .08s ease-in;
+  margin-bottom: 3rem;
+}
+.writeupTitle {
+  margin-bottom: -0.5rem;
 }
 .writeup {
-  transition: all .2s,box-shadow .08s ease-in;
+  margin-bottom: 4rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
 }
-
+.meetTheTeamTitle {
+  margin-bottom: 1rem;
+}
+.bottomGraphic {
+  margin-top: -2rem;
+}
 
 .copyright {
   background-color: rgb(41,41,41);
@@ -84,10 +95,6 @@
 .teamMember {
   min-width: 23%;
   max-width: 23%;
-  text-align: center;
-  font-size: 1.2rem;
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
   transition: all .2s,box-shadow .08s ease-in;
 }
 .teamMemberImage {

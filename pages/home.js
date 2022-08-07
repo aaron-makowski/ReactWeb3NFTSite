@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from '../styles/Home.module.css' //Applies to roadmap elements too
 
-import Head from 'next/head'
+import CustomHead from '../components/CustomHead'
 import Image from 'next/image'
 
 // General Useful
@@ -1481,7 +1481,156 @@ function NavBar() {
     </nav>
   )
 }
-
+function TeamSection() {
+  return (
+    <div className={styles.teamContainer}>
+      <div className={styles.teamMember}>
+        <div className={styles.teamMemberImage}>
+          <Image  
+                src={'/menjiTeamRound.png'} 
+                width={500} 
+                height={500} 
+                layout={'responsive'}/>
+        </div>
+        <Image className={styles.teamMemberInfo}
+                src={'/_menjiTeamInfo.png'} 
+                width={500} 
+                height={179}
+                layout={'responsive'}/>      
+      </div>
+      <div className={styles.teamMember}>
+        <div className={styles.teamMemberImage}>
+          <Image   
+              src={'/docTeamRound.png'}
+              width={500} 
+              height={500} 
+              layout={'responsive'} />
+        </div>
+        <Image className={styles.teamMemberInfo}
+                src={'/_docTeamInfo.png'} 
+                width={500} 
+                height={179}
+                layout={'responsive'} />
+      </div>   
+      <div className={styles.teamMember}>
+        <div className={styles.teamMemberImage}>
+          <Image  
+                src={'/stickyTeamRound.png'} 
+                width={500} 
+                height={500} 
+                layout={'responsive'} />
+        </div>
+        <Image className={styles.teamMemberInfo}
+                src={'/_stickyTeamInfo.png'} 
+                width={500} 
+                height={179}
+                layout={'responsive'} />
+      </div>         
+      <div className={styles.teamMember}>
+        <div className={styles.teamMemberImage}>
+              <Image  
+                  src={'/jayTeamRound.png'} 
+                  width={500} 
+                  height={500} 
+                  layout={'responsive'} />
+        </div>
+        <Image className={styles.teamMemberInfo}
+                src={'/_jayTeamInfo.png'} 
+                width={500} 
+                height={179}
+                layout={'responsive'}/>
+      </div>
+    </div>
+  )
+}
+function MintButton(props) {
+  return (
+    <div className={styles.mintButtonContainer}>
+      <a className={styles.mintButton} 
+        id='mintButton' 
+        onClick={() => {
+          props.setMintModalOpen(true);
+        }}
+      >Mint Now</a>
+    </div>
+  )
+}
+function MainImageStack() {
+  return (<>
+    <div className={styles.menjisWorldTitle}>
+      <Image 
+          src={'/menjisWorld.png'}	 
+          width={558} 
+          height={135}
+          alt="Menji's World Main Title" 
+          layout='responsive'
+          objectFit="contain"
+    /></div>
+    <div className={styles.menjiOnWorld}>
+      <Image 
+          src={"/menjiOnWorld.png"} 
+          width={3260} 
+          height={1350}
+          alt="Menji's World Main Art" 
+          layout='responsive'
+          objectFit="contain"
+    /></div>
+    <div className={styles.writeupTitle}>
+      <Image 
+          src={"/writeupTitle.png"} 
+          width={1500} 
+          height={251}
+          alt="Menji's World Writeup" 
+          layout='responsive'
+          objectFit="contain"
+    /></div>
+    <div className={styles.writeup}>
+      <Image 
+          src={"/writeup.png"} 
+          width={1500} 
+          height={923}
+          alt="Menji's World Writeup" 
+          layout='responsive'
+          objectFit="contain"
+    /></div>
+    <div className={styles.meetTheTeamTitle}>
+      <Image 
+          src={"/meetTheTeam.png"} 
+          width={830} 
+          height={60}
+          alt="Menji's World Writeup" 
+          layout='responsive'
+          objectFit="contain"
+    /></div>  
+  </>)
+}
+function BottomGraphic() {
+  return (
+    <div className={styles.bottomGraphic}>
+      <Image
+          src={"/bottomGraphic.png"} 
+          width={1366} 
+          height={762}
+          alt="Menji's World Bottom Graphic" 
+          layout='responsive'
+          objectFit="contain"
+      />
+    </div>
+  )
+}
+function CopyrightFooter() {
+  return (
+    <div className={styles.copyright}>
+      <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+      <div className={styles.copyright_subcontainer}>
+        <a className={styles.pdfPopupLink}
+          onClick={() => {
+              window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
+        >Collectors Agreement</a>
+      </div>
+    </div>
+  )
+}
 // make all images not fuck up on devices
 
 // og image test
@@ -1505,181 +1654,27 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>MENJi NFT Drop</title>
-        <meta name="description" content="MENJi NFT Site by Kodiak" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:image" content="https://i.imgur.com/p6qgDQt.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
-      </Head>
+      <CustomHead />
 
       { mintModalOpen && 
         <MintModal setMintModalOpen={setMintModalOpen}/> }
 
       <NavBar />
-
+      <MintButton setMintModalOpen={setMintModalOpen} />
 
       <div className={styles.main}>
-        <div className={styles.mintButtonContainer}>
-          <a className={styles.mintButton} 
-            id='mintButton' 
-            onClick={() => {
-              setMintModalOpen(true);
-            }}
-          >Mint Now</a>      
-        </div>
-        
-        {/* <div className={styles.backgroundContainer}>
-          <Image 
-            src={'/background.png'}
-            layout={'responsive'}
-            objectFit="contain"
-            quality={100}
-            height={2532}
-            width={1170}
-          />
-          <div className={styles.backgroundTopHalf}>
-            <Image 
-              src={'/starsBG2.png'}
-              layout={'responsive'}
-              objectFit="contain"
-              quality={100}
-              height={762}
-              width={1366}
-            />
-          </div>
-          <div className={styles.backgroundBottomHalf}>
-            <Image 
-              src={'/starsBG.png'}
-              layout={'responsive'}
-              objectFit="contain"
-              quality={100}
-              height={762}
-              width={1366}
-            />
-          </div>
-        </div> */}
-
-        <Image className={styles.mainContentImageStackItem}
-              src={'/menjisWorld.png'}	 
-            width={504} 
-            height={135}
-            alt="Menji's World Main Title" 
-            layout='responsive'
-            objectFit="contain"
-        />
-        <Image
-              src={"/menjiOnWorld.png"} 
-              width={3260} 
-              height={1350}
-              alt="Menji's World Main Art" 
-              layout='responsive'
-              objectFit="contain"
-        />
-        <Image className={styles.mainContentImageStackItem}
-              src={"/writeupTitle.png"} 
-            width={1500} 
-            height={251}
-            alt="Menji's World Writeup" 
-            layout='responsive'
-            objectFit="contain"
-        />
-        <Image className={styles.mainContentImageStackItem}
-              src={"/writeup.png"} 
-            width={1500} 
-            height={923}
-            alt="Menji's World Writeup" 
-            layout='responsive'
-            objectFit="contain"
-        />
-        <Image className={styles.mainContentImageStackItem}
-            src={"/meetTheTeam.png"} 
-            width={500} 
-            height={60}
-            alt="Menji's World Writeup" 
-            layout='responsive'
-            objectFit="contain"
-        />
-        
-        <div className={styles.teamContainer}>
-          <div className={styles.teamMember}>
-              <Image className={styles.teamMemberImage} 
-                     src={'/menjiTeamRound.png'} 
-                     width={500} 
-                     height={500} 
-                     layout={'responsive'}/>
-              
-                  <Image className={styles.teamMemberInfo}
-                         src={'/_menjiTeamInfo.png'} 
-                         width={500} 
-                         height={179}
-                         layout={'responsive'}/>
-                           
-          </div>
-          <div className={styles.teamMember}>
-              <Image className={styles.teamMemberImage} 
-                     src={'/docTeamRound.png'}
-                     width={500} 
-                     height={500} 
-                     layout={'responsive'} />
-                <Image className={styles.teamMemberInfo}
-                       src={'/_docTeamInfo.png'} 
-                       width={500} 
-                       height={179}
-                       layout={'responsive'} />
-          </div>   
-          <div className={styles.teamMember}>
-              <Image className={styles.teamMemberImage} 
-                     src={'/stickyTeamRound.png'} 
-                     width={500} 
-                     height={500} 
-                     layout={'responsive'} />
-              <Image className={styles.teamMemberInfo}
-                     src={'/_stickyTeamInfo.png'} 
-                     width={500} 
-                     height={179}
-                     layout={'responsive'} />
-          </div>         
-          <div className={styles.teamMember}>
-              <Image className={styles.teamMemberImage} 
-                     src={'/jayTeamRound.png'} 
-                     width={500} 
-                     height={500} 
-                     layout={'responsive'} />
-              <Image className={styles.teamMemberInfo}
-                      src={'/_jayTeamInfo.png'} 
-                      width={500} 
-                      height={179}
-                      layout={'responsive'}/>
-          </div>
-        </div>
-
-        <Image className={styles.mainContentImageStackItem}
-            src={"/bottomGraphic.png"} 
-            width={1366} 
-            height={762}
-            alt="Menji's World Writeup" 
-            layout='responsive'
-            objectFit="contain"
-        />
-
-      </div>                
-
-      <div className={styles.copyright}>
-        <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-        <div className={styles.copyright_subcontainer}>
-          <a className={styles.pdfPopupLink}
-            onClick={() => {
-                window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
-          >Collectors Agreement</a>
-        </div>
+        <MainImageStack />
+        <TeamSection />    
+        <BottomGraphic />  
+        <CopyrightFooter />  
       </div>
     </div>
   )
 }
+
+// bg color grey or black better?
+// mint button color
+// navbar sticky
+// mint button sticky
+// navbar thickness
+// spacing inbetween each element
