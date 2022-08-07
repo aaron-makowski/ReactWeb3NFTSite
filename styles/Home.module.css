@@ -13,37 +13,26 @@
   background: url(/background.png) repeat top center;
   background-color: rgba(0, 0, 0, 0.95);
   background-size: contain;
-  /* display:flex; */
-}
-.backgroundImageStars1 {
-  background: url(/starsBG.png) no-repeat top top;
-  background-size: cover;
-}
-.backgroundImageStars2 {
-  background: url(/starsBG2.png) no-repeat bottom bottom;
-  background-size: cover;
-}
-
-
-.mainContent {
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+  position: relative;
+  padding-top: 130px;
+  left: 0;
   width: 100%;
-  margin-top: -5rem;
+  height: 100%;
+  z-index: -1;
 }
+.mainContentImageStackItem {
+  margin: 0;
+  padding: 0;
+} 
+
 .title {
   transition: all .2s,box-shadow .08s ease-in;
 }
 .menjiOnWorld {
-  padding-top: -5rem;
   transition: all .2s,box-shadow .08s ease-in;
 }
 .writeup {
   transition: all .2s,box-shadow .08s ease-in;
-}
-.bottomGraphic {
-  background: url(/bottomGraphic.png) no-repeat bottom bottom;
 }
 
 
@@ -93,8 +82,8 @@
   padding-top: 0.74rem;
 }
 .teamMember {
-  /* min-width: 23%;
-  max-width: 23%; */
+  min-width: 23%;
+  max-width: 23%;
   text-align: center;
   font-size: 1.2rem;
   margin-left: 0.25rem;
@@ -107,19 +96,11 @@
   border-bottom-right-radius: 50% 50%;
   border-bottom-left-radius: 50% 50%;
 }
-.teamMemberInfo1 {
-  margin-top: -1rem;
+.teamMemberInfo {
+  min-width: 23%;
+  max-width: 23%;
+  transition: all .2s,box-shadow .08s ease-in;
 }
-.teamMemberInfo2 {
-  margin-top: -2.4rem;
-}
-.teamMemberInfo3 {
-  margin-top: -1.4rem;
-}
-.teamMemberInfo4 {
-  margin-top: -0.65rem;
-}
-
 
 .navBarContainer {
   width: 100%;

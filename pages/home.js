@@ -1454,9 +1454,34 @@ function MintModal(props) {
   )
 }
 
+function NavBar() {
+  return (
+      <nav className={styles.navBarContainer}>
 
-// todo
-// make mint button sticky
+      <nav className={styles.navBarLeft}>
+          <Image className={styles.navBarLogo} 
+              src={'/headLogo.png'}
+              height={'70%'}
+              width={'70%'} />
+      </nav>
+      <nav className={styles.navBarRight}>
+        <a className={styles.socialButton} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+          <Image src={'/twitter.png'} width={50} height={50} />
+        </a>
+        <a className={styles.socialButton} href="https://ropsten.etherscan.io/address/0xb585da9872d092498f020a938d65091fd96abbaf" target="_blank" rel="noopener noreferrer">
+          <Image src={'/etherscan.png'} width={50} height={50} />
+        </a>
+        <a className={styles.socialButton} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+          <Image src={'/discord.png'} width={50} height={50} />
+        </a>
+        <a className={styles.socialButton} href="https://opensea.io/collection/ethereum/0xe336e2503f2a6e3831468d0f16750efdf6a92951" target="_blank" rel="noopener noreferrer">
+          <Image src={'/opensea.png'} width={50} height={50} />
+        </a>
+      </nav>
+    </nav>
+  )
+}
+
 // make all images not fuck up on devices
 
 // og image test
@@ -1497,33 +1522,10 @@ export default function Home() {
       { mintModalOpen && 
         <MintModal setMintModalOpen={setMintModalOpen}/> }
 
-        <nav className={styles.navBarContainer}>
-
-          <nav className={styles.navBarLeft}>
-              <Image className={styles.navBarLogo} 
-                  src={'/headLogo.png'}
-                  height={'70%'}
-                  width={'70%'} />
-          </nav>
-          <nav className={styles.navBarRight}>
-            <a className={styles.socialButton} href="https://opensea.io/collection/ethereum/0xe336e2503f2a6e3831468d0f16750efdf6a92951" target="_blank" rel="noopener noreferrer">
-              <Image src={'/opensea.png'} width={50} height={50} />
-            </a>
-            <a className={styles.socialButton} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
-              <Image src={'/twitter.png'} width={50} height={50} />
-            </a>
-            <a className={styles.socialButton} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
-              <Image src={'/discord.png'} width={50} height={50} />
-            </a>
-            <a className={styles.socialButton} href="https://ropsten.etherscan.io/address/0xb585da9872d092498f020a938d65091fd96abbaf" target="_blank" rel="noopener noreferrer">
-              <Image src={'/etherscan.png'} width={50} height={50} />
-            </a>
-          </nav>
-        </nav>
+      <NavBar />
 
 
       <div className={styles.main}>
-
         <div className={styles.mintButtonContainer}>
           <a className={styles.mintButton} 
             id='mintButton' 
@@ -1533,120 +1535,141 @@ export default function Home() {
           >Mint Now</a>      
         </div>
         
-        {/* <div className={styles.overlappingDiv}> */}
-          {/* 100% w and h, in the background for the whole site */}
-          {/* <div className={styles.backgroundImageStars2} /> */}
-          {/* <Image className={styles.backgroundImageStars1}
-            src={'/starsBG.png'}
-            layout={'responsive'}
-            objectFit="cover"
-            quality={100}
-            height={'50%'}
-            width={'100%'}
-          />       */}
-          {/* <div className={styles.backgroundImageStars2} /> */}
-          {/* <Image className={styles.backgroundImageStars2}
-            src={'/starsBG2.png'}
-            layout={'responsive'}
-            objectFit="cover"
-            quality={100}
-            height={'50%'}
-            width={'100%'}
-          /> */}
-        {/* </div> */}
-          {/* <Image className={styles.backgroundImage}
+        {/* <div className={styles.backgroundContainer}>
+          <Image 
             src={'/background.png'}
-            layout={'fill'}
-            objectFit="cover"
+            layout={'responsive'}
+            objectFit="contain"
             quality={100}
-          /> */}
-        <div className={styles.mainContent}>
-          <Image src={'/menjisWorld.png'}	 
-              width={'100%'} 
-              height={'100%'}
-              alt="Menji's World Main Title" 
-              layout='responsive'
-              objectFit="contain"
+            height={2532}
+            width={1170}
           />
-          <Image src={"/menjiOnWorld.png"} 
-              width={'100%'} 
-              height={'100%'}
+          <div className={styles.backgroundTopHalf}>
+            <Image 
+              src={'/starsBG2.png'}
+              layout={'responsive'}
+              objectFit="contain"
+              quality={100}
+              height={762}
+              width={1366}
+            />
+          </div>
+          <div className={styles.backgroundBottomHalf}>
+            <Image 
+              src={'/starsBG.png'}
+              layout={'responsive'}
+              objectFit="contain"
+              quality={100}
+              height={762}
+              width={1366}
+            />
+          </div>
+        </div> */}
+
+        <Image className={styles.mainContentImageStackItem}
+              src={'/menjisWorld.png'}	 
+            width={504} 
+            height={135}
+            alt="Menji's World Main Title" 
+            layout='responsive'
+            objectFit="contain"
+        />
+        <Image
+              src={"/menjiOnWorld.png"} 
+              width={3260} 
+              height={1350}
               alt="Menji's World Main Art" 
               layout='responsive'
               objectFit="contain"
-          />
-          <Image src={"/writeupTitle.png"} 
-              width={'100%'} 
-              height={'100%'}
-              alt="Menji's World Writeup" 
-              layout='responsive'
-              objectFit="contain"
-          />
-          <Image src={"/writeup.png"} 
-              width={'100%'} 
-              height={'100%'}
-              alt="Menji's World Writeup" 
-              layout='responsive'
-              objectFit="contain"
-          />
-          <Image src={"/meetTheTeam.png"} 
-              width={'100%'} 
-              height={'100%'}
-              alt="Menji's World Writeup" 
-              layout='responsive'
-              objectFit="contain"
-          />
-          <div className={styles.teamContainer}>
-
-            <div className={styles.teamMember}>
-                <Image className={styles.teamMemberImage} src={'/menjiTeamRound.png'} width={200} height={200} />
-                <div className={styles.teamMemberInfo1}>
-                    <Image src={'/menjiTeamInfo.png'} 
-                          width={'100%'} 
-                          height={'100%'}/>
-                  </div>            
-            </div>
-            <div className={styles.teamMember}>
-                <Image className={styles.teamMemberImage} src={'/docTeamRound.png'} width={200} height={200} />
-                <div className={styles.teamMemberInfo2}>
-                  <Image src={'/docTeamInfo.png'} 
-                        width={'150%'} 
-                        height={'150%'} />
-                </div>            
-            </div>   
-            <div className={styles.teamMember}>
-                <Image className={styles.teamMemberImage} src={'/stickyTeamRound.png'} width={200} height={200}  />
-                <div className={styles.teamMemberInfo3}>
-                  <Image src={'/stickyTeamInfo.png'} 
-                        width={'100%'} 
-                        height={'100%'} />
-                </div>            
-            </div>         
-            <div className={styles.teamMember}>
-                <Image className={styles.teamMemberImage} src={'/jayTeamRound.png'} width={200} height={200}  />
-                <div className={styles.teamMemberInfo4}>
-                  <Image src={'/jayTeamInfo.png'} 
-                        width={'80%'} 
-                        height={'80%'}/>
-                </div>            
-            </div>
+        />
+        <Image className={styles.mainContentImageStackItem}
+              src={"/writeupTitle.png"} 
+            width={1500} 
+            height={251}
+            alt="Menji's World Writeup" 
+            layout='responsive'
+            objectFit="contain"
+        />
+        <Image className={styles.mainContentImageStackItem}
+              src={"/writeup.png"} 
+            width={1500} 
+            height={923}
+            alt="Menji's World Writeup" 
+            layout='responsive'
+            objectFit="contain"
+        />
+        <Image className={styles.mainContentImageStackItem}
+            src={"/meetTheTeam.png"} 
+            width={500} 
+            height={60}
+            alt="Menji's World Writeup" 
+            layout='responsive'
+            objectFit="contain"
+        />
+        
+        <div className={styles.teamContainer}>
+          <div className={styles.teamMember}>
+              <Image className={styles.teamMemberImage} 
+                     src={'/menjiTeamRound.png'} 
+                     width={500} 
+                     height={500} 
+                     layout={'responsive'}/>
+              
+                  <Image className={styles.teamMemberInfo}
+                         src={'/_menjiTeamInfo.png'} 
+                         width={500} 
+                         height={179}
+                         layout={'responsive'}/>
+                           
           </div>
-
-
-          
-
-          <div className={styles.bottomGraphic}>
-            <Image
-                  src={'/bottomGraphic.png'} 
-                  width={'100%'} 
-                  height={'100%'}
-                  alt="bottom graphic" 
-                  layout='responsive'
-                  objectFit="contain"
-              />
+          <div className={styles.teamMember}>
+              <Image className={styles.teamMemberImage} 
+                     src={'/docTeamRound.png'}
+                     width={500} 
+                     height={500} 
+                     layout={'responsive'} />
+                <Image className={styles.teamMemberInfo}
+                       src={'/_docTeamInfo.png'} 
+                       width={500} 
+                       height={179}
+                       layout={'responsive'} />
+          </div>   
+          <div className={styles.teamMember}>
+              <Image className={styles.teamMemberImage} 
+                     src={'/stickyTeamRound.png'} 
+                     width={500} 
+                     height={500} 
+                     layout={'responsive'} />
+              <Image className={styles.teamMemberInfo}
+                     src={'/_stickyTeamInfo.png'} 
+                     width={500} 
+                     height={179}
+                     layout={'responsive'} />
+          </div>         
+          <div className={styles.teamMember}>
+              <Image className={styles.teamMemberImage} 
+                     src={'/jayTeamRound.png'} 
+                     width={500} 
+                     height={500} 
+                     layout={'responsive'} />
+              <Image className={styles.teamMemberInfo}
+                      src={'/_jayTeamInfo.png'} 
+                      width={500} 
+                      height={179}
+                      layout={'responsive'}/>
           </div>
         </div>
-      </div>
+
+        <Image className={styles.mainContentImageStackItem}
+            src={"/bottomGraphic.png"} 
+            width={1366} 
+            height={762}
+            alt="Menji's World Writeup" 
+            layout='responsive'
+            objectFit="contain"
+        />
+
+      </div>                
 
       <div className={styles.copyright}>
         <a>© 2022 MENJi's WORLD. All rights reserved.</a>
@@ -1657,8 +1680,6 @@ export default function Home() {
           >Collectors Agreement</a>
         </div>
       </div>
-        
-      
     </div>
   )
 }
