@@ -1437,10 +1437,6 @@ function MintModal(props) {
             <div className={styles.mintModalSection_right}> 
                 <h3 className={styles.inputNumber2}>{totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'}</h3>
                 <h3 className={styles.inputNumber2}>{pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'}</h3>
-            {/* <input className={styles.inputNumber2} type="text" 
-                    value={totalMintPrice ? totalMintPrice.toString() + ' ETH' : '...'} readonly/>
-            <input className={styles.inputNumber2} type="text" 
-                    value={pricePerNFT ? pricePerNFT.toString() + ' ETH' : '...'} readonly/> */}
             </div>
           </div>
 
