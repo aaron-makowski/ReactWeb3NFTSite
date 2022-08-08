@@ -1565,7 +1565,7 @@ function MainImageStack() {
     <div className={styles.menjiOnWorld}>
       <Image 
           src={"/menjiOnWorld.png"} 
-          width={3260} 
+          width={2360} 
           height={1350}
           alt="Menji's World Main Art" 
           layout='responsive'
@@ -1668,9 +1668,3 @@ export default function Home() {
   )
 }
 
-// bg color grey or black better?
-// mint button color
-// navbar sticky
-// mint button sticky
-// navbar thickness
-// spacing inbetween each element
