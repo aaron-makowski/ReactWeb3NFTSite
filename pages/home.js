@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css' //Applies to roadmap elements too
 
 import CustomHead from '../components/CustomHead'
 import Image from 'next/image'
-
+import Link from 'next/link'
 // General Useful
 import { Oval } from  'react-loader-spinner'
 import { BrowserView, MobileView } from "react-device-detect";
@@ -1699,16 +1699,15 @@ export default function Home() {
         <FAQ />
         <TeamSection />    
         <BottomGraphic />  
-        <div className={styles.copyright}>
+      </div>
+      <div className={styles.copyright}>
           <a>© 2022 MENJi's WORLD. All rights reserved.</a>
           <div className={styles.copyright_subcontainer}>
-            <a className={styles.pdfPopupLink}
-              onClick={() => {
-                  window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
-            >Collectors Agreement</a>
+            <Link className={styles.pdfPopupLink}
+                  href="https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement">
+            <a>Collectors Agreement</a></Link>
           </div>
         </div>
-      </div>
     </div>
   )
 }
