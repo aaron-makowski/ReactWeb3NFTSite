@@ -856,27 +856,27 @@ const abi = [
 ];
 
 
-let innerWidth = 700; 
-let innerHeight = 800;
-//get window width
-const useWidth = () => {
-  const [_innerWidth, setWidth] = useState(700); // default width, detect on server.
-  const handleResize = () => setWidth(window.innerWidth);
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize]);
-  return _innerWidth;
-}
-const useHeight = () => {
-  const [_innerHeight, setHeight] = useState(700); // default width, detect on server.
-  const handleResize2 = () => setHeight(window.innerHeight);
-  useEffect(() => {
-    window.addEventListener('resize', handleResize2);
-    return () => window.removeEventListener('resize', handleResize2);
-  }, [handleResize2]);
-  return _innerHeight;
-}
+// let innerWidth = 700; 
+// let innerHeight = 800;
+// //get window width
+// const useWidth = () => {
+//   const [_innerWidth, setWidth] = useState(700); // default width, detect on server.
+//   const handleResize = () => setWidth(window.innerWidth);
+//   useEffect(() => {
+//     window.addEventListener('resize', handleResize);
+//     return () => window.removeEventListener('resize', handleResize);
+//   }, [handleResize]);
+//   return _innerWidth;
+// }
+// const useHeight = () => {
+//   const [_innerHeight, setHeight] = useState(700); // default width, detect on server.
+//   const handleResize2 = () => setHeight(window.innerHeight);
+//   useEffect(() => {
+//     window.addEventListener('resize', handleResize2);
+//     return () => window.removeEventListener('resize', handleResize2);
+//   }, [handleResize2]);
+//   return _innerHeight;
+// }
 
 
 //TODO replace with actual CHEF API Call
@@ -1478,7 +1478,16 @@ function NavBar() {
   )
 }
 function TeamSection() {
-  return (
+  return (<>
+    <div className={styles.meetTheTeamTitle}>
+      <Image 
+          src={"/meetTheTeam.png"} 
+          width={830} 
+          height={60}
+          alt="Menji's World Writeup" 
+          layout='responsive'
+          objectFit="contain"
+    /></div>
     <div className={styles.teamContainer}>
       <div className={styles.teamMember}>
         <div className={styles.teamMemberImage}>
@@ -1537,7 +1546,7 @@ function TeamSection() {
                 layout={'responsive'}/>
       </div>
     </div>
-  )
+    </>)
 }
 function MintButton(props) {
   return (
@@ -1589,15 +1598,55 @@ function MainImageStack() {
           layout='responsive'
           objectFit="contain"
     /></div>
-    <div className={styles.meetTheTeamTitle}>
-      <Image 
-          src={"/meetTheTeam.png"} 
-          width={830} 
-          height={60}
-          alt="Menji's World Writeup" 
+  </>)
+}
+function FAQ() {
+  return (<>
+    <div className={styles.faq}>
+      <Image
+          src={"/faq.png"} 
+          width={500} 
+          height={250}
+          alt="Menji's World Bottom Graphic" 
           layout='responsive'
           objectFit="contain"
-    /></div>  
+      /></div>
+      <div className={styles.faq2}>
+        <Image
+            src={"/faq2.png"} 
+            width={1366} 
+            height={377}
+            alt="Menji's World Bottom Graphic" 
+            layout='responsive'
+            objectFit="contain"
+        /></div>
+      <div className={styles.faq3}>
+        <Image
+            src={"/faq3.png"} 
+            width={1366} 
+            height={762}
+            alt="Menji's World Bottom Graphic" 
+            layout='responsive'
+            objectFit="contain"
+        /></div>
+      <div className={styles.faq4}>
+        <Image
+            src={"/faq4.png"} 
+            width={1366} 
+            height={762}
+            alt="Menji's World Bottom Graphic" 
+            layout='responsive'
+            objectFit="contain"
+        /></div>
+      <div className={styles.faq5}>
+        <Image
+            src={"/faq5.png"} 
+            width={4098} 
+            height={1132}
+            alt="Menji's World Bottom Graphic" 
+            layout='responsive'
+            objectFit="contain"
+        /></div>
   </>)
 }
 function BottomGraphic() {
@@ -1611,19 +1660,6 @@ function BottomGraphic() {
           layout='responsive'
           objectFit="contain"
       />
-    </div>
-  )
-}
-function CopyrightFooter() {
-  return (
-    <div className={styles.copyright}>
-      <a>© 2022 MENJi's WORLD. All rights reserved.</a>
-      <div className={styles.copyright_subcontainer}>
-        <a className={styles.pdfPopupLink}
-          onClick={() => {
-              window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
-        >Collectors Agreement</a>
-      </div>
     </div>
   )
 }
@@ -1645,8 +1681,8 @@ export default function Home() {
   }, [mintModalOpen]);
 
 
-  innerWidth = useWidth();
-  innerHeight = useHeight();
+  // innerWidth = useWidth();
+  // innerHeight = useHeight();
 
   return (
     <div className={styles.container}>
@@ -1660,9 +1696,18 @@ export default function Home() {
 
       <div className={styles.main}>
         <MainImageStack />
+        <FAQ />
         <TeamSection />    
         <BottomGraphic />  
-        <CopyrightFooter />  
+        <div className={styles.copyright}>
+          <a>© 2022 MENJi's WORLD. All rights reserved.</a>
+          <div className={styles.copyright_subcontainer}>
+            <a className={styles.pdfPopupLink}
+              onClick={() => {
+                  window.open('https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement', '_blank');}}
+            >Collectors Agreement</a>
+          </div>
+        </div>
       </div>
     </div>
   )
