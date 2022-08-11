@@ -1091,11 +1091,12 @@ function MintModal(props) {
             setPresaleData(_data);
             setMaxMintForCurrentWallet(_data.data.allocation);
           }).catch(err => {
-            setMaxMintForCurrentWallet(data[8]);
-            console.log('Error fetching whitelist data, defaulting to public max ' + err.message);
+            setMaxMintForCurrentWallet(-1)
+            alert('Error fetching whitelist data or this wallet is not whitelisted')
+            console.log(err.message)
           });
         } else {
-          setMaxMintForCurrentWallet(data[8]);
+          alert('Error fetching whitelist data')
         }
       }
     },
@@ -1395,9 +1396,11 @@ function MintModal(props) {
                   <h3>Max Mint
                     <div><h3 id='maxMint'>
                       {(isPresale === false && publicWalletLimit === false) ? '∞' 
-                      : maxMintForCurrentWallet ? maxMintForCurrentWallet?.toString() 
+                      : maxMintForCurrentWallet && maxMintForCurrentWallet > 0 ? maxMintForCurrentWallet?.toString() 
+                      : maxMintForCurrentWallet && maxMintForCurrentWallet === -1 ? '0'
                       : '...'}
                     </h3></div>
+                  {maxMintForCurrentWallet && maxMintForCurrentWallet === -1 && <h4>Not Whitelisted</h4>}
                   </h3>
                 </div>
                 <div className={styles.mintModalSection_right}>
@@ -1601,16 +1604,25 @@ function MainImageStack() {
   </>)
 }
 function FAQ() {
-  return (<>
-    <div className={styles.faq}>
+  return (
+  <div className={styles.faqContainer}>
       <Image
-          src={"/faq.png"} 
-          width={500} 
-          height={250}
-          alt="Menji's World Bottom Graphic" 
-          layout='responsive'
-          objectFit="contain"
-      /></div>
+            src={"/_faq.png"} 
+            width={1500} 
+            height={1500}
+            alt="Menji's World FAQ" 
+            layout='responsive'
+            objectFit="contain"
+        />
+      {/* <div className={styles.faq}>
+        <Image
+            src={"/faq.png"} 
+            width={500} 
+            height={250}
+            alt="Menji's World Bottom Graphic" 
+            layout='responsive'
+            objectFit="contain"
+        /></div>
       <div className={styles.faq2}>
         <Image
             src={"/faq2.png"} 
@@ -1646,8 +1658,8 @@ function FAQ() {
             alt="Menji's World Bottom Graphic" 
             layout='responsive'
             objectFit="contain"
-        /></div>
-  </>)
+        /></div> */}
+  </div>)
 }
 function BottomGraphic() {
   return (
