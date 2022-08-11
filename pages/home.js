@@ -1587,7 +1587,7 @@ function MainImage() {
       <Image 
           src={'/masterImage.png'} 
           width={1500} 
-          height={2660} 
+          height={2484} 
           layout={'responsive'}
           alt="Menji's World Writeup" 
           />
