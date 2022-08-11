@@ -951,8 +951,8 @@ function MintModalLoading() {
       <Oval
         height="90%"
         width="90%"
-        color='green'
-        secondaryColor='orange'
+        color='white'
+        secondaryColor='black'
         ariaLabel='loading'
       />
     </div>
@@ -1563,7 +1563,7 @@ function MintButton(props) {
     </div>
   )
 }
-function MainImageStack() {
+function MainImage() {
   return (<>
     <div className={styles.menjisWorldTitle}>
       <Image 
@@ -1583,83 +1583,16 @@ function MainImageStack() {
           layout='responsive'
           objectFit="contain"
     /></div>
-    <div className={styles.writeupTitle}>
+    <div className={styles.masterImage}>
       <Image 
-          src={"/writeupTitle.png"} 
+          src={'/masterImage.png'} 
           width={1500} 
-          height={251}
+          height={2660} 
+          layout={'responsive'}
           alt="Menji's World Writeup" 
-          layout='responsive'
-          objectFit="contain"
-    /></div>
-    <div className={styles.writeup}>
-      <Image 
-          src={"/writeup.png"} 
-          width={1500} 
-          height={923}
-          alt="Menji's World Writeup" 
-          layout='responsive'
-          objectFit="contain"
-    /></div>
-  </>)
-}
-function FAQ() {
-  return (
-  <div className={styles.faqContainer}>
-      <Image
-            src={"/_faq.png"} 
-            width={1500} 
-            height={1500}
-            alt="Menji's World FAQ" 
-            layout='responsive'
-            objectFit="contain"
-        />
-      {/* <div className={styles.faq}>
-        <Image
-            src={"/faq.png"} 
-            width={500} 
-            height={250}
-            alt="Menji's World Bottom Graphic" 
-            layout='responsive'
-            objectFit="contain"
-        /></div>
-      <div className={styles.faq2}>
-        <Image
-            src={"/faq2.png"} 
-            width={1366} 
-            height={377}
-            alt="Menji's World Bottom Graphic" 
-            layout='responsive'
-            objectFit="contain"
-        /></div>
-      <div className={styles.faq3}>
-        <Image
-            src={"/faq3.png"} 
-            width={1366} 
-            height={762}
-            alt="Menji's World Bottom Graphic" 
-            layout='responsive'
-            objectFit="contain"
-        /></div>
-      <div className={styles.faq4}>
-        <Image
-            src={"/faq4.png"} 
-            width={1366} 
-            height={762}
-            alt="Menji's World Bottom Graphic" 
-            layout='responsive'
-            objectFit="contain"
-        /></div>
-      <div className={styles.faq5}>
-        <Image
-            src={"/faq5.png"} 
-            width={4098} 
-            height={1132}
-            alt="Menji's World Bottom Graphic" 
-            layout='responsive'
-            objectFit="contain"
-        /></div> */}
-  </div>)
+          />
+    </div>
+    </>)
 }
 function BottomGraphic() {
   return (
@@ -1675,11 +1608,6 @@ function BottomGraphic() {
     </div>
   )
 }
-// make all images not fuck up on devices
-
-// og image test
-// new favicon pack test
-// make amount minted show below mint button
 
 export default function Home() {
 
@@ -1692,10 +1620,6 @@ export default function Home() {
     }
   }, [mintModalOpen]);
 
-
-  // innerWidth = useWidth();
-  // innerHeight = useHeight();
-
   return (
     <div className={styles.container}>
       <CustomHead />
@@ -1707,8 +1631,7 @@ export default function Home() {
       <MintButton setMintModalOpen={setMintModalOpen} />
 
       <div className={styles.main}>
-        <MainImageStack />
-        <FAQ />
+        <MainImage />
         <TeamSection />    
         <BottomGraphic />  
       </div>
