@@ -856,29 +856,6 @@ const abi = [
 ];
 
 
-// let innerWidth = 700; 
-// let innerHeight = 800;
-// //get window width
-// const useWidth = () => {
-//   const [_innerWidth, setWidth] = useState(700); // default width, detect on server.
-//   const handleResize = () => setWidth(window.innerWidth);
-//   useEffect(() => {
-//     window.addEventListener('resize', handleResize);
-//     return () => window.removeEventListener('resize', handleResize);
-//   }, [handleResize]);
-//   return _innerWidth;
-// }
-// const useHeight = () => {
-//   const [_innerHeight, setHeight] = useState(700); // default width, detect on server.
-//   const handleResize2 = () => setHeight(window.innerHeight);
-//   useEffect(() => {
-//     window.addEventListener('resize', handleResize2);
-//     return () => window.removeEventListener('resize', handleResize2);
-//   }, [handleResize2]);
-//   return _innerHeight;
-// }
-
-
 //TODO replace with actual CHEF API Call
 async function fetchWhitelistData() {
   // const response = await axios.post('https://APIURL/presale', 
@@ -1393,14 +1370,14 @@ function MintModal(props) {
             <div className={styles.mintModalHeader}>
               <div className={styles.mintModalInputContainer2}>
                 <div className={styles.mintModalSection_left}>
-                  <h3>Max Mint
+                  <h3>{ maxMintForCurrentWallet 
+                     && maxMintForCurrentWallet === -1 ? 'Not Whitelisted' : 'Max Mint'}
                     <div><h3 id='maxMint'>
                       {(isPresale === false && publicWalletLimit === false) ? '∞' 
                       : maxMintForCurrentWallet && maxMintForCurrentWallet > 0 ? maxMintForCurrentWallet?.toString() 
                       : maxMintForCurrentWallet && maxMintForCurrentWallet === -1 ? '0'
                       : '...'}
                     </h3></div>
-                  {maxMintForCurrentWallet && maxMintForCurrentWallet === -1 && <h4>Not Whitelisted</h4>}
                   </h3>
                 </div>
                 <div className={styles.mintModalSection_right}>
@@ -1553,6 +1530,16 @@ function TeamSection() {
 }
 function MintButton(props) {
   return (
+    ////pre release
+    // <div className={styles.mintButtonContainer}>
+    //   <a className={styles.mintButton} 
+    //     id='mintButton' 
+    //     onClick={() => {
+    //       props.setMintModalOpen(true);
+    //     }}
+    //   >Mint Aug 13/14</a>
+    // </div>
+    //// live version
     <div className={styles.mintButtonContainer}>
       <a className={styles.mintButton} 
         id='mintButton' 
