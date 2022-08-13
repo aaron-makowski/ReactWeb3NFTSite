@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import CustomHead from '../components/CustomHead'
 import styles from '../styles/Home.module.css'
 
 import { useRef, Suspense, useState, useEffect, useMemo } from 'react'
@@ -118,19 +118,7 @@ function Model(){
 export default function Index() {
   return (
     <div className={styles.worldContainer}>
-      <Head>
-        <title>MENJi NFT Drop</title>
-        <meta name="description" content="MENJi NFT Site by Kodiak" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:image" content="https://i.imgur.com/p6qgDQt.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
-      </Head>
+      <CustomHead />
       <a href="/home">
             <Canvas style={{ width: '100%', height: '100%' }}
                     camera={{ position: [0, 0, 20], fov: 40, far: 10000 }}
@@ -155,8 +143,3 @@ export default function Index() {
     </div>
   )
 }
-{/* <pointLight    intensity={0.1} position={[10, 10, 10]} />
-<rectAreaLight intensity={3} position={[0, 10, -10]} 
-                  width={30} height={30} 
-                  onUpdate={(self) => self.lookAt(
-                      new THREE.Vector3(0, 0, 0))} /> */}

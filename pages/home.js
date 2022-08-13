@@ -965,6 +965,7 @@ function MintModal(props) {
   const [mintSuccess, setMintSuccess] = useState(false);
   const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [mintSuccessMessage, setMintSuccessMessage] = useState("");
+  const [mintLink, setMintLink] = useState('')
 
 
   ///////      ///////
@@ -1072,8 +1073,6 @@ function MintModal(props) {
             alert('Error fetching whitelist data or this wallet is not whitelisted')
             console.log(err.message)
           });
-        } else {
-          alert('Error fetching whitelist data')
         }
       }
     },
@@ -1101,9 +1100,8 @@ function MintModal(props) {
     onSuccess(data) {
       // console.log(data);
       setMintSuccess(true);
-      setMintSuccessMessage(
-        'Pending Transaction: https://ropsten.etherscan.io/tx/' 
-        + data.hash + '\r\n\r\nWait here for success message.');
+      setMintLink('https://ropsten.etherscan.io/tx/'+ data.hash)
+      setMintSuccessMessage('Wait here for success message. Pending Transaction:');
     },
     onError(error) {
       setMintError(true);
@@ -1123,8 +1121,8 @@ function MintModal(props) {
     onSuccess(data) {
       // console.log(data);
       setMintSuccess(true); 
-      setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' 
-                           + data.hash + '\r\n\r\nWait here for success message.');
+      setMintLink('https://etherscan.io/tx/'+ data.hash)
+      setMintSuccessMessage('Wait here for success message. Pending Transaction:');
     },
     onError(error) {
       setMintError(true);
@@ -1139,8 +1137,8 @@ function MintModal(props) {
     functionName: 'presalePurchase', 
     onSuccess(data) {
       setMintSuccess(true); 
-      setMintSuccessMessage('Pending Transaction: https://etherscan.io/tx/' 
-                           + data.hash + '\r\n\r\nWait here for success message.');
+      setMintLink('https://etherscan.io/tx/'+ data.hash)
+      setMintSuccessMessage('Wait here for success message. Pending Transaction:');
     },
     onError(error) {
       setMintError(true);
@@ -1170,17 +1168,15 @@ function MintModal(props) {
       if (mintIsSuccess) {
         setMintSuccess(true);
         afterMintUIChanges();
-        setMintSuccessMessage(
-              'NFT Minting Success:' +
-              '\r\n\r\nhttps://etherscan.io/tx/' + mintData.transactionHash);
+        setMintLink('https://etherscan.io/tx/'+ mintData.transactionHash)
+        setMintSuccessMessage('Wait here for success message. NFT Minting Success:');
       }
       else if (mintIsError) {
         console.log(mintErrorObj)
         setMintError(true);
         afterMintUIChanges();
-        setMintErrorMessage(
-              'Error Minting: ' + mintErrorObj.toString() + 
-              '\r\n\r\nhttps://etherscan.io/tx/' + mintData.transactionHash);
+        setMintLink('https://etherscan.io/tx/'+ mintData.transactionHash)
+        setMintErrorMessage('Error Minting NFT(s):');
       }
     }
   }, [mintData, mintIsSuccess, mintIsError]);
@@ -1318,6 +1314,7 @@ function MintModal(props) {
     setMintErrorMessage("");
     setMintSuccess(false);
     setMintSuccessMessage("");
+    setMintLink('');
   }
 
 
@@ -1345,12 +1342,22 @@ function MintModal(props) {
       {/* conditionally rendered popups */}
       { mintLoading && <MintModalLoading /> } {/* loading spinner */}
       { mintError   && <div className={styles.alertPopup} id='alertBG'>
-                         <a>{mintErrorMessage}<div id='closeAlertButton' 
-                                                   onClick={closeAlertPopup}></div></a></div> }
+                         <a>{mintErrorMessage}
+                           { mintLink && <Link href={mintLink}>
+                              Click for Etherscan TX
+                            </Link> }
+                            <div id='closeAlertButton' onClick={closeAlertPopup}></div>
+                         </a>
+                       </div> }
       { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
-                         <a>{mintSuccessMessage}<div id='closeAlertButton'
-                                                     onClick={closeAlertPopup}></div></a></div> }
-      
+                         <a>{mintSuccessMessage}
+                            { mintLink && <Link href={mintLink}>
+                              Click for Etherscan TX
+                            </Link> }
+                            <div id='closeAlertButton'onClick={closeAlertPopup}></div>
+                         </a> 
+                       </div> }
+
       {/* Mint Modal popup */}
       <div id='mintModal' className={styles.mintModal}>
         <div className={styles.mintModalBody}>
