@@ -18,7 +18,11 @@ import {    useAccount   ,   useContractWrite, // read/write eth contracts
 
 
 // TODO put Menji solidity contract address and ABI here
+// change 3 to 1 and testMode to false when live
+
 // Contract Details
+const testMode = true;
+const chainId = 3; //3 ropsten -- 1 eth main
 const contractAddress = '0xb585da9872d092498f020a938d65091fd96abbaf';
 const abi = [
     {
@@ -968,15 +972,12 @@ function MintModal(props) {
   const [mintLink, setMintLink] = useState('')
 
 
-  ///////      ///////
-  const testMode = true
-  ///////      ///////
 
   // Needed to interact with contract
   const contractInfo = {
     addressOrName: contractAddress,
     contractInterface: abi,
-    chainId: 3,//TODO change to 1
+    chainId: chainId,
   }
 
   //Fetch / Read Contract Data
@@ -1269,9 +1270,6 @@ function MintModal(props) {
       return publicPurchase  ({ args: _args, overrides: _overrides })}
     if (isPresale === true ) {
       return presalePurchase ({ args: _args, overrides: _overrides })}
-    
-    // This should never print
-    console.error('Unknown Minting Error.')
   }
 
 
@@ -1343,17 +1341,17 @@ function MintModal(props) {
       { mintLoading && <MintModalLoading /> } {/* loading spinner */}
       { mintError   && <div className={styles.alertPopup} id='alertBG'>
                          <a>{mintErrorMessage}
-                           { mintLink && <Link href={mintLink}>
+                           { mintLink && <><br /><Link href={mintLink} target="_blank" rel="noopener noreferrer">
                               Click for Etherscan TX
-                            </Link> }
+                            </Link> </>}
                             <div id='closeAlertButton' onClick={closeAlertPopup}></div>
                          </a>
                        </div> }
       { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
                          <a>{mintSuccessMessage}
-                            { mintLink && <Link href={mintLink}>
+                            { mintLink && <><br /><Link href={mintLink} target="_blank" rel="noopener noreferrer">
                               Click for Etherscan TX
-                            </Link> }
+                            </Link> </>}
                             <div id='closeAlertButton'onClick={closeAlertPopup}></div>
                          </a> 
                        </div> }
@@ -1632,12 +1630,11 @@ export default function Home() {
       <div className={styles.copyright}>
           <a>© 2022 MENJi's WORLD. All rights reserved.</a>
           <div className={styles.copyright_subcontainer}>
-            <Link className={styles.pdfPopupLink}
+            <a className={styles.pdfPopupLink} target="_blank" rel="noopener noreferrer"
                   href="https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement">
-            <a>Collectors Agreement</a></Link>
+            <a>Collectors Agreement</a></a>
           </div>
         </div>
     </div>
   )
 }
-

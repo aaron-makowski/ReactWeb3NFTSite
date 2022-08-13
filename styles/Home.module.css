@@ -213,6 +213,17 @@
   word-wrap: break-word;
   color:#FFFFFF;
 }
+.alertPopup a a {
+  border-radius: 0px;
+  box-shadow: 0 0rem 0rem rgba(0, 0, 0, 0);
+  font-family: 'Fredoka One', cursive;
+  word-wrap: break-word;
+  margin-left: 30%;
+  margin-top: 10%;
+  color:#c6fffb;
+  text-decoration: underline;
+  padding: 0;
+}
 .alertPopup div::after {
   float: right;
   right: 10%;
