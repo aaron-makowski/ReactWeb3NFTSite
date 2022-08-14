@@ -18,7 +18,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: 1;
 }
 
 .menjisWorldTitle {
@@ -96,7 +96,48 @@
   max-width: 23%;
   transition: all .2s,box-shadow .08s ease-in;
 }
-
+.socialButtonTeamContainer {
+  /* min-width: 23%;
+  max-width: 23%; */
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  text-align: center;   
+}
+.socialButtonTeam {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  transition: all .2s,box-shadow .08s ease-in;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 99999;
+}
+/* .socialButtonTeamContainer a {
+  cursor: pointer;
+  z-index: 999999;
+} */
+/* .socialButtonTeam img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  transition: all .2s,box-shadow .08s ease-in;
+} */
+/* .socialButtonTeamContainer a img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  transition: all .2s,box-shadow .08s ease-in;
+} */
 .navBarContainer {
   width: 100%;
   flex: 1;
@@ -128,7 +169,6 @@
   flex-direction: row;
   align-items: right;
   flex-grow: 1;
-  /* flex-wrap: wrap; */
   margin-right: 1rem;
 }
 

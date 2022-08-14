@@ -1916,6 +1916,7 @@ function TeamSection() {
           layout='responsive'
           objectFit="contain"
     /></div>
+
     <div className={styles.teamContainer}>
       <div className={styles.teamMember}>
         <div className={styles.teamMemberImage}>
@@ -1929,7 +1930,12 @@ function TeamSection() {
                 src={'/_menjiTeamInfo.png'} 
                 width={500} 
                 height={179}
-                layout={'responsive'}/>      
+                layout={'responsive'}/>     
+        <div className={styles.socialButtonTeamContainer}>
+          <a className={styles.socialButtonTeam} href="https://twitter.com/m33nji" target="_blank" rel="noopener noreferrer">
+            <Image src={'/twitter.png'} width={50} height={50} />
+          </a> 
+        </div>       
       </div>
       <div className={styles.teamMember}>
         <div className={styles.teamMemberImage}>
@@ -1944,6 +1950,11 @@ function TeamSection() {
                 width={500} 
                 height={179}
                 layout={'responsive'} />
+        <div className={styles.socialButtonTeamContainer}>
+          <a className={styles.socialButtonTeam} href="https://twitter.com/DoctorEthereum" target="_blank" rel="noopener noreferrer">
+            <Image src={'/twitter.png'} width={50} height={50} />
+          </a>     
+        </div>             
       </div>   
       <div className={styles.teamMember}>
         <div className={styles.teamMemberImage}>
@@ -1958,6 +1969,11 @@ function TeamSection() {
                 width={500} 
                 height={179}
                 layout={'responsive'} />
+        <div className={styles.socialButtonTeamContainer}>
+`        <a className={styles.socialButtonTeam} href="https://twitter.com/stickydoteth" target="_blank" rel="noopener noreferrer">
+           <Image src={'/twitter.png'} width={50} height={50} />
+         </a>
+        </div>                  
       </div>         
       <div className={styles.teamMember}>
         <div className={styles.teamMemberImage}>
@@ -1972,30 +1988,32 @@ function TeamSection() {
                 width={500} 
                 height={179}
                 layout={'responsive'}/>
+        <div className={styles.socialButtonTeamContainer}>
+          <a className={styles.socialButtonTeam} href="https://twitter.com/jayg_nft" target="_blank" rel="noopener noreferrer">
+            <Image src={'/twitter.png'} width={50} height={50} />
+          </a>
+        </div>  
       </div>
     </div>
     </>)
 }
 function MintButton(props) {
   return (
-    ////pre release
+    //pre release
+    <div className={styles.mintButtonContainer}>
+      <a className={styles.mintButton} 
+        id='mintButton' 
+      >Mint This Week</a>
+    </div>
+    //// live version
     // <div className={styles.mintButtonContainer}>
     //   <a className={styles.mintButton} 
     //     id='mintButton' 
     //     onClick={() => {
     //       props.setMintModalOpen(true);
     //     }}
-    //   >Mint Aug 13/14</a>
+    //   >Mint Now</a>
     // </div>
-    //// live version
-    <div className={styles.mintButtonContainer}>
-      <a className={styles.mintButton} 
-        id='mintButton' 
-        onClick={() => {
-          props.setMintModalOpen(true);
-        }}
-      >Mint Now</a>
-    </div>
   )
 }
 function MainImage() {
