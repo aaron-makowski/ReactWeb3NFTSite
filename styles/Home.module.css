@@ -194,7 +194,7 @@
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
-.alertPopup a {
+.alertPopup div {
   background-color: rgb(41, 41, 41);
   border-radius: 10px;
   box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.9);
@@ -213,9 +213,12 @@
   word-wrap: break-word;
   color:#FFFFFF;
 }
-.alertPopup a a {
+.alertPopup div a {
   border-radius: 0px;
   box-shadow: 0 0rem 0rem rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  transform: translateZ(0);
+  transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
   word-wrap: break-word;
   margin-left: 30%;
