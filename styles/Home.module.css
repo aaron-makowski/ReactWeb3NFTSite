@@ -118,26 +118,7 @@
   cursor: pointer;
   z-index: 99999;
 }
-/* .socialButtonTeamContainer a {
-  cursor: pointer;
-  z-index: 999999;
-} */
-/* .socialButtonTeam img {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  transition: all .2s,box-shadow .08s ease-in;
-} */
-/* .socialButtonTeamContainer a img {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  transition: all .2s,box-shadow .08s ease-in;
-} */
+
 .navBarContainer {
   width: 100%;
   flex: 1;
@@ -253,7 +234,7 @@
   word-wrap: break-word;
   color:#FFFFFF;
 }
-.alertPopup div a {
+.alertPopup a {
   border-radius: 0px;
   box-shadow: 0 0rem 0rem rgba(0, 0, 0, 0);
   box-sizing: border-box;
@@ -261,13 +242,13 @@
   transition: all .2s,box-shadow .08s ease-in;
   font-family: 'Fredoka One', cursive;
   word-wrap: break-word;
-  margin-left: 30%;
+  margin-left: 25%;
   margin-top: 10%;
   color:#c6fffb;
   text-decoration: underline;
   padding: 0;
 }
-.alertPopup div::after {
+.alertPopup span::after {
   float: right;
   right: 10%;
   content: "X"; 

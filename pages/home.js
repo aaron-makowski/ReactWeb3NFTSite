@@ -24,12 +24,6 @@ import {    useAccount   ,   useContractWrite, // read/write eth contracts
 const testMode = true;
 const chainId = 3; //3 ropsten -- 1 eth main
 const contractAddress = '0x5c729894a796dA01D8679fC0025559BA14bec779';
-
-// //load ../abi.json
-// const _abi = require('../abi.json');
-// //as array
-// const abi = _abi.abi;
-
 const abi = [
   {
       "inputs": [
@@ -1294,7 +1288,7 @@ const abi = [
       "type": "receive"
   }
 ]
-console.log(abi)
+
 //TODO replace with actual CHEF API Call
 async function fetchWhitelistData() {
   // const response = await axios.post('https://APIURL/presale', 
@@ -1783,11 +1777,12 @@ function MintModal(props) {
       {/* conditionally rendered popups */}
       { mintLoading && <MintModalLoading /> } {/* loading spinner */}
       { mintError   && <div className={styles.alertPopup} id='alertBG'>
-                         <div>{mintErrorMessage}
-                           { mintLink && <><br /><Link href={mintLink} target="_blank" rel="noopener noreferrer">
+                         <div>
+                          {mintErrorMessage}
+                           { !mintLink && <><br /><br /><a href={mintLink} target="_blank" rel="noopener noreferrer">
                               Click for Etherscan TX
-                            </Link> </>}
-                            <div id='closeAlertButton' onClick={closeAlertPopup}></div>
+                            </a> </>}
+                            <span id='closeAlertButton' onClick={closeAlertPopup}></span>
                          </div>
                        </div> }
       { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
@@ -2005,7 +2000,7 @@ function MintButton(props) {
         id='mintButton' 
       >Mint This Week</a>
     </div>
-    //// live version
+    // live version
     // <div className={styles.mintButtonContainer}>
     //   <a className={styles.mintButton} 
     //     id='mintButton' 
