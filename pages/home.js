@@ -1292,7 +1292,8 @@ const abi = [
 //TODO replace with actual CHEF API Call
 function fetchWhitelistData() {
   const response = {"data":{"allocation":19,"teir":2,"hash":"sha3_32552","signature":"0x2352262"}}
-    // let data = JSON.stringify({
+  return response
+  // let data = JSON.stringify({
     //     "wallet": address
     // });
 
