@@ -1998,7 +1998,7 @@ function MintButton(props) {
     <div className={styles.mintButtonContainer}>
       <a className={styles.mintButton} 
         id='mintButton' 
-      >Mint This Week</a>
+      >Mint Tues/Wed</a>
     </div>
     // live version
     // <div className={styles.mintButtonContainer}>
