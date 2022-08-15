@@ -1290,12 +1290,28 @@ const abi = [
 ]
 
 //TODO replace with actual CHEF API Call
-async function fetchWhitelistData() {
-  // const response = await axios.post('https://APIURL/presale', 
-  //                     {wallet: window.provider.selectedAddress});
+function fetchWhitelistData() {
   const response = {"data":{"allocation":19,"teir":2,"hash":"sha3_32552","signature":"0x2352262"}}
-  console.log('Whitelist API Response:', response);
-  return response
+    // let data = JSON.stringify({
+    //     "wallet": address
+    // });
+
+    // let config = {
+    //     method: 'post',
+    //     url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
+    //     headers: { 
+    //         'Content-Type': 'application/json'
+    //     },
+    //     data : data
+    // };
+
+    // axios(config).then((response) => {
+    //     console.log(JSON.stringify(response.data));
+    //     return JSON.stringify(response.data);
+    // })
+    // .catch((error) => {
+    //     console.log(error);
+    // });
 }
 
 //UI Components
@@ -1496,6 +1512,7 @@ function MintModal(props) {
 
         if (address) { //fetch presale allocation API data for wallet
           fetchWhitelistData().then(_data => {
+            console.log('2', _data)
             setPresaleData(_data);
             setMaxMintForCurrentWallet(_data.data.allocation);
           }).catch(err => {
@@ -1996,9 +2013,12 @@ function MintButton(props) {
   return (
     //pre release
     <div className={styles.mintButtonContainer}>
-      <a className={styles.mintButton} 
+      <a className={styles.mintButtonPre} 
         id='mintButton' 
-      >Mint Tues/Wed</a>
+        href="https://flourishing-duckanoo-8a35b9.netlify.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Mint 16/17th<br />Click to Check Whitelist</a>
     </div>
     // live version
     // <div className={styles.mintButtonContainer}>
@@ -2087,7 +2107,7 @@ export default function Home() {
           <a>© 2022 MENJi's WORLD. All rights reserved.</a>
           <div className={styles.copyright_subcontainer}>
             <a className={styles.pdfPopupLink} target="_blank" rel="noopener noreferrer"
-                  href="https://pdfhost.io/v/2GZg4aAJM_Menjis_World_Collector_Agreement">
+                  href="/Menjis_World_Collector_Agreement_Final.pdf">
             <div>Collectors Agreement</div></a>
           </div>
         </div>
