@@ -1289,32 +1289,6 @@ const abi = [
   }
 ]
 
-//TODO replace with actual CHEF API Call
-function fetchWhitelistData() {
-  const response = {"data":{"allocation":19,"teir":2,"hash":"sha3_32552","signature":"0x2352262"}}
-  return response
-  // let data = JSON.stringify({
-    //     "wallet": address
-    // });
-
-    // let config = {
-    //     method: 'post',
-    //     url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
-    //     headers: { 
-    //         'Content-Type': 'application/json'
-    //     },
-    //     data : data
-    // };
-
-    // axios(config).then((response) => {
-    //     console.log(JSON.stringify(response.data));
-    //     return JSON.stringify(response.data);
-    // })
-    // .catch((error) => {
-    //     console.log(error);
-    // });
-}
-
 //UI Components
 function ConnectButtonCustomized(props) {
 
@@ -1417,7 +1391,40 @@ function MintModal(props) {
   const [mintSuccessMessage, setMintSuccessMessage] = useState("");
   const [mintLink, setMintLink] = useState('')
 
-
+  function fetchWhitelistData() {
+    let data = JSON.stringify({
+        "wallet": address.toLowerCase()
+    });
+  
+    let config = {
+      method: 'post',
+      url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
+      headers: { 
+          'Content-Type': 'application/json'
+      },
+      data: data
+    };
+  
+    axios(config).then((response) => {
+        // check is response is 403
+        if (response.status !== 403) {
+            // check if response has key allocation
+            //TODO make sure the json comes through right
+            let _data = JSON.stringify(response.data);
+            console.log(_data);
+            setMaxMintForCurrentWallet(_data.data.allocation);
+            setPresaleData(_data);
+        } else {
+            setMintButtonDisabled(true);
+            setMintButtonText("Not Whitelisted");
+            setMaxMintForCurrentWallet(-1)            
+        }
+    }).catch((error) => {
+        console.log(error.message)
+        setMaxMintForCurrentWallet(-1)
+        alert('Error fetching whitelist data or this wallet is not whitelisted')
+    });
+  }
 
   // Needed to interact with contract
   const contractInfo = {
@@ -1486,7 +1493,7 @@ function MintModal(props) {
       // console.log(data);
 
       // if public sale
-      if (data[6] === false) {
+      if (data[6] === false) { //
         setIsPresale(data[6])
         setTotalMintAmount(data[0]);
         setAmountMintedAlready(data[7]); 
@@ -1500,7 +1507,7 @@ function MintModal(props) {
         setPresaleData(null); 
         setMaxMintForCurrentWallet(data[8]);
 
-      } else if (data[6] === true) {
+      } else if (data[6] === true) { //
         setIsPresale(data[6]);
         setTotalMintAmount(data[0]);
         setAmountMintedAlready(data[7]); 
@@ -1511,17 +1518,7 @@ function MintModal(props) {
         setTotalCostBoxValue(price); 
         setPricePerNFT(price); 
 
-        if (address) { //fetch presale allocation API data for wallet
-          fetchWhitelistData().then(_data => {
-            console.log('2', _data)
-            setPresaleData(_data);
-            setMaxMintForCurrentWallet(_data.data.allocation);
-          }).catch(err => {
-            setMaxMintForCurrentWallet(-1)
-            alert('Error fetching whitelist data or this wallet is not whitelisted')
-            console.log(err.message)
-          });
-        }
+        if (address) fetchWhitelistData()
       }
     },
     onError(error) {
@@ -1902,16 +1899,16 @@ function NavBar() {
               width={'70%'} />
       </nav>
       <nav className={styles.navBarRight}>
-        <a className={styles.socialButton} href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
+        <a href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
           <Image src={'/twitter.png'} width={50} height={50} />
         </a>
-        <a className={styles.socialButton} href="https://ropsten.etherscan.io/address/0xb585da9872d092498f020a938d65091fd96abbaf" target="_blank" rel="noopener noreferrer">
+        <a href="https://ropsten.etherscan.io/address/0x5c729894a796dA01D8679fC0025559BA14bec779" target="_blank" rel="noopener noreferrer">
           <Image src={'/etherscan.png'} width={50} height={50} />
         </a>
-        <a className={styles.socialButton} href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
+        <a href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
           <Image src={'/discord.png'} width={50} height={50} />
         </a>
-        <a className={styles.socialButton} href="https://opensea.io/collection/ethereum/0xe336e2503f2a6e3831468d0f16750efdf6a92951" target="_blank" rel="noopener noreferrer">
+        <a href="https://opensea.io/collection/menjis-world-official" target="_blank" rel="noopener noreferrer">
           <Image src={'/opensea.png'} width={50} height={50} />
         </a>
       </nav>
@@ -2019,7 +2016,7 @@ function MintButton(props) {
         href="https://flourishing-duckanoo-8a35b9.netlify.app/"
         target="_blank"
         rel="noopener noreferrer"
-      >Mint 16/17th<br />Click to Check Whitelist</a>
+      >Mint Aug 16/17th<br />Click to Check Whitelist</a>
     </div>
     // live version
     // <div className={styles.mintButtonContainer}>
