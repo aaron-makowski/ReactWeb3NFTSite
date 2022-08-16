@@ -2988,7 +2988,7 @@ function MintModal(props) {
 
     if (isPresale === true && testMode == false) {
       try {
-        if (presaleData?.teir && presaleData?.hash && 
+        if (presaleData?.tier && presaleData?.hash && 
             presaleData?.signature) {
           if (mintAmount > presaleData.tier) {
             setMintErrorMessage('Error: You can only mint up to ' + presaleData.tier + ' tokens in the presale')
@@ -3026,7 +3026,7 @@ function MintModal(props) {
     // & presale data into the Write function
     let _args = [mintAmount] 
     if ((isPresale === true && !testMode) || presaleTestMode) {
-      _args.push(presaleData.teir,
+      _args.push(presaleData.tier,
                  presaleData.hash,
                  presaleData.signature)
     }
