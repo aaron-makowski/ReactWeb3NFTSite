@@ -12,7 +12,7 @@ import { publicProvider } from 'wagmi/providers/public';
 
 
 const { chains, provider } = configureChains(
-  [chain.ropsten], //chain.mainnet,
+  [chain.mainnet], //chain.mainnet,
   [alchemyProvider({ alchemyId: '-JjF8cTJGgfSfhKMVgqxKV48CsCIKfpn' }),
     publicProvider()]
 )
