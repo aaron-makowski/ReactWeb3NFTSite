@@ -2882,7 +2882,7 @@ function MintModal(props) {
     functionName: 'presalePurchase', 
     onSuccess(data) {
       setMintSuccess(true);
-      setMintLink('https://etherscan.io/tx/'+ data.hash)
+      setMintLink('https://etherscan.io/tx/'+ data?.hash)
       setMintSuccessMessage('Wait here for success message. Pending Transaction:');
     },
     onError(error) {
@@ -2891,7 +2891,7 @@ function MintModal(props) {
       if (error.message.includes('-32000')) {
         setMintErrorMessage('Error: Insufficient Funds');
       } else {
-        setMintLink('https://etherscan.io/tx/'+ data.hash)
+        setMintLink('https://etherscan.io/tx/'+ data?.hash)
         setMintErrorMessage('Error minting tokens: ' + error.message);
       }
     }
