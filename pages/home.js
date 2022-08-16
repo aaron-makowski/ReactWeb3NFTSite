@@ -2954,20 +2954,12 @@ function MintModal(props) {
       if (isPresale === true && presaleData?.teir && 
           presaleData?.hash  && presaleData?.signature) {
         console.log('All contract data present')
-      } 
-      else if (isPresale === true) {
-        fetchWhitelistData()
-        if (presaleData?.teir && 
-            presaleData?.hash && presaleData?.signature) {
-                console.log('All contract data present')
-        } else {
-            console.log('All contract data NOT present')
-            return false
-        }
       } else if (isPresale === false) {
         console.log('All contract data present')
       } else {
         console.log('All contract data NOT present')
+        console.log(isPresale, presaleData?.teir, 
+            presaleData?.hash, presaleData?.signature)
         return false
       }
     } else {
