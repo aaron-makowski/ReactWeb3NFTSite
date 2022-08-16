@@ -24,9 +24,6 @@ let updateMintModal = false;
     // maybe put the request in the /api/ folder
 //'PRESALE_PRICE' -> PRICE line 1483
 
-// NEW live contract ABI
-// NEW LIVE contract ADDY
-// SWITCH 3 to 1 for eth mainnet
 // switch testMode = false
 
 // Contract Details
