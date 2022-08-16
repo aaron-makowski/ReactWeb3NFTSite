@@ -3332,7 +3332,7 @@ function MintButton(props) {
         href="https://whitelist.menjisworld.com/"
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => { testFetchWhitelistData() }} //TODO PUSH THIS BEFORE LIVE AND TEST
+        // onClick={() => { testFetchWhitelistData() }} //TODO PUSH THIS BEFORE LIVE AND TEST
       >Mint Aug 16/17th<br />Click to Check Whitelist</a>
     </div> }
     { !testMode && <div className={styles.mintButtonContainer}>
