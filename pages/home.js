@@ -2945,7 +2945,7 @@ function MintModal(props) {
       return false
     }
 
-    if (maxMintForCurrentWallet && 
+    if (maxMintForCurrentWallet > -5 && 
         pricePerNFT && 
         amountMintedAlready) { 
       if (isPresale === true && presaleData?.teir && 
