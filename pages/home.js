@@ -2949,7 +2949,9 @@ function MintModal(props) {
     if (maxMintForCurrentWallet && 
         pricePerNFT && 
         amountMintedAlready) {
-
+      console.log(maxMintForCurrentWallet, 
+        pricePerNFT,
+        amountMintedAlready)  
       if (isPresale === true && presaleData?.teir && 
           presaleData?.hash  && presaleData?.signature) {
         console.log('All contract data present')
@@ -2963,6 +2965,7 @@ function MintModal(props) {
         return false
       }
     } else {
+        if (isPresale) fetchWhitelistData()
         console.log(isPresale, presaleData?.teir, 
             presaleData?.hash, presaleData?.signature)
         console.log('All contract data NOT present')
