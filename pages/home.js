@@ -2959,6 +2959,7 @@ function MintModal(props) {
         console.log('All contract data NOT present')
         console.log(isPresale, presaleData?.teir, 
             presaleData?.hash, presaleData?.signature)
+        fetchWhitelistData()
         return false
       }
     } else {
