@@ -15,10 +15,19 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'; //wallet popup
 import {    useAccount   ,   useContractWrite, // read/write eth contracts
          useContractReads, useWaitForTransaction } from 'wagmi' 
 
+let updateMintModal = false;
+// TODO LIST
+// install node, vs code, github desktop
+// login to github desktop
+// copy project over - npm i - npm run dev
+// test API after CORS line 2064
+    // maybe put the request in the /api/ folder
+//'PRESALE_PRICE' -> PRICE line 1483
 
-
-// TODO put LIVE solidity contract address and ABI here
-// change 3 to 1 and testMode to false when live
+// NEW live contract ABI
+// NEW LIVE contract ADDY
+// SWITCH 3 to 1 for eth mainnet
+// switch testMode = false
 
 // Contract Details
 const testMode = true;
@@ -1315,7 +1324,7 @@ function testFetchWhitelistData() {
         console.log(error.message)
         alert('Error fetching whitelist data or this wallet is not whitelisted')
     });
-  }
+}
 
 //UI Components
 function ConnectButtonCustomized(props) {
@@ -1538,6 +1547,7 @@ function MintModal(props) {
       setPricePerNFT(price); 
 
       // if public sale
+      
       if (data[5] === false) {//
           setTitleText('Public Mint'); 
           setPresaleData(null); 
@@ -1546,6 +1556,7 @@ function MintModal(props) {
           setTitleText('Presale Mint');
           if (address) fetchWhitelistData()
       }
+      updateMintModal = !updateMintModal;
     },
     onError(error) {
       console.log(error)
@@ -1797,7 +1808,7 @@ function MintModal(props) {
 
    // Check if all needed data is present to mint
   // Enable or disable the mint button based on this
-  useEffect(() => { //TODO maybe useMemo
+  useEffect(() => {
     if (isClosing) return setAllContractDataPresent(false);
     if (maxMintForCurrentWallet && 
         pricePerNFT && 
@@ -1808,15 +1819,21 @@ function MintModal(props) {
         setMintButtonDisabled(false)
         setAllContractDataPresent(true)
         console.log('All contract data present')
+      } else if (isPresale === false) {
+        setMintButtonDisabled(false)
+        setAllContractDataPresent(true) 
+        console.log('All contract data present')
       } else {
+        console.log('All contract data NOT present')
         setMintButtonDisabled(true)
-        setAllContractDataPresent(false) }
+        setAllContractDataPresent(false)
+      }
     } else {
-      console.log('All contract data NOT present')
-      setMintButtonDisabled(true)
-      setAllContractDataPresent(false)
+        console.log('All contract data NOT present')
+        setMintButtonDisabled(true)
+        setAllContractDataPresent(false)
     }
-  }, [maxMintForCurrentWallet, isPresale, pricePerNFT,
+  }, [maxMintForCurrentWallet, isPresale, pricePerNFT, updateMintModal,
       amountMintedAlready, presaleData, publicWalletLimit, address]);
 
   return (
@@ -1826,7 +1843,7 @@ function MintModal(props) {
       { mintError   && <div className={styles.alertPopup} id='alertBG'>
                          <div>
                           {mintErrorMessage}
-                           { !mintLink && <><br /><br /><a href={mintLink} target="_blank" rel="noopener noreferrer">
+                           { !mintLink && mintLink != '' && <><br /><br /><a href={mintLink} target="_blank" rel="noopener noreferrer">
                               Click for Etherscan TX
                             </a> </>}
                             <span id='closeAlertButton' onClick={closeAlertPopup}></span>
@@ -1834,7 +1851,7 @@ function MintModal(props) {
                        </div> }
       { mintSuccess && <div className={styles.alertPopup} id='alertBG'>
                          <div>{mintSuccessMessage}
-                            { mintLink && <><br /><Link href={mintLink} target="_blank" rel="noopener noreferrer">
+                            { mintLink && mintLink != '' && <><br /><Link href={mintLink} target="_blank" rel="noopener noreferrer">
                               Click for Etherscan TX
                             </Link> </>}
                             <div id='closeAlertButton'onClick={closeAlertPopup}></div>
@@ -2040,29 +2057,26 @@ function TeamSection() {
     </>)
 }
 function MintButton(props) {
-  return (
-      //"https://whitelist.menjisworld.com/"
-    //pre release
-    <div className={styles.mintButtonContainer}>
+  //"https://whitelist.menjisworld.com/"
+  return (<>
+    { testMode && <div className={styles.mintButtonContainer}>
       <a className={styles.mintButtonPre} 
         id='mintButton' 
-        // href="https://flourishing-duckanoo-8a35b9.netlify.app/"
+        href="https://flourishing-duckanoo-8a35b9.netlify.app/"
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => { testFetchWhitelistData() }}
+        // onClick={() => { testFetchWhitelistData() }} //TODO PUSH THIS BEFORE LIVE AND TEST
       >Mint Aug 16/17th<br />Click to Check Whitelist</a>
-    </div>
-
-    // live version
-    // <div className={styles.mintButtonContainer}>
-    //   <a className={styles.mintButton} 
-    //     id='mintButton' 
-    //     onClick={() => {
-    //       props.setMintModalOpen(true);
-    //     }}
-    //   >Mint Now</a>
-    // </div>
-  )
+    </div> }
+    { !testMode && <div className={styles.mintButtonContainer}>
+      <a className={styles.mintButton} 
+        id='mintButton' 
+        onClick={() => {
+          props.setMintModalOpen(true);
+        }}
+      >Mint Now</a>
+    </div>}
+  </>)
 }
 function MainImage() {
   return (<>
