@@ -2678,7 +2678,7 @@ function MintModal(props) {
 
   //Loading Spinner
   const [mintLoading, setMintLoading] = useState(false);
-  const [mintButtonDisabled, setMintButtonDisabled] = useState(true);
+  const [mintButtonDisabled, setMintButtonDisabled] = useState(false);
 
   //Minting Success/Error Popups
   const [mintError, setMintError] = useState(false);
@@ -2688,36 +2688,38 @@ function MintModal(props) {
   const [mintLink, setMintLink] = useState('')
 
   function fetchWhitelistData() {
-    let data = JSON.stringify({
-        "wallet": address.toLowerCase()
-    });
-  
-    let config = {
-      method: 'post',
-      url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
-      headers: { 
-          'Content-Type': 'application/json'
-      },
-      data: data
-    };
+    if (address) {
+        let data = JSON.stringify({
+            "wallet": address?.toLowerCase()
+        });
+    
+        let config = {
+        method: 'post',
+        url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        data: data
+        };
 
-    axios(config).then((response) => {
-        // check is response is not 403
-        if (response?.status !== 403) {
-            const _data = response?.data;
-            console.log(_data)
-            setMaxMintForCurrentWallet(_data?.tier)
-            setPresaleData(_data)
-        } else {
-            setMintButtonDisabled(true)
-            setMintButtonText("Not Whitelisted")
+        axios(config).then((response) => {
+            // check is response is not 403
+            if (response?.status !== 403) {
+                const _data = response?.data;
+                console.log(_data)
+                setMaxMintForCurrentWallet(_data?.tier)
+                setPresaleData(_data)
+            } else {
+                setMintButtonDisabled(true)
+                setMintButtonText("Not Whitelisted")
+                setMaxMintForCurrentWallet(-1)
+            }
+        }).catch((error) => {
+            console.log(error.message)
             setMaxMintForCurrentWallet(-1)
-        }
-    }).catch((error) => {
-        console.log(error.message)
-        setMaxMintForCurrentWallet(-1)
-        alert('Error fetching whitelist data or this wallet is not whitelisted')
-    });
+            alert('Error fetching whitelist data or this wallet is not whitelisted')
+        });
+    }
   }
 
   // Needed to interact with contract
@@ -2944,11 +2946,40 @@ function MintModal(props) {
       return false
     }
 
-    if (!allContractDataPresent) {
-      setMintError(true);
-      setMintErrorMessage('Please Wait for Contract Data to load');
-      return false
+    if (maxMintForCurrentWallet && 
+        pricePerNFT && 
+        amountMintedAlready && 
+       (isPresale === true || isPresale === false)) {
+
+      if (isPresale === true && presaleData?.teir && 
+          presaleData?.hash  && presaleData?.signature) {
+        console.log('All contract data present')
+      } 
+      else if (isPresale === true) {
+        fetchWhitelistData()
+        if (presaleData?.teir && 
+            presaleData?.hash && presaleData?.signature) {
+                console.log('All contract data present')
+        } else {
+            console.log('All contract data NOT present')
+            return false
+        }
+      } else if (isPresale === false) {
+        console.log('All contract data present')
+      } else {
+        console.log('All contract data NOT present')
+        return false
+      }
+    } else {
+        console.log('All contract data NOT present')
+        return false
     }
+    
+    // if (!allContractDataPresent) {
+    //   setMintError(true);
+    //   setMintErrorMessage('Please Wait for Contract Data to load');
+    //   return false
+    // }
 
     if (mintAmount <= 0 || totalMintPrice <= 0 || !totalMintPrice || !mintAmount) {
       setMintError(true);
@@ -2964,8 +2995,8 @@ function MintModal(props) {
 
     if (isPresale === true && testMode == false) {
       try {
-        if (presaleData?.data.teir && presaleData?.data.hash && 
-            presaleData?.data.signature) {
+        if (presaleData?.teir && presaleData?.hash && 
+            presaleData?.signature) {
           if (mintAmount > presaleData.tier) {
             setMintErrorMessage('Error: You can only mint up to ' + presaleData.tier + ' tokens in the presale')
             setMintError(true)
@@ -3068,41 +3099,6 @@ function MintModal(props) {
   // Enable or disable the mint button based on this
   useEffect(() => {
     if (isClosing) return setAllContractDataPresent(false);
-    if (maxMintForCurrentWallet && 
-        pricePerNFT && 
-        amountMintedAlready && 
-       (isPresale === true || isPresale === false)) {
-      if (isPresale === true && presaleData?.teir && 
-          presaleData?.hash  && presaleData?.signature) {
-        setMintButtonDisabled(false)
-        setAllContractDataPresent(true)
-        console.log('All contract data present')
-      } else if (isPresale === true) {
-        fetchWhitelistData()
-        if (presaleData?.teir && 
-            presaleData?.hash  && presaleData?.signature) {
-                setMintButtonDisabled(false)
-                setAllContractDataPresent(true)
-                console.log('All contract data present')
-        } else {
-            console.log('All contract data NOT present')
-            setMintButtonDisabled(true)
-            setAllContractDataPresent(false)
-        }
-      } else if (isPresale === false) {
-        setMintButtonDisabled(false)
-        setAllContractDataPresent(true) 
-        console.log('All contract data present')
-      } else {
-        console.log('All contract data NOT present')
-        setMintButtonDisabled(true)
-        setAllContractDataPresent(false)
-      }
-    } else {
-        console.log('All contract data NOT present')
-        setMintButtonDisabled(true)
-        setAllContractDataPresent(false)
-    }
   }, [maxMintForCurrentWallet, isPresale, pricePerNFT, updateMintModal,
       amountMintedAlready, presaleData, publicWalletLimit, address]);
 
@@ -3199,7 +3195,7 @@ function MintModal(props) {
 
           <div className={styles.mintModalInputContainer}>
             <button id='mintButtonOnPopup' className={styles.mintModalButton} 
-                    onClick={() => { mint()}} disabled={mintButtonDisabled}>{mintButtonText}</button>
+                    onClick={() => { mint(); console.log('minting')}} disabled={mintButtonDisabled}>{mintButtonText}</button>
           </div>
         </div>
       </div> 
