@@ -3013,7 +3013,6 @@ function MintModal(props) {
 
   // Called on Mint Button click
   const mint = () => {
-    setMintButtonDisabled(true);
     setMintButtonText("Minting"); 
 
     // Make sure we have all necessary/valid data to mint
