@@ -2710,14 +2710,13 @@ function MintModal(props) {
                 setMaxMintForCurrentWallet(_data?.tier)
                 setPresaleData(_data)
             } else {
-                setMintButtonDisabled(true)
                 setMintButtonText("Not Whitelisted")
                 setMaxMintForCurrentWallet(-1)
             }
         }).catch((error) => {
             console.log(error.message)
             setMaxMintForCurrentWallet(-1)
-            alert('Error fetching whitelist data or this wallet is not whitelisted')
+            console.log('Error fetching whitelist data or this wallet is not whitelisted')
         });
     }
   }
@@ -2948,10 +2947,7 @@ function MintModal(props) {
 
     if (maxMintForCurrentWallet && 
         pricePerNFT && 
-        amountMintedAlready) {
-      console.log(maxMintForCurrentWallet, 
-        pricePerNFT,
-        amountMintedAlready)  
+        amountMintedAlready) { 
       if (isPresale === true && presaleData?.teir && 
           presaleData?.hash  && presaleData?.signature) {
         console.log('All contract data present')
