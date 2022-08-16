@@ -17,17 +17,9 @@ import {    useAccount   ,   useContractWrite, // read/write eth contracts
 
 let updateMintModal = false;
 // TODO LIST
-// install node, vs code, github desktop
-// login to github desktop
-// copy project over - npm i - npm run dev
-// test API after CORS line 2064
-    // maybe put the request in the /api/ folder
-//'PRESALE_PRICE' -> PRICE line 1483
-
-// switch testMode = false
 
 // Contract Details
-const testMode = true;
+const testMode = false;
 const presaleTestMode = false;
 const chainId = 1; //3 ropsten -- 1 eth main
 
