@@ -1297,7 +1297,7 @@ function testFetchWhitelistData() {
   
     let config = {
       method: 'post',
-      url: 'http://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
+      url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
       headers: { 
           'Content-Type': 'application/json'
       },
