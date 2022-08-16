@@ -1442,11 +1442,7 @@ function MintModal(props) {
       },
       {
         ...contractInfo,
-        functionName: 'PUBLIC_PRICE',
-      },
-      {
-        ...contractInfo,
-        functionName: 'PRESALE_PRICE',
+        functionName: 'PRICE',
       },
       {
         ...contractInfo,
@@ -1480,8 +1476,8 @@ function MintModal(props) {
     onSuccess(data) {
       //example response
       //max supply 0: BigNumber {_hex: '0x1388', _isBigNumber: true}
-      //pub price 1: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
-      //presale price  2: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
+
+      //price 2: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
       //pub lim engaged 3: true
       //pub supply 4: BigNumber {_hex: '0x1324', _isBigNumber: true}
       //prov hash 5: ""
@@ -1492,34 +1488,34 @@ function MintModal(props) {
 
       // console.log(data);
 
-      // if public sale
-      if (data[6] === false) { //
-        setIsPresale(data[6])
-        setTotalMintAmount(data[0]);
-        setAmountMintedAlready(data[7]); 
-        setPublicWalletLimit(data[3]);
+    //   const maxSupply = data[0]
+    //   const price = data[1]
+    //   const pubLimTrue = data[2]
+    //   const pubSupply = data[3] //unused
+    //   const provHash = data[4] //unused
+    //   const presaleTrue = data[5]
+    //   const totalMinted = data[6]
+    //   const pubWalletMax = data[7]
+    //   const reavealedTrue = data[8] //unused
 
+    setIsPresale(data[5])
+    setTotalMintAmount(data[0]);
+    setAmountMintedAlready(data[6]); 
+    setPublicWalletLimit(data[2]);
+
+    let price = ethers.utils.formatEther(data[1].toString())
+    setTotalCostBoxValue(price); 
+    setPricePerNFT(price); 
+
+    // if public sale
+    if (data[5] === false) {
         setTitleText('Public Mint'); 
-        let price = ethers.utils.formatEther(data[1].toString())
-        setTotalCostBoxValue(price); 
-        setPricePerNFT(price); 
-
         setPresaleData(null); 
-        setMaxMintForCurrentWallet(data[8]);
-
-      } else if (data[6] === true) { //
-        setIsPresale(data[6]);
-        setTotalMintAmount(data[0]);
-        setAmountMintedAlready(data[7]); 
-        setPublicWalletLimit(data[3]);
-
+        setMaxMintForCurrentWallet(data[7]);
+    } else if (data[5] === true) {
         setTitleText('Presale Mint');
-        let price = ethers.utils.formatEther(data[2].toString())
-        setTotalCostBoxValue(price); 
-        setPricePerNFT(price); 
-
         if (address) fetchWhitelistData()
-      }
+        }
     },
     onError(error) {
       console.log(error)
@@ -1902,7 +1898,7 @@ function NavBar() {
         <a href="https://twitter.com/menjisworld" target="_blank" rel="noopener noreferrer">
           <Image src={'/twitter.png'} width={50} height={50} />
         </a>
-        <a href="https://ropsten.etherscan.io/address/0x5c729894a796dA01D8679fC0025559BA14bec779" target="_blank" rel="noopener noreferrer">
+        <a href="https://etherscan.io/contract/0x5c729894a796dA01D8679fC0025559BA14bec779" target="_blank" rel="noopener noreferrer">
           <Image src={'/etherscan.png'} width={50} height={50} />
         </a>
         <a href="https://discord.gg/pTRtRXeCSM" target="_blank" rel="noopener noreferrer">
