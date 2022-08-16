@@ -2721,7 +2721,7 @@ function MintModal(props) {
             // }
             const _data = response?.data;
             console.log(_data)
-            setMaxMintForCurrentWallet(_data?.allocation)
+            setMaxMintForCurrentWallet(_data?.tier)
             setPresaleData(_data)
         } else {
             setMintButtonDisabled(true)
@@ -2974,9 +2974,9 @@ function MintModal(props) {
     if (isPresale === true && testMode == false) {
       try {
         if (presaleData?.data.teir && presaleData?.data.hash && 
-            presaleData?.data.signature && presaleData?.data.allocation) {
-          if (mintAmount > presaleData.allocation) {
-            setMintErrorMessage('Error: You can only mint up to ' + presaleData.allocation + ' tokens in the presale')
+            presaleData?.data.signature) {
+          if (mintAmount > presaleData.tier) {
+            setMintErrorMessage('Error: You can only mint up to ' + presaleData.tier + ' tokens in the presale')
             setMintError(true)
             return false
           } else {
