@@ -2948,21 +2948,21 @@ function MintModal(props) {
     if (maxMintForCurrentWallet > -5 && 
         pricePerNFT && 
         amountMintedAlready) { 
-      if (isPresale === true && presaleData?.teir && 
+      if (isPresale === true && presaleData?.tier && 
           presaleData?.hash  && presaleData?.signature) {
         console.log('All contract data present')
       } else if (isPresale === false) {
         console.log('All contract data present')
       } else {
         console.log('All contract data NOT present')
-        console.log(isPresale, presaleData?.teir, 
+        console.log(isPresale, presaleData?.tier, 
             presaleData?.hash, presaleData?.signature)
         fetchWhitelistData()
         return false
       }
     } else {
         if (isPresale) fetchWhitelistData()
-        console.log(isPresale, presaleData?.teir, 
+        console.log(isPresale, presaleData?.tier, 
             presaleData?.hash, presaleData?.signature)
         console.log('All contract data NOT present')
         return false
