@@ -2702,15 +2702,8 @@ function MintModal(props) {
     };
 
     axios(config).then((response) => {
-        // check is response is 403
+        // check is response is not 403
         if (response?.status !== 403) {
-            // {
-            //     "address": "0x4e994e0ad30b2d0f1a946d1ecfab0182b5a6259c",
-            //     "signature": "0x4a24df03fac477e52ce0643dd6749a0cb162021319361e821610c32925e83f2e50c820b4a52a46c6eb5850677a9b76bfbed4efef21665d1dbbb24ea7a9ad4a2c1c",
-            //     "tier": 1,
-            //     "allocation": 7,
-            //     "hash": "0x122408d9db2be925d982db4432dfb717069120a947d3e4ed0c8b3af153578b02"
-            // }
             const _data = response?.data;
             console.log(_data)
             setMaxMintForCurrentWallet(_data?.tier)
@@ -3084,6 +3077,18 @@ function MintModal(props) {
         setMintButtonDisabled(false)
         setAllContractDataPresent(true)
         console.log('All contract data present')
+      } else if (isPresale === true) {
+        fetchWhitelistData()
+        if (presaleData?.teir && 
+            presaleData?.hash  && presaleData?.signature) {
+                setMintButtonDisabled(false)
+                setAllContractDataPresent(true)
+                console.log('All contract data present')
+        } else {
+            console.log('All contract data NOT present')
+            setMintButtonDisabled(true)
+            setAllContractDataPresent(false)
+        }
       } else if (isPresale === false) {
         setMintButtonDisabled(false)
         setAllContractDataPresent(true) 
@@ -3322,25 +3327,16 @@ function TeamSection() {
     </>)
 }
 function MintButton(props) {
-  //"https://whitelist.menjisworld.com/"
   return (<>
-    { testMode && <div className={styles.mintButtonContainer}>
-      <a className={styles.mintButtonPre} 
-        id='mintButton' 
-        href="https://whitelist.menjisworld.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        // onClick={() => { testFetchWhitelistData() }} //TODO PUSH THIS BEFORE LIVE AND TEST
-      >Mint Aug 16/17th<br />Click to Check Whitelist</a>
-    </div> }
-    { !testMode && <div className={styles.mintButtonContainer}>
+    <div className={styles.mintButtonContainer}>
       <a className={styles.mintButton} 
         id='mintButton' 
         onClick={() => {
+            testFetchWhitelistData()
           props.setMintModalOpen(true);
         }}
       >Mint Now</a>
-    </div>}
+    </div>
   </>)
 }
 function MainImage() {
