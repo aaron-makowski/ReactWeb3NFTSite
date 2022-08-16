@@ -2795,27 +2795,37 @@ function MintModal(props) {
         //   const totalMinted = data[6]
         //   const pubWalletMax = data[7]
         //   const reavealedTrue = data[8] //unused
+      console.log(data)
+      try {
+        setIsPresale(data[5])
+        setTotalMintAmount(data[0]);
+        setAmountMintedAlready(data[6]); 
+        setPublicWalletLimit(data[2]);
 
-      setIsPresale(data[5])
-      setTotalMintAmount(data[0]);
-      setAmountMintedAlready(data[6]); 
-      setPublicWalletLimit(data[2]);
+        let price = ethers.utils.formatEther(data[1].toString())
+        setTotalCostBoxValue(price); 
+        setPricePerNFT(price); 
 
-      let price = ethers.utils.formatEther(data[1].toString())
-      setTotalCostBoxValue(price); 
-      setPricePerNFT(price); 
-
-      // if public sale
-      
-      if (data[5] === false) {//
-          setTitleText('Public Mint'); 
-          setPresaleData(null); 
-          setMaxMintForCurrentWallet(data[7]);
-      } else if (data[5] === true) {//
-          setTitleText('Presale Mint');
-          if (address) fetchWhitelistData()
+        // if public sale
+        if (data[5] === false) {//
+            setTitleText('Public Mint'); 
+            setPresaleData(null); 
+            setMaxMintForCurrentWallet(data[7]);
+        } else if (data[5] === true) {//
+            setTitleText('Presale Mint');
+            if (address) fetchWhitelistData()
+        }
+        updateMintModal = !updateMintModal;
+      } catch (e) {
+        console.log(e)
+        setAllContractDataPresent(false);
+        setMaxMintForCurrentWallet(null);
+        setPricePerNFT(null);
+        setAmountMintedAlready(null);
+        setMaxMintForCurrentWallet(null);
+        setIsPresale(null);
       }
-      updateMintModal = !updateMintModal;
+
     },
     onError(error) {
       console.log(error)
