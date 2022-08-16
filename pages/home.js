@@ -2945,28 +2945,32 @@ function MintModal(props) {
       return false
     }
 
-    if (maxMintForCurrentWallet > -5 && 
-        pricePerNFT && 
-        amountMintedAlready) { 
-      if (isPresale === true && presaleData?.tier && 
-          presaleData?.hash  && presaleData?.signature) {
-        console.log('All contract data present')
-      } else if (isPresale === false) {
-        console.log('All contract data present')
-      } else {
-        console.log('All contract data NOT present')
-        console.log(isPresale, presaleData?.tier, 
-            presaleData?.hash, presaleData?.signature)
-        fetchWhitelistData()
-        return false
-      }
-    } else {
-        if (isPresale) fetchWhitelistData()
-        console.log(isPresale, presaleData?.tier, 
-            presaleData?.hash, presaleData?.signature)
-        console.log('All contract data NOT present')
+    if (maxMintForCurrentWallet < -1 ||
+        pricePerNFT <= 0 ||
+        amountMintedAlready <= 0) { 
         return false
     }
+      if (isPresale ===true && (!presaleData?.tier || !presaleData?.hash && !presaleData?.signature)) {
+          if (address) fetchWhitelistData() 
+            return false
+    }
+    //     console.log('All contract data present')
+    //   } else if (isPresale === false) {
+    //     console.log('All contract data present')
+    //   } else {
+    //     console.log('All contract data NOT present')
+    //     console.log(isPresale, presaleData?.tier, 
+    //         presaleData?.hash, presaleData?.signature)
+    //     fetchWhitelistData()
+    //     return false
+    //   }
+    // } else {
+    //     if (isPresale) fetchWhitelistData()
+    //     console.log(isPresale, presaleData?.tier, 
+    //         presaleData?.hash, presaleData?.signature)
+    //     console.log('All contract data NOT present')
+    //     return false
+    // }
     
     // if (!allContractDataPresent) {
     //   setMintError(true);
@@ -3025,12 +3029,12 @@ function MintModal(props) {
     // & presale data into the Write function
     let _args = [mintAmount] 
     if ((isPresale === true && !testMode) || presaleTestMode) {
-      _args.push(presaleData.tier,
-                 presaleData.hash,
-                 presaleData.signature)
+      _args.push(presaleData?.tier,
+                 presaleData?.hash,
+                 presaleData?.signature)
     }
     const _overrides = { 
-      from: address, 
+      from: address,
       value: ethers.utils.parseEther( totalMintPrice.toString() )
     }
 
