@@ -3321,7 +3321,7 @@ function MintButton(props) {
       <a className={styles.mintButton} 
         id='mintButton' 
         onClick={() => {
-            testFetchWhitelistData()
+          if (address) fetchWhitelistData()
           props.setMintModalOpen(true);
         }}
       >Mint Now</a>
