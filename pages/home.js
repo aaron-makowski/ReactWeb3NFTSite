@@ -2062,7 +2062,7 @@ function MintButton(props) {
     { testMode && <div className={styles.mintButtonContainer}>
       <a className={styles.mintButtonPre} 
         id='mintButton' 
-        href="https://flourishing-duckanoo-8a35b9.netlify.app/"
+        href="https://whitelist.menjisworld.com/"
         target="_blank"
         rel="noopener noreferrer"
         // onClick={() => { testFetchWhitelistData() }} //TODO PUSH THIS BEFORE LIVE AND TEST
