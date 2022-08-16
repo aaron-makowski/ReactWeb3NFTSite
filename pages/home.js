@@ -2754,7 +2754,7 @@ function MintModal(props) {
       },
       {
         ...contractInfo,
-        functionName: 'PRESALE_PRICE',//TODO CHANGE THIS TO PRICE FOR LIVE
+        functionName: 'PRICE',//TODO CHANGE THIS TO PRICE FOR LIVE
       },
       {
         ...contractInfo,
