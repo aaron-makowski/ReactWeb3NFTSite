@@ -2768,11 +2768,7 @@ function MintModal(props) {
       {
         ...contractInfo,
         functionName: 'PUBLIC_MINT_LIMIT',
-      },
-      {
-        ...contractInfo,
-        functionName: 'isRevealed', //unused currently
-      },
+      }
     ],
     onSuccess(data) {
       //example response
