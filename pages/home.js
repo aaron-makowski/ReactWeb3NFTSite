@@ -2881,7 +2881,7 @@ function MintModal(props) {
     ...contractInfo, 
     functionName: 'presalePurchase', 
     onSuccess(data) {
-      setMintSuccess(true); 
+      setMintSuccess(true);
       setMintLink('https://etherscan.io/tx/'+ data.hash)
       setMintSuccessMessage('Wait here for success message. Pending Transaction:');
     },
@@ -2950,7 +2950,7 @@ function MintModal(props) {
         amountMintedAlready <= 0) { 
         return false
     }
-      if (isPresale ===true && (!presaleData?.tier || !presaleData?.hash && !presaleData?.signature)) {
+      if (isPresale === true && (!presaleData?.tier || !presaleData?.hash && !presaleData?.signature)) {
           if (address) fetchWhitelistData() 
             return false
     }
