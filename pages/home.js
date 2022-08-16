@@ -22,6 +22,7 @@ import {    useAccount   ,   useContractWrite, // read/write eth contracts
 
 // Contract Details
 const testMode = true;
+const presaleTestMode = false;
 const chainId = 3; //3 ropsten -- 1 eth main
 const contractAddress = '0x5c729894a796dA01D8679fC0025559BA14bec779';
 const abi = [
@@ -1289,6 +1290,33 @@ const abi = [
   }
 ]
 
+function testFetchWhitelistData() {
+    let data = JSON.stringify({
+        "wallet": "0x4e994e0ad30b2d0f1a946d1ecfab0182b5a6259c"
+    });
+  
+    let config = {
+      method: 'post',
+      url: 'https://us-central1-menjisworld-allowlist.cloudfunctions.net/getAccount',
+      headers: { 
+          'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config).then((response) => {
+        if (response?.status !== 403) {
+            const _data = response?.data;
+            console.log(_data)
+        } else {
+            console.log(response?.status)
+        }
+    }).catch((error) => {
+        console.log(error.message)
+        alert('Error fetching whitelist data or this wallet is not whitelisted')
+    });
+  }
+
 //UI Components
 function ConnectButtonCustomized(props) {
 
@@ -1404,20 +1432,25 @@ function MintModal(props) {
       },
       data: data
     };
-  
+
     axios(config).then((response) => {
         // check is response is 403
-        if (response.status !== 403) {
-            // check if response has key allocation
-            //TODO make sure the json comes through right
-            let _data = JSON.stringify(response.data);
-            console.log(_data);
-            setMaxMintForCurrentWallet(_data.data.allocation);
-            setPresaleData(_data);
+        if (response?.status !== 403) {
+            // {
+            //     "address": "0x4e994e0ad30b2d0f1a946d1ecfab0182b5a6259c",
+            //     "signature": "0x4a24df03fac477e52ce0643dd6749a0cb162021319361e821610c32925e83f2e50c820b4a52a46c6eb5850677a9b76bfbed4efef21665d1dbbb24ea7a9ad4a2c1c",
+            //     "tier": 1,
+            //     "allocation": 7,
+            //     "hash": "0x122408d9db2be925d982db4432dfb717069120a947d3e4ed0c8b3af153578b02"
+            // }
+            const _data = response?.data;
+            console.log(_data)
+            setMaxMintForCurrentWallet(_data?.allocation)
+            setPresaleData(_data)
         } else {
-            setMintButtonDisabled(true);
-            setMintButtonText("Not Whitelisted");
-            setMaxMintForCurrentWallet(-1)            
+            setMintButtonDisabled(true)
+            setMintButtonText("Not Whitelisted")
+            setMaxMintForCurrentWallet(-1)
         }
     }).catch((error) => {
         console.log(error.message)
@@ -1442,7 +1475,7 @@ function MintModal(props) {
       },
       {
         ...contractInfo,
-        functionName: 'PRICE',
+        functionName: 'PRESALE_PRICE',//TODO CHANGE THIS TO PRICE FOR LIVE
       },
       {
         ...contractInfo,
@@ -1476,46 +1509,43 @@ function MintModal(props) {
     onSuccess(data) {
       //example response
       //max supply 0: BigNumber {_hex: '0x1388', _isBigNumber: true}
+      //price 1: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
+      //pub lim engaged 2: true
+      //pub supply 3: BigNumber {_hex: '0x1324', _isBigNumber: true}
+      //prov hash 4: ""
+      //isPre 5: true
+      //NexttokenID 6: BigNumber {_hex: '0x08', _isBigNumber: true}
+      //pub wallet lim 7: BigNumber {_hex: '0x0b', _isBigNumber: true}
+      //isrevealed 8: false
 
-      //price 2: BigNumber {_hex: '0xf8b0a10e470000', _isBigNumber: true}
-      //pub lim engaged 3: true
-      //pub supply 4: BigNumber {_hex: '0x1324', _isBigNumber: true}
-      //prov hash 5: ""
-      //isPre 6: true
-      //NexttokenID 7: BigNumber {_hex: '0x08', _isBigNumber: true}
-      //pub wallet lim 8: BigNumber {_hex: '0x0b', _isBigNumber: true}
-      //isrevealed 9: false
+        //   const maxSupply = data[0]
+        //   const price = data[1]
+        //   const pubLimTrue = data[2]
+        //   const pubSupply = data[3] //unused
+        //   const provHash = data[4] //unused
+        //   const presaleTrue = data[5]
+        //   const totalMinted = data[6]
+        //   const pubWalletMax = data[7]
+        //   const reavealedTrue = data[8] //unused
 
-      // console.log(data);
+      setIsPresale(data[5])
+      setTotalMintAmount(data[0]);
+      setAmountMintedAlready(data[6]); 
+      setPublicWalletLimit(data[2]);
 
-    //   const maxSupply = data[0]
-    //   const price = data[1]
-    //   const pubLimTrue = data[2]
-    //   const pubSupply = data[3] //unused
-    //   const provHash = data[4] //unused
-    //   const presaleTrue = data[5]
-    //   const totalMinted = data[6]
-    //   const pubWalletMax = data[7]
-    //   const reavealedTrue = data[8] //unused
+      let price = ethers.utils.formatEther(data[1].toString())
+      setTotalCostBoxValue(price); 
+      setPricePerNFT(price); 
 
-    setIsPresale(data[5])
-    setTotalMintAmount(data[0]);
-    setAmountMintedAlready(data[6]); 
-    setPublicWalletLimit(data[2]);
-
-    let price = ethers.utils.formatEther(data[1].toString())
-    setTotalCostBoxValue(price); 
-    setPricePerNFT(price); 
-
-    // if public sale
-    if (data[5] === false) {
-        setTitleText('Public Mint'); 
-        setPresaleData(null); 
-        setMaxMintForCurrentWallet(data[7]);
-    } else if (data[5] === true) {
-        setTitleText('Presale Mint');
-        if (address) fetchWhitelistData()
-        }
+      // if public sale
+      if (data[5] === false) {//
+          setTitleText('Public Mint'); 
+          setPresaleData(null); 
+          setMaxMintForCurrentWallet(data[7]);
+      } else if (data[5] === true) {//
+          setTitleText('Presale Mint');
+          if (address) fetchWhitelistData()
+      }
     },
     onError(error) {
       console.log(error)
@@ -1537,7 +1567,7 @@ function MintModal(props) {
   const { data: testMintData, 
           write: testMint } = useContractWrite({ 
     ...contractInfo, 
-    functionName: 'purchase', 
+    functionName: 'presalePurchase', 
     onSuccess(data) {
       // console.log(data);
       setMintSuccess(true);
@@ -1591,6 +1621,7 @@ function MintModal(props) {
       if (error.message.includes('-32000')) {
         setMintErrorMessage('Error: Insufficient Funds');
       } else {
+        setMintLink('https://etherscan.io/tx/'+ data.hash)
         setMintErrorMessage('Error minting tokens: ' + error.message);
       }
     }
@@ -1666,8 +1697,8 @@ function MintModal(props) {
       try {
         if (presaleData?.data.teir && presaleData?.data.hash && 
             presaleData?.data.signature && presaleData?.data.allocation) {
-          if (mintAmount > presaleData.data.allocation) {
-            setMintErrorMessage('Error: You can only mint up to ' + presaleData.data.allocation + ' tokens in the presale')
+          if (mintAmount > presaleData.allocation) {
+            setMintErrorMessage('Error: You can only mint up to ' + presaleData.allocation + ' tokens in the presale')
             setMintError(true)
             return false
           } else {
@@ -1701,10 +1732,10 @@ function MintModal(props) {
      // Pass in amounnt to mint, total price 
     // & presale data into the Write function
     let _args = [mintAmount] 
-    if (isPresale === true && !testMode) {
-      _args.push(presaleData.data.teir,
-                 presaleData.data.hash,
-                 presaleData.data.signature)
+    if ((isPresale === true && !testMode) || presaleTestMode) {
+      _args.push(presaleData.teir,
+                 presaleData.hash,
+                 presaleData.signature)
     }
     const _overrides = { 
       from: address, 
@@ -1771,14 +1802,19 @@ function MintModal(props) {
     if (maxMintForCurrentWallet && 
         pricePerNFT && 
         amountMintedAlready && 
-        isPresale !== null) {
-      console.log('All contract data present')
-      setAllContractDataPresent(true)
-      setMintButtonDisabled(false)
+       (isPresale === true || isPresale === false)) {
+      if (isPresale === true && presaleData?.teir && 
+          presaleData?.hash  && presaleData?.signature) {
+        setMintButtonDisabled(false)
+        setAllContractDataPresent(true)
+        console.log('All contract data present')
+      } else {
+        setMintButtonDisabled(true)
+        setAllContractDataPresent(false) }
     } else {
       console.log('All contract data NOT present')
-      setMintButtonDisabled(true); 
-      setAllContractDataPresent(false);
+      setMintButtonDisabled(true)
+      setAllContractDataPresent(false)
     }
   }, [maxMintForCurrentWallet, isPresale, pricePerNFT,
       amountMintedAlready, presaleData, publicWalletLimit, address]);
@@ -2005,6 +2041,7 @@ function TeamSection() {
 }
 function MintButton(props) {
   return (
+      //"https://whitelist.menjisworld.com/"
     //pre release
     <div className={styles.mintButtonContainer}>
       <a className={styles.mintButtonPre} 
@@ -2012,8 +2049,10 @@ function MintButton(props) {
         href="https://flourishing-duckanoo-8a35b9.netlify.app/"
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => { testFetchWhitelistData() }}
       >Mint Aug 16/17th<br />Click to Check Whitelist</a>
     </div>
+
     // live version
     // <div className={styles.mintButtonContainer}>
     //   <a className={styles.mintButton} 
