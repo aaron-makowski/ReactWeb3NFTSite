@@ -3056,7 +3056,7 @@ function MintModal(props) {
     if (num < maxMint) {
       setMintAmount(num + 1); 
       setTotalMintPrice(
-        Math.round((num + 1) * pricePerNFT * 100) / 100);        
+        Math.round((num + 1) * pricePerNFT * 1000) / 1000);        
     }
   }
   const decrementMintAmountNumberBox = () => {
@@ -3065,14 +3065,14 @@ function MintModal(props) {
     if (num > 1) {
       setMintAmount(num - 1); 
       setTotalMintPrice(
-        Math.round((num - 1) * pricePerNFT * 100) / 100);
+        Math.round((num - 1) * pricePerNFT * 1000) / 1000);
     }
   }
   // Same as increment and decrement but callable
   const setTotalCostBoxValue = (price) => {
     if (window.document.getElementById('mintAmountBox') !== null) {
       const num = mintAmount //parseInt(window.document.getElementById('mintAmountBox').innerHTML);
-      setTotalMintPrice(Math.round(num * price * 100) / 100);
+      setTotalMintPrice(Math.round(num * price * 1000) / 1000);
     }
   }
   // UI: Enable Mint Button + Close Loading Spinner
